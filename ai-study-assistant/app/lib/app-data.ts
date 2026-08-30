@@ -1,0 +1,11 @@
+export type Topic = { id: string; subjectId: string; name: string; completed: boolean; position: number };
+export type SubjectRecord = { id: string; name: string; description: string; progress: number; createdAt: string };
+export type NoteRecord = { id: string; subjectId: string; topicId?: string; title: string; content: string; tags: string[]; pinned: boolean; archived: boolean; createdAt: string; updatedAt: string };
+export type FlashcardRecord = { id: string; subjectId: string; topicId?: string; front: string; back: string; interval: number; ease: number; dueAt: string; reviews: number; createdAt: string };
+export type StudySessionRecord = { id: string; subjectId?: string; topicId?: string; activity: string; minutes: number; startedAt: string; endedAt?: string };
+export type QuizAttemptRecord = { id: string; quizId: string; title: string; subjectId?: string; score: number; total: number; percent: number; completedAt: string };
+export type SettingsRecord = { displayName: string; dailyGoalMinutes: number; aiStyle: "concise" | "balanced" | "detailed"; theme: "dark" | "light" | "system" };
+export const STORE = { subjects: "ai-study-assistant-subjects-v2", topics: "ai-study-assistant-topics", notes: "ai-study-assistant-notes-v2", flashcards: "ai-study-assistant-flashcards-v2", sessions: "ai-study-assistant-study-sessions-v2", quizAttempts: "ai-study-assistant-quiz-attempts-v2", settings: "ai-study-assistant-settings-v2" };
+export function readLocal<T>(key: string, fallback: T): T { if (typeof window === "undefined") return fallback; try { const raw = localStorage.getItem(key); return raw ? JSON.parse(raw) as T : fallback; } catch { return fallback; } }
+export function writeLocal<T>(key: string, value: T) { localStorage.setItem(key, JSON.stringify(value)); }
+export function updateFlashcardReview(card: FlashcardRecord, quality: 0 | 1 | 2) { if (quality === 0) card.interval = 1; else if (quality === 1) card.interval = Math.max(1, Math.round(card.interval * 1.5)); else card.interval = Math.max(1, Math.round(card.interval * card.ease)); card.ease = quality === 0 ? Math.max(1.3, card.ease - 0.2) : Math.min(2.8, card.ease + (quality === 2 ? 0.15 : 0.05)); card.reviews += 1; card.dueAt = new Date(Date.now() + card.interval * 86400000).toISOString(); return card; }
