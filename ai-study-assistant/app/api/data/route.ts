@@ -1,12 +1,5 @@
-import { NextResponse } from "next/server";
-
-const allowed = new Set(["GET", "POST", "PUT", "DELETE"]);
-
-export async function GET() {
-  return NextResponse.json({ ok: true, message: "Local-first data API ready." });
-}
-export async function POST(request: Request) {
-  if (!allowed.has("POST")) return NextResponse.json({ error: "Method not allowed" }, { status: 405 });
-  try { const body = await request.json(); return NextResponse.json({ ok: true, data: body }, { status: 201 }); }
-  catch { return NextResponse.json({ error: "Invalid JSON" }, { status: 400 }); }
-}
+import {NextResponse} from "next/server";import {cookies} from "next/headers";import {getSession} from "../../../server/auth";import db from "../../../server/db";
+const tables={subjects:"subjects",topics:"topics",notes:"notes",flashcards:"flashcards",quizzes:"quizzes",study_sessions:"study_sessions",quiz_attempts:"quiz_attempts",notifications:"notifications",achievements:"achievements"} as const;
+async function user(){const id=(await cookies()).get("study_session")?.value;return id?getSession(id):null}
+export async function GET(req:Request){const u=await user(),resource=new URL(req.url).searchParams.get("resource") as keyof typeof tables;if(!u||!tables[resource])return NextResponse.json({error:"Unauthorized or invalid resource"},{status:401});const table=tables[resource];const rows=table==="topics"?db.prepare("SELECT t.* FROM topics t JOIN subjects s ON s.id=t.subject_id WHERE s.user_id=? ORDER BY t.position").all(u.user_id):db.prepare(`SELECT * FROM ${table} WHERE user_id=?`).all(u.user_id);return NextResponse.json({data:rows})}
+export async function POST(req:Request){const u=await user();if(!u)return NextResponse.json({error:"Unauthorized"},{status:401});const b=await req.json();if(b.resource!=="subjects")return NextResponse.json({error:"Resource creation endpoint currently supports subjects; use domain services for other entities."},{status:400});const item={id:String(b.id||crypto.randomUUID()),user_id:u.user_id,name:String(b.name||""),description:String(b.description||""),created_at:new Date().toISOString()};if(!item.name)return NextResponse.json({error:"Name is required"},{status:400});db.prepare("INSERT INTO subjects(id,user_id,name,description,created_at) VALUES(?,?,?,?,?)").run(item.id,item.user_id,item.name,item.description,item.created_at);return NextResponse.json({data:item},{status:201})}
