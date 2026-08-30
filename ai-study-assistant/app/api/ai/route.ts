@@ -1,24 +1,2 @@
-import { NextResponse } from "next/server";
-
-export async function POST(request: Request) {
-  const { prompt, context } = await request.json();
-  if (typeof prompt !== "string" || !prompt.trim()) return NextResponse.json({ error: "A prompt is required." }, { status: 400 });
-  if (context !== undefined && typeof context !== "string") return NextResponse.json({ error: "Invalid study context." }, { status: 400 });
-
-  const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) return NextResponse.json({ error: "AI is not configured yet. Add OPENAI_API_KEY to the server environment." }, { status: 503 });
-
-  const studyContext = typeof context === "string" ? context.trim() : "";
-  const input = studyContext ? `Here is the student's saved study material:\n\n${studyContext}\n\nStudent request:\n${prompt.trim()}` : prompt.trim();
-  try {
-    const response = await fetch("https://api.openai.com/v1/responses", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
-      body: JSON.stringify({ model: process.env.OPENAI_MODEL || "gpt-4.1-mini", input: [{ role: "system", content: "You are a helpful study assistant. When study material is provided, use it as the primary source. Clearly distinguish information from the material from general knowledge. Explain concepts clearly, encourage learning, and prefer hints and reasoning over simply giving answers." }, { role: "user", content: input }] }),
-    });
-    const data = await response.json();
-    if (!response.ok) return NextResponse.json({ error: data?.error?.message || "The AI service returned an error." }, { status: response.status });
-    const answer = data?.output_text || data?.output?.flatMap((item: { content?: { text?: string }[] }) => item.content || []).map((part: { text?: string }) => part.text || "").join("").trim();
-    return NextResponse.json({ answer: answer || "The AI returned an empty response." });
-  } catch { return NextResponse.json({ error: "Unable to connect to the AI service." }, { status: 502 }); }
-}
+import {NextResponse} from "next/server";import {cookies} from "next/headers";import {getSession} from "../../../server/auth";import db from "../../../server/db";
+export async function POST(request:Request){const sid=(await cookies()).get("study_session")?.value,u=sid?getSession(sid):null;if(!u)return NextResponse.json({error:"Unauthorized"},{status:401});const b=await request.json(),prompt=b.prompt,context=b.context,conversationId=b.conversationId;if(typeof prompt!=="string"||!prompt.trim())return NextResponse.json({error:"A prompt is required."},{status:400});if(context!==undefined&&typeof context!=="string")return NextResponse.json({error:"Invalid study context."},{status:400});const apiKey=process.env.OPENAI_API_KEY;if(!apiKey)return NextResponse.json({error:"AI is not configured yet."},{status:503});const now=new Date().toISOString();let cid=conversationId;if(cid&&!db.prepare("SELECT 1 FROM ai_conversations WHERE id=? AND user_id=?").get(cid,u.user_id))return NextResponse.json({error:"Invalid conversation."},{status:404});if(!cid){cid=crypto.randomUUID();db.prepare("INSERT INTO ai_conversations(id,user_id,title,created_at,updated_at) VALUES(?,?,?,?,?)").run(cid,u.user_id,prompt.trim().slice(0,60),now,now)}db.prepare("INSERT INTO ai_messages(id,conversation_id,role,content,created_at) VALUES(?,?,?,?,?)").run(crypto.randomUUID(),cid,"user",prompt.trim(),now);const studyContext=typeof context==="string"?context.trim():"";const input=studyContext?`Saved study material:\n${studyContext}\n\nStudent request:\n${prompt.trim()}`:prompt.trim();try{const response=await fetch("https://api.openai.com/v1/responses",{method:"POST",headers:{"Content-Type":"application/json",Authorization:`Bearer ${apiKey}`},body:JSON.stringify({model:process.env.OPENAI_MODEL||"gpt-4.1-mini",input:[{role:"system",content:"You are a helpful study assistant. Prefer clear explanations, reasoning and hints."},{role:"user",content:input}]})});const data=await response.json();if(!response.ok)return NextResponse.json({error:data?.error?.message||"The AI service returned an error."},{status:response.status});const answer=(data?.output_text||data?.output?.flatMap((item:any)=>item.content||[]).map((part:any)=>part.text||"").join("")).trim();if(!answer)return NextResponse.json({error:"The AI returned an empty response."},{status:502});db.prepare("INSERT INTO ai_messages(id,conversation_id,role,content,created_at) VALUES(?,?,?,?,?)").run(crypto.randomUUID(),cid,"assistant",answer,new Date().toISOString());db.prepare("UPDATE ai_conversations SET updated_at=? WHERE id=? AND user_id=?").run(new Date().toISOString(),cid,u.user_id);return NextResponse.json({answer,conversationId:cid})}catch{return NextResponse.json({error:"Unable to connect to the AI service."},{status:502})}}
