@@ -1,4 +1,5 @@
 import TopicManager from "../topic-manager";
+import SubjectNotes from "../notes-section";
 
 export default async function SubjectPage({ params }: { params: Promise<{ subject: string }> }) {
   const { subject } = await params;
@@ -11,9 +12,10 @@ export default async function SubjectPage({ params }: { params: Promise<{ subjec
         <header className="mt-8">
           <p className="text-sm text-slate-500">Subject workspace</p>
           <h1 className="mt-1 text-4xl font-bold tracking-tight">{subjectName}</h1>
-          <p className="mt-3 text-slate-400">Build your topic checklist and track what you have mastered.</p>
+          <p className="mt-3 text-slate-400">Build your topic checklist and keep your study material together.</p>
         </header>
         <TopicManager subjectName={subjectName} />
+        <SubjectNotes subjectName={subjectName} />
       </div>
     </main>
   );
