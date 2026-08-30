@@ -1,0 +1,2 @@
+import {NextResponse} from "next/server";import {createSession,verifyUser} from "../../../../server/auth";
+export async function POST(req:Request){const b=await req.json().catch(()=>({}));const user=await verifyUser(String(b.email||""),String(b.password||""));if(!user)return NextResponse.json({error:"Invalid email or password."},{status:401});const s=createSession(user.id),r=NextResponse.json({user});r.cookies.set("study_session",s.id,{httpOnly:true,sameSite:"lax",secure:process.env.NODE_ENV==="production",expires:new Date(s.expires),path:"/"});return r}
