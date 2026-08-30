@@ -1,8 +1,10 @@
 export type Note = { id: string; title: string; content: string; subject: string; updatedAt: string };
 export type Subject = { id: string; name: string; description: string; topics: number; progress: number };
+export type QuizAttempt = { id: string; title: string; score: number; total: number; date: string };
 
 export const NOTES_KEY = "ai-study-assistant-notes";
 export const SUBJECTS_KEY = "ai-study-assistant-subjects";
+export const QUIZ_HISTORY_KEY = "ai-study-assistant-quiz-history";
 
 export function readStorage<T>(key: string, fallback: T): T {
   if (typeof window === "undefined") return fallback;
