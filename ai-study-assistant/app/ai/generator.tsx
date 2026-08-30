@@ -1,0 +1,26 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { NOTES_KEY, Note, readStorage, writeStorage } from "../lib/storage";
+
+type GeneratedCard = { front: string; back: string; subject: string; topic: string };
+type GeneratedQuiz = { question: string; options: string[]; answer: number; subject: string; topic: string };
+const FLASHCARDS_KEY = "ai-study-assistant-flashcards";
+const QUIZ_KEY = "ai-study-assistant-generated-quizzes";
+
+export default function AiGenerator() {
+  const [notes, setNotes] = useState<Note[]>([]), [selected, setSelected] = useState("All notes");
+  const [type, setType] = useState<"flashcards" | "quiz">("flashcards"), [count, setCount] = useState(5);
+  const [loading, setLoading] = useState(false), [cards, setCards] = useState<GeneratedCard[]>([]), [questions, setQuestions] = useState<GeneratedQuiz[]>([]), [message, setMessage] = useState("");
+  useEffect(() => setNotes(readStorage<Note[]>(NOTES_KEY, [])), []);
+  async function generate() {
+    const chosen = selected === "All notes" ? notes : notes.filter((note) => note.id === selected);
+    if (!chosen.length) { setMessage("Create a note first so the AI has study material to use."); return; }
+    setLoading(true); setMessage(""); setCards([]); setQuestions([]);
+    try { const response = await fetch("/api/ai/generate", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ type, count, source: chosen.map((n) => `Subject: ${n.subject}\nTopic: ${n.title}\n${n.content}`).join("\n\n") }) }); const data = await response.json(); if (!response.ok) throw new Error(data.error || "Generation failed."); if (type === "flashcards") setCards(data.items); else setQuestions(data.items); }
+    catch (error) { setMessage(error instanceof Error ? error.message : "Generation failed."); } finally { setLoading(false); }
+  }
+  function saveCards() { const existing = readStorage<GeneratedCard[]>(FLASHCARDS_KEY, []); writeStorage(FLASHCARDS_KEY, [...cards.map((c, i) => ({ ...c, id: `ai-${Date.now()}-${i}` })), ...existing]); setMessage(`${cards.length} flashcards saved.`); }
+  function saveQuiz() { const existing = readStorage<GeneratedQuiz[]>(QUIZ_KEY, []); writeStorage(QUIZ_KEY, [...questions, ...existing]); setMessage(`${questions.length} quiz questions saved.`); }
+  return <section className="mt-5 rounded-2xl border border-slate-800 bg-slate-900/60 p-6"><div className="flex flex-wrap items-end gap-3"><div className="flex-1"><p className="text-xs font-semibold uppercase tracking-widest text-slate-500">AI generator</p><h2 className="mt-1 text-xl font-bold">Create from your notes</h2></div><select value={type} onChange={(e) => setType(e.target.value as "flashcards" | "quiz")} className="rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm"><option value="flashcards">Flashcards</option><option value="quiz">Quiz questions</option></select><select value={count} onChange={(e) => setCount(Number(e.target.value))} className="rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm"><option value={3}>3</option><option value={5}>5</option><option value={10}>10</option></select></div><select value={selected} onChange={(e) => setSelected(e.target.value)} className="mt-4 w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-sm"><option>All notes</option>{notes.map((n) => <option key={n.id} value={n.id}>{n.subject} · {n.title}</option>)}</select><button onClick={generate} disabled={loading} className="mt-4 rounded-xl bg-white px-5 py-3 text-sm font-semibold text-slate-950 disabled:opacity-40">{loading ? "Generating..." : "Generate"}</button>{message && <p className="mt-4 text-sm text-slate-400">{message}</p>}{cards.length > 0 && <div className="mt-6 space-y-3">{cards.map((c, i) => <article key={i} className="rounded-xl border border-slate-800 p-4"><p className="font-semibold">{c.front}</p><p className="mt-2 text-sm text-slate-400">{c.back}</p></article>)}<button onClick={saveCards} className="rounded-xl border border-slate-700 px-4 py-2.5 text-sm font-semibold">Save flashcards</button></div>}{questions.length > 0 && <div className="mt-6 space-y-3">{questions.map((q, i) => <article key={i} className="rounded-xl border border-slate-800 p-4"><p className="font-semibold">{i + 1}. {q.question}</p><ol className="mt-3 space-y-1 text-sm text-slate-400">{q.options.map((o, j) => <li key={j}>{String.fromCharCode(65 + j)}. {o}{j === q.answer ? " ✓" : ""}</li>)}</ol></article>)}<button onClick={saveQuiz} className="rounded-xl border border-slate-700 px-4 py-2.5 text-sm font-semibold">Save quiz questions</button></div>}</section>;
+}
