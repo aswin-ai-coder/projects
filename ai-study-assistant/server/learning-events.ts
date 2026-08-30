@@ -1,0 +1,7 @@
+import db from "./db";
+const catalog={"first-session":"First Study Session","first-quiz":"First Quiz","first-card":"First Flashcard Review"};
+export function unlock(userId:string,code:keyof typeof catalog){if(db.prepare("SELECT 1 FROM achievements WHERE user_id=? AND code=?").get(userId,code))return;const title=catalog[code],now=new Date().toISOString();db.prepare("INSERT INTO achievements(id,user_id,code,unlocked_at) VALUES(?,?,?,?)").run(crypto.randomUUID(),userId,code,now);db.prepare("INSERT INTO notifications(id,user_id,type,title,body,created_at) VALUES(?,?,?,?,?,?)").run(crypto.randomUUID(),userId,"achievement",`Achievement unlocked: ${title}`,`You unlocked ${title}.`,now)}
+export function afterStudy(userId:string){const r=db.prepare("SELECT COUNT(*) n FROM study_sessions WHERE user_id=?").get(userId) as {n:number};if(r.n)unlock(userId,"first-session")}
+export function afterQuiz(userId:string){const r=db.prepare("SELECT COUNT(*) n FROM quiz_attempts WHERE user_id=?").get(userId) as {n:number};if(r.n)unlock(userId,"first-quiz")}
+export function afterCard(userId:string){unlock(userId,"first-card")}
+export function createDueNotification(userId:string){const r=db.prepare("SELECT COUNT(*) n FROM flashcards WHERE user_id=? AND due_at<=?").get(userId,new Date().toISOString()) as {n:number};if(r.n)db.prepare("INSERT INTO notifications(id,user_id,type,title,body,created_at) VALUES(?,?,?,?,?,?)").run(crypto.randomUUID(),userId,"review","Flashcards due",`${r.n} card${r.n===1?"":"s"} ready for review.`,new Date().toISOString())}
