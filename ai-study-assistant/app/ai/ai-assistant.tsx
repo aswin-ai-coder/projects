@@ -1,29 +1,8 @@
 "use client";
-
-import { FormEvent, useCallback, useState } from "react";
-import ContextPanel from "./context-panel";
-
-const actions = ["Explain", "Summarize", "Make quiz", "Make flashcards"];
-
-export default function AiAssistant() {
-  const [prompt, setPrompt] = useState("");
-  const [context, setContext] = useState("");
-  const [output, setOutput] = useState("");
-  const [loading, setLoading] = useState(false);
-  const handleContext = useCallback((value: string) => setContext(value), []);
-
-  async function submit(event: FormEvent) {
-    event.preventDefault();
-    if (!prompt.trim() || loading) return;
-    setLoading(true); setOutput("");
-    try {
-      const response = await fetch("/api/ai", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ prompt, context }) });
-      const data = await response.json();
-      setOutput(response.ok ? data.answer : data.error || "Something went wrong.");
-    } catch { setOutput("Could not reach the AI service. Check your server configuration."); }
-    finally { setLoading(false); }
-  }
-  function useAction(action: string) { setPrompt(`${action}: `); }
-
-  return <div className="max-w-3xl"><ContextPanel onContextChange={handleContext} /><div className="mt-5 flex flex-wrap gap-2">{actions.map((action) => <button key={action} onClick={() => useAction(action)} className="rounded-xl border border-slate-800 px-4 py-2 text-sm text-slate-400 hover:border-slate-600 hover:text-white">{action}</button>)}</div><form onSubmit={submit} className="mt-5 rounded-2xl border border-slate-800 bg-slate-900/60 p-5"><textarea value={prompt} onChange={(e) => setPrompt(e.target.value)} rows={6} placeholder="Ask the AI about your study material..." className="w-full resize-none bg-transparent text-sm leading-6 outline-none placeholder:text-slate-600" /><div className="mt-4 flex items-center justify-between gap-3"><span className="text-xs text-slate-600">{context ? "Saved study material attached" : "No notes selected"}</span><button disabled={loading || !prompt.trim()} className="rounded-xl bg-white px-5 py-3 text-sm font-semibold text-slate-950 disabled:cursor-not-allowed disabled:opacity-30">{loading ? "Thinking..." : "Ask AI"}</button></div></form>{output && <section className="mt-5 rounded-2xl border border-slate-800 bg-slate-900/60 p-6"><p className="text-xs font-semibold uppercase tracking-widest text-slate-500">AI response</p><div className="mt-4 whitespace-pre-wrap text-sm leading-7 text-slate-300">{output}</div></section>}</div>;
-}
+import {FormEvent,useCallback,useEffect,useState} from "react";import ContextPanel from "./context-panel";
+type Conversation={id:string;title:string};type Message={role:"user"|"assistant";content:string};const actions=["Explain","Summarize","Make quiz","Make flashcards"];
+export default function AiAssistant(){const[prompt,setPrompt]=useState(""),[context,setContext]=useState(""),[output,setOutput]=useState(""),[loading,setLoading]=useState(false),[conversationId,setConversationId]=useState<string|undefined>(),[conversations,setConversations]=useState<Conversation[]>([]),[history,setHistory]=useState<Message[]>([]);const handleContext=useCallback((v:string)=>setContext(v),[]);
+useEffect(()=>{fetch("/api/ai/conversations").then(r=>r.ok?r.json():null).then(x=>x&&setConversations(x.data||[])).catch(()=>{})},[]);
+async function submit(e:FormEvent){e.preventDefault();if(!prompt.trim()||loading)return;const text=prompt.trim();setLoading(true);setOutput("");try{const r=await fetch("/api/ai",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({prompt:text,context,conversationId})});const d=await r.json();if(!r.ok)throw Error(d.error||"Something went wrong.");setConversationId(d.conversationId);setHistory(h=>[...h,{role:"user",content:text},{role:"assistant",content:d.answer}]);setOutput(d.answer);if(!conversationId){const c=await fetch("/api/ai/conversations").then(x=>x.ok?x.json():null);if(c)setConversations(c.data||[])}setPrompt("")}catch(err){setOutput(err instanceof Error?err.message:"Could not reach the AI service.")}finally{setLoading(false)}}
+function useAction(a:string){setPrompt(`${a}: `)}function newChat(){setConversationId(undefined);setHistory([]);setOutput("")}
+return <div className="max-w-3xl"><ContextPanel onContextChange={handleContext}/><div className="mt-5 flex flex-wrap gap-2">{actions.map(a=><button key={a} onClick={()=>useAction(a)} className="rounded-xl border border-slate-800 px-4 py-2 text-sm text-slate-400 hover:text-white">{a}</button>)}<button onClick={newChat} className="rounded-xl border border-slate-700 px-4 py-2 text-sm">New chat</button></div>{conversations.length>0&&<select value={conversationId||""} onChange={e=>setConversationId(e.target.value||undefined)} className="mt-4 w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-sm"><option value="">Current conversation</option>{conversations.map(c=><option key={c.id} value={c.id}>{c.title}</option>)}</select>}<div className="mt-5 space-y-3">{history.map((m,i)=><div key={i} className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5"><p className="text-xs uppercase tracking-widest text-slate-500">{m.role}</p><p className="mt-3 whitespace-pre-wrap text-sm leading-7 text-slate-300">{m.content}</p></div>)}</div><form onSubmit={submit} className="mt-5 rounded-2xl border border-slate-800 bg-slate-900/60 p-5"><textarea value={prompt} onChange={e=>setPrompt(e.target.value)} rows={6} placeholder="Ask the AI about your study material..." className="w-full resize-none bg-transparent text-sm leading-6 outline-none"/><div className="mt-4 flex items-center justify-between gap-3"><span className="text-xs text-slate-600">{context?"Saved study material attached":"No notes selected"}</span><button disabled={loading||!prompt.trim()} className="rounded-xl bg-white px-5 py-3 text-sm font-semibold text-slate-950 disabled:opacity-30">{loading?"Thinking...":"Ask AI"}</button></div></form>{output&&!history.length&&<section className="mt-5 rounded-2xl border border-slate-800 bg-slate-900/60 p-6"><div className="whitespace-pre-wrap text-sm leading-7 text-slate-300">{output}</div></section>}</div>}
