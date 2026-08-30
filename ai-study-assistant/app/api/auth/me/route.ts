@@ -1,0 +1,2 @@
+import {NextResponse} from "next/server";import {cookies} from "next/headers";import {getSession} from "../../../../server/auth";
+export async function GET(){const id=(await cookies()).get("study_session")?.value;const session=id?getSession(id):null;if(!session)return NextResponse.json({user:null},{status:401});return NextResponse.json({user:{id:session.user_id,email:session.email,displayName:session.display_name}})}
