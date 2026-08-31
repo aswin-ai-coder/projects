@@ -1,0 +1,2 @@
+import {NextResponse} from "next/server";import {cookies} from "next/headers";import {getSession} from "../../../server/auth";import {analytics} from "../../../server/analytics-service";
+export async function GET(){const sid=(await cookies()).get("study_session")?.value,u=sid?getSession(sid):null;if(!u)return NextResponse.json({error:"Unauthorized"},{status:401});return NextResponse.json(analytics(u.user_id))}
