@@ -1,5 +1,5 @@
 import {NextResponse} from "next/server";import {cookies} from "next/headers";import {getSession} from "../../../server/auth";import {createResource,listResource,updateResource,deleteResource,Resource} from "../../../server/domain-crud";
-const allowed=new Set(["subjects","topics","notes","flashcards","quizzes","study_sessions","quiz_attempts"]);
+const allowed=new Set(["subjects","topics","notes","flashcards","flashcard_reviews","quizzes","study_sessions","quiz_attempts","study_goals"]);
 async function user(){const id=(await cookies()).get("study_session")?.value;return id?getSession(id):null}
 export async function GET(req:Request){const u=await user(),r=new URL(req.url).searchParams.get("resource") as Resource;if(!u||!allowed.has(r))return NextResponse.json({error:"Unauthorized or invalid resource"},{status:401});return NextResponse.json({data:listResource(u.user_id,r)})}
 export async function POST(req:Request){const u=await user();if(!u)return NextResponse.json({error:"Unauthorized"},{status:401});const b=await req.json(),r=b.resource as Resource;if(!allowed.has(r))return NextResponse.json({error:"Invalid resource"},{status:400});try{return NextResponse.json({data:createResource(u.user_id,r,b)},{status:201})}catch(e){return NextResponse.json({error:e instanceof Error?e.message:"Invalid data"},{status:400})}}
