@@ -1,30 +1,4 @@
 "use client";
-
-import { useEffect, useState } from "react";
-
-type QuizAttempt = { id: string; title: string; score: number; total: number; percent: number; completed_at: string };
-
-export default function QuizHistory() {
-  const [history, setHistory] = useState<QuizAttempt[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    let active = true;
-    fetch("/api/data?resource=quiz_attempts")
-      .then(async (response) => {
-        if (!response.ok) throw new Error("Could not load quiz history.");
-        return response.json();
-      })
-      .then((result) => { if (active) setHistory(Array.isArray(result.data) ? result.data : []); })
-      .catch((reason) => { if (active) setError(reason instanceof Error ? reason.message : "Could not load quiz history."); })
-      .finally(() => { if (active) setLoading(false); });
-    return () => { active = false; };
-  }, []);
-
-  if (loading) return <div className="rounded-2xl border border-slate-800 p-8 text-center text-sm text-slate-500">Loading quiz history…</div>;
-  if (error) return <div className="rounded-2xl border border-red-900/60 bg-red-950/20 p-8 text-center text-sm text-red-300">{error}</div>;
-  if (!history.length) return <div className="rounded-2xl border border-dashed border-slate-800 p-8 text-center text-sm text-slate-500">No quiz attempts yet. Complete a quiz and your results will appear here.</div>;
-
-  return <div className="space-y-3">{history.slice(0, 10).map((attempt) => <article key={attempt.id} className="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-slate-800 bg-slate-900/60 p-4"><div><h3 className="font-semibold">{attempt.title}</h3><p className="mt-1 text-xs text-slate-500">{new Date(attempt.completed_at).toLocaleString()}</p></div><div className="text-right"><p className="font-bold">{attempt.score}/{attempt.total}</p><p className="text-xs text-slate-500">{attempt.percent}%</p></div></article>)}</div>;
-}
+import { useEffect,useMemo,useState } from "react";
+type Attempt={id:string;quiz_id?:string;title:string;score:number;total:number;percent:number;completed_at:string};
+export default function QuizHistory(){const [items,setItems]=useState<Attempt[]>([]),[loading,setLoading]=useState(true),[error,setError]=useState<string|null>(null);async function load(){try{setLoading(true);const r=await fetch("/api/data?resource=quiz_attempts");if(!r.ok)throw Error("Could not load quiz history.");setItems((await r.json()).data||[])}catch(e){setError(e instanceof Error?e.message:"Could not load quiz history.")}finally{setLoading(false)}}useEffect(()=>{void load()},[]);const avg=useMemo(()=>items.length?Math.round(items.reduce((n,x)=>n+Number(x.percent),0)/items.length):0,[items]);const best=useMemo(()=>items.length?Math.max(...items.map(x=>Number(x.percent))):0,[items]);if(loading)return <div className="rounded-2xl border border-slate-800 p-6 text-slate-400">Loading history…</div>;if(error)return <div className="rounded-2xl border border-red-900/50 p-6 text-red-300">{error}<button onClick={()=>void load()} className="ml-3 underline">Retry</button></div>;if(!items.length)return <div className="rounded-2xl border border-slate-800 p-6 text-slate-400">No attempts yet. Complete a quiz to see your statistics.</div>;return <div><div className="grid gap-3 sm:grid-cols-3"><div className="rounded-xl border border-slate-800 p-4"><p className="text-xs text-slate-500">Attempts</p><p className="mt-1 text-2xl font-bold">{items.length}</p></div><div className="rounded-xl border border-slate-800 p-4"><p className="text-xs text-slate-500">Average</p><p className="mt-1 text-2xl font-bold">{avg}%</p></div><div className="rounded-xl border border-slate-800 p-4"><p className="text-xs text-slate-500">Best score</p><p className="mt-1 text-2xl font-bold">{best}%</p></div></div><div className="mt-5 space-y-3">{items.map(item=><article key={item.id} className="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-slate-800 bg-slate-900/60 p-4"><div><h3 className="font-semibold">{item.title}</h3><p className="mt-1 text-xs text-slate-500">{new Date(item.completed_at).toLocaleString()}</p></div><div className="text-right"><p className="font-bold">{item.score}/{item.total}</p><p className="text-xs text-slate-500">{item.percent}%</p></div></article>)}</div></div>}
