@@ -1,0 +1,4 @@
+export type Card={id:string;subject_id?:string|null;topic_id?:string|null;front:string;back:string;interval:number;ease:number;due_at:string;reviews:number;state:string;created_at:string};
+export type Rating="hard"|"good"|"easy";
+export function schedule(card:Card,rating:Rating){const next={...card};if(rating==="hard"){next.interval=Math.max(1,Math.round(card.interval*1.2));next.ease=Math.max(1.3,card.ease-0.15)}else if(rating==="good"){next.interval=card.reviews===0?1:Math.max(1,Math.round(card.interval*card.ease));next.ease=Math.min(3,card.ease+0.05)}else{next.interval=card.reviews===0?2:Math.max(2,Math.round(card.interval*card.ease*1.3));next.ease=Math.min(3.2,card.ease+0.15)}next.reviews=card.reviews+1;next.state=next.reviews<2?"learning":"review";next.due_at=new Date(Date.now()+next.interval*86400000).toISOString();return next}
+export function due(cards:Card[],now=new Date()){return cards.filter(c=>new Date(c.due_at)<=now)}
