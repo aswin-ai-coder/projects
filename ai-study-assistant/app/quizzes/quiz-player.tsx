@@ -1,67 +1,23 @@
 "use client";
+import { useEffect, useMemo, useState } from "react";
 
-import { useMemo, useState } from "react";
+type Question={type?:string;question:string;options?:string[];answer:string;};
+const normalize=(s:string)=>s.trim().toLowerCase();
+const isCorrect=(q:Question,a:string|null)=>a!==null&&normalize(a)===normalize(q.answer);
+const shuffle=<T,>(xs:T[])=>{const a=[...xs];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
 
-type Question = { question: string; options: string[]; answer: number };
-const questions: Question[] = [
-  { question: "What is 3 × 4?", options: ["7", "12", "14", "16"], answer: 1 },
-  { question: "Which shape has three sides?", options: ["Square", "Circle", "Triangle", "Rectangle"], answer: 2 },
-  { question: "What is 10 ÷ 2?", options: ["2", "5", "8", "20"], answer: 1 },
-  { question: "Which number is prime?", options: ["9", "12", "13", "15"], answer: 2 },
-  { question: "What is 5²?", options: ["10", "15", "20", "25"], answer: 3 },
-];
-
-export default function QuizPlayer({ quizId, title }: { quizId: string; title: string }) {
-  const [current, setCurrent] = useState(0);
-  const [selected, setSelected] = useState<number | null>(null);
-  const [answers, setAnswers] = useState<(number | null)[]>(Array(questions.length).fill(null));
-  const [finished, setFinished] = useState(false);
-  const [saving, setSaving] = useState(false);
-  const [saveError, setSaveError] = useState<string | null>(null);
-  const score = useMemo<number>(() => answers.reduce<number>((total, answer, index) => total + (answer !== null && answer === questions[index]?.answer ? 1 : 0), 0), [answers]);
-  const question = questions[current];
-
-  function choose(index: number) {
-    setSelected(index);
-    setAnswers((items) => items.map((item, i) => (i === current ? index : item)));
-  }
-
-  async function finish() {
-    setSaving(true);
-    setSaveError(null);
-    try {
-      const response = await fetch("/api/data", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ resource: "quiz_attempts", quiz_id: quizId, title, score, total: questions.length, percent: Math.round((score / questions.length) * 100) }),
-      });
-      if (!response.ok) throw new Error("Could not save your quiz result.");
-      setFinished(true);
-    } catch (error) {
-      setSaveError(error instanceof Error ? error.message : "Could not save your quiz result.");
-    } finally {
-      setSaving(false);
-    }
-  }
-
-  function next() {
-    if (current === questions.length - 1) void finish();
-    else {
-      const nextIndex = current + 1;
-      setCurrent(nextIndex);
-      setSelected(answers[nextIndex] ?? null);
-    }
-  }
-
-  function restart() {
-    setCurrent(0);
-    setSelected(null);
-    setAnswers(Array(questions.length).fill(null));
-    setFinished(false);
-    setSaveError(null);
-  }
-
-  if (finished) return <section className="rounded-2xl border border-slate-800 bg-slate-900/60 p-8 text-center"><p className="text-sm text-slate-500">Quiz complete</p><h2 className="mt-2 text-3xl font-bold">{score}/{questions.length}</h2><p className="mt-3 text-slate-400">You answered {score} questions correctly.</p><button onClick={restart} className="mt-7 rounded-xl bg-white px-6 py-3 text-sm font-semibold text-slate-950 hover:bg-slate-200">Try again</button></section>;
-
-  return <section className="rounded-2xl border border-slate-800 bg-slate-900/60 p-6 sm:p-8"><div className="flex items-center justify-between text-sm text-slate-500"><span>Question {current + 1} of {questions.length}</span><span>{Math.round(((current + 1) / questions.length) * 100)}%</span></div><div className="mt-3 h-2 overflow-hidden rounded-full bg-slate-800"><div className="h-full rounded-full bg-white transition-all" style={{ width: `${((current + 1) / questions.length) * 100}%` }} /></div><h2 className="mt-8 text-2xl font-bold leading-9">{question.question}</h2><div className="mt-6 grid gap-3">{question.options.map((option, index) => <button key={`${index}-${option}`} onClick={() => choose(index)} className={`rounded-xl border px-4 py-4 text-left text-sm transition ${selected === index ? "border-white bg-white text-slate-950" : "border-slate-700 hover:border-slate-500"}`}><span className="mr-3 font-semibold">{String.fromCharCode(65 + index)}.</span>{option}</button>)}</div>{saveError && <p className="mt-5 text-sm text-red-300">{saveError}</p>}<div className="mt-7 flex justify-end"><button disabled={selected === null || saving} onClick={next} className="rounded-xl bg-white px-6 py-3 text-sm font-semibold text-slate-950 disabled:cursor-not-allowed disabled:opacity-30">{saving ? "Saving…" : current === questions.length - 1 ? "Finish quiz" : "Next question"}</button></div></section>;
+export default function QuizPlayer({quizId,title:initialTitle}:{quizId:string;title:string}){
+ const [title,setTitle]=useState(initialTitle),[questions,setQuestions]=useState<Question[]>([]),[answers,setAnswers]=useState<(string|null)[]>([]),[current,setCurrent]=useState(0),[finished,setFinished]=useState(false),[saving,setSaving]=useState(false),[loading,setLoading]=useState(true),[error,setError]=useState<string|null>(null),[timeLeft,setTimeLeft]=useState(0),[retryOnly,setRetryOnly]=useState(false),[best,setBest]=useState<number|null>(null);
+ async function load(){try{setLoading(true);const r=await fetch("/api/data?resource=quizzes");if(!r.ok)throw Error("Could not load quiz.");const q=(await r.json()).data?.find((x:any)=>x.id===quizId);if(!q)throw Error("Quiz not found.");const qs:Question[]=JSON.parse(q.questions_json||"[]");if(!qs.length)throw Error("This quiz has no questions yet.");setTitle(q.title);setQuestions(shuffle(qs));setAnswers(Array(qs.length).fill(null));setTimeLeft(Math.max(0,Math.min(3600,qs.length*60)));const h=await fetch("/api/data?resource=quiz_attempts");if(h.ok){const rows=(await h.json()).data||[];const scores=rows.filter((x:any)=>x.quiz_id===quizId).map((x:any)=>Number(x.percent));if(scores.length)setBest(Math.max(...scores));}}catch(e){setError(e instanceof Error?e.message:"Could not load quiz.")}finally{setLoading(false)}}
+ useEffect(()=>{void load()},[quizId]);
+ useEffect(()=>{if(loading||finished||timeLeft<=0)return;const id=setInterval(()=>setTimeLeft(t=>t-1),1000);return()=>clearInterval(id)},[loading,finished,timeLeft]);
+ const score=useMemo(()=>answers.reduce((n,a,i)=>n+(isCorrect(questions[i],a)?1:0),0),[answers,questions]);
+ async function finish(){setSaving(true);setError(null);try{const total=questions.length,percent=Math.round(score/total*100);const r=await fetch("/api/data",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({resource:"quiz_attempts",quiz_id:quizId,title,score,total,percent})});if(!r.ok)throw Error("Could not save your quiz result.");setBest(b=>b===null?percent:Math.max(b,percent));setFinished(true)}catch(e){setError(e instanceof Error?e.message:"Could not save your quiz result.")}finally{setSaving(false)}}
+ useEffect(()=>{if(timeLeft===0&&questions.length&&!loading&&!finished)void finish()},[timeLeft,questions.length,loading,finished]);
+ function restart(incorrect=false){const qs=incorrect?questions.filter((q,i)=>!isCorrect(q,answers[i])):questions;setQuestions(shuffle(qs));setAnswers(Array(qs.length).fill(null));setCurrent(0);setFinished(false);setRetryOnly(incorrect);setTimeLeft(Math.max(0,Math.min(3600,qs.length*60)));setError(null)}
+ if(loading)return <section className="rounded-2xl border border-slate-800 p-8 text-slate-400">Loading quiz…</section>;
+ if(error&&!questions.length)return <section className="rounded-2xl border border-red-900/50 bg-red-950/20 p-8"><p className="text-red-300">{error}</p><button onClick={()=>void load()} className="mt-4 rounded-xl bg-white px-5 py-3 text-sm font-semibold text-slate-950">Retry</button></section>;
+ if(finished)return <section className="rounded-2xl border border-slate-800 bg-slate-900/60 p-8"><p className="text-sm text-slate-500">Quiz complete</p><h2 className="mt-2 text-4xl font-bold">{score}/{questions.length}</h2><p className="mt-3 text-slate-400">Score: {Math.round(score/questions.length*100)}% {best!==null&&`· Best: ${best}%`}</p><div className="mt-7 flex flex-wrap gap-3"><button onClick={()=>restart(false)} className="rounded-xl bg-white px-5 py-3 text-sm font-semibold text-slate-950">Try again</button>{score<questions.length&&<button onClick={()=>restart(true)} className="rounded-xl border border-slate-700 px-5 py-3 text-sm font-semibold">Retry incorrect</button>}</div><div className="mt-8 space-y-3"><h3 className="font-semibold">Answer review</h3>{questions.map((q,i)=><div key={i} className={`rounded-xl border p-4 ${isCorrect(q,answers[i])?"border-emerald-900/60":"border-red-900/60"}`}><p className="font-medium">{i+1}. {q.question}</p><p className="mt-2 text-sm text-slate-400">Your answer: {answers[i]||"No answer"} · Correct: {q.answer}</p></div>)}</div></section>;
+ const q=questions[current];
+ return <section className="rounded-2xl border border-slate-800 bg-slate-900/60 p-6 sm:p-8"><div className="flex items-center justify-between text-sm text-slate-500"><span>Question {current+1} of {questions.length}{retryOnly&&" · Retry"}</span><span>{Math.floor(timeLeft/60)}:{String(timeLeft%60).padStart(2,"0")}</span></div><div className="mt-3 h-2 overflow-hidden rounded-full bg-slate-800"><div className="h-full bg-white transition-all" style={{width:`${((current+1)/questions.length)*100}%`}}/></div><h2 className="mt-8 text-2xl font-bold leading-9">{q.question}</h2>{q.type==="short_answer"?<input autoFocus value={answers[current]||""} onChange={e=>setAnswers(a=>a.map((x,i)=>i===current?e.target.value:x))} placeholder="Type your answer" className="mt-6 w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-4"/>:<div className="mt-6 grid gap-3">{(q.options||[]).map(option=><button key={option} onClick={()=>setAnswers(a=>a.map((x,i)=>i===current?option:x))} className={`rounded-xl border px-4 py-4 text-left text-sm ${answers[current]===option?"border-white bg-white text-slate-950":"border-slate-700 hover:border-slate-500"}`}>{option}</button>)}</div>}{error&&<p className="mt-5 text-sm text-red-300">{error}</p>}<div className="mt-7 flex justify-between gap-3"><button disabled={current===0} onClick={()=>setCurrent(c=>c-1)} className="rounded-xl border border-slate-700 px-5 py-3 text-sm disabled:opacity-30">Back</button><button disabled={!answers[current]?.trim()||saving} onClick={()=>current===questions.length-1?void finish():setCurrent(c=>c+1)} className="rounded-xl bg-white px-6 py-3 text-sm font-semibold text-slate-950 disabled:opacity-30">{saving?"Saving…":current===questions.length-1?"Finish quiz":"Next"}</button></div></section>;
 }
