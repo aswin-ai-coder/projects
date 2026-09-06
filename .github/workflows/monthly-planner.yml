@@ -46,6 +46,8 @@ jobs:
           grep -q 'ICS' Monthly-Planner/README.md
           grep -q 'natural-language' Monthly-Planner/README.md
           grep -q 'templates' Monthly-Planner/README.md
+          grep -q 'smart scheduling\|Smart scheduling' Monthly-Planner/README.md
+          grep -q 'restore' Monthly-Planner/README.md
   deploy:
     needs: validate
     runs-on: ubuntu-latest
@@ -53,6 +55,8 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      - name: Checkout
+        uses: actions/checkout@v6
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
