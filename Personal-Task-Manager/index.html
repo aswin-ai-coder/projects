@@ -56,9 +56,35 @@
   </main>
 
   <div class="toast" id="toast" role="status"></div>
+
   <dialog id="categoryDialog">
-    <form method="dialog" id="categoryForm" class="dialog-card"><button class="dialog-close" value="cancel" aria-label="Close">×</button><h2>New category</h2><p>Create a category to organize your tasks.</p><input id="categoryName" maxlength="30" required placeholder="e.g. School"><button class="btn primary" value="default">Create category</button></form>
+    <form method="dialog" id="categoryForm" class="dialog-card">
+      <button class="dialog-close" value="cancel" aria-label="Close">×</button>
+      <h2>New category</h2><p>Create a category to organize your tasks.</p>
+      <input id="categoryName" maxlength="30" required placeholder="e.g. School">
+      <button class="btn primary" value="default">Create category</button>
+    </form>
   </dialog>
+
+  <dialog id="editDialog">
+    <form method="dialog" id="editForm" class="dialog-card">
+      <button class="dialog-close" value="cancel" aria-label="Close">×</button>
+      <h2>Edit task</h2><p>Update the task details and save your changes.</p>
+      <label class="field-label" for="editTitle">Task</label>
+      <input id="editTitle" maxlength="160" required autocomplete="off">
+      <label class="field-label" for="editPriority">Priority</label>
+      <select id="editPriority"><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option></select>
+      <label class="field-label" for="editDue">Due date</label>
+      <input id="editDue" type="date">
+      <label class="field-label" for="editCategory">Category</label>
+      <select id="editCategory"></select>
+      <div class="dialog-actions">
+        <button class="btn ghost" value="cancel">Cancel</button>
+        <button class="btn primary" id="saveEditBtn" value="default">Save changes</button>
+      </div>
+    </form>
+  </dialog>
+
   <script src="app.js"></script>
 </body>
 </html>
