@@ -40,7 +40,7 @@ jobs:
           test -s Personal-Calendar/README.md
       - name: Validate manifest JSON
         run: node -e "JSON.parse(require('fs').readFileSync('Personal-Calendar/manifest.webmanifest','utf8')); console.log('manifest ok')"
-      - name: Validate product wiring
+      - name: Validate product wiring and advanced feature set
         run: |
           grep -q 'app.js' Personal-Calendar/index.html
           grep -q 'advanced.js' Personal-Calendar/index.html
@@ -49,6 +49,14 @@ jobs:
           grep -q 'RRULE' Personal-Calendar/app.js
           grep -q 'Find free time' Personal-Calendar/index.html
           grep -q 'local-first' Personal-Calendar/README.md
+          grep -q 'openInsights' Personal-Calendar/advanced.js
+          grep -q 'openSmart' Personal-Calendar/advanced.js
+          grep -q 'openBackups' Personal-Calendar/advanced.js
+          grep -q 'commandPalette' Personal-Calendar/advanced.js
+          grep -q 'travelMinutes' Personal-Calendar/advanced.js
+          grep -q 'exportEnhancedICS' Personal-Calendar/advanced.js
+          grep -q 'CATEGORIES' Personal-Calendar/advanced.js
+          grep -q 'TRANSP' Personal-Calendar/advanced.js
 
   deploy:
     needs: validate
