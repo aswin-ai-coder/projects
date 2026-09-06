@@ -1,31 +1,38 @@
 # Activity Logger
 
-A private, local-first activity and time logger designed for fast manual capture and useful personal time insights.
+A standalone, local-first activity and time tracking PWA designed for personal use.
 
-## Features
+## Implemented
 
-- Quick activity capture with date and start/end time
-- Manual duration entry with automatic duration calculation from start/end time
-- Categories, context, tags, notes, priority, favorites
-- Completion and lightweight status workflow
-- Live focus timer with saved sessions
-- Daily, 7-day, and timeline summaries
-- Category time breakdown and today's hourly distribution
-- Daily goal tracking and current streak
-- Search, filters, sorting, bulk complete/archive, duplicate
-- Calendar, dashboard, and list-oriented workflows supported by the shared engine
-- JSON backup/restore, CSV export, and printing
-- Browser notification permission for timer/reminder UX
-- Responsive accessible controls and keyboard-friendly actions
-- Local-first browser storage; no account or server required
+- One-click live timer with elapsed time
+- Stop-and-log workflow that opens the saved activity editor
+- Manual time entry with date, start, end and duration
+- Categories: Work, Study, Exercise, Personal, Creative, Social, Chores, Errand and Other
+- Context, tags and notes
+- Today view with total time, entry count, top category and longest session
+- Date navigation for historical days
+- 7/14/30-day timeline
+- Reports for daily volume, category distribution and hourly activity rhythm
+- Daily goals for all activity or a selected category
+- Goal progress and remaining-time calculations
+- Search and category filtering across the complete history
+- Edit and archive activity records
+- CSV reporting export
+- Full JSON backup/import
+- Theme toggle and local settings
+- Responsive mobile layout
+- Print-friendly styling
+- Installable PWA manifest and offline service worker
 
 ## Privacy
 
-Data is stored in the browser's local storage for this static app. It is not synchronized between browsers or devices. Export backups regularly if the activity history matters to you. Browser storage should not be treated as a secure vault for passwords, authentication tokens, or other secrets.
+Data stays in this browser's local storage. There is no account, server database or cloud sync. Export a JSON backup before clearing browser data or moving to another browser/device.
 
-## Design notes
+Do not use this app as a secure vault for passwords, authentication tokens or other secrets.
 
-The feature set follows current patterns from modern time/activity trackers: timer and manual entry, calendar/history views, categories/tags, favorites, reporting/trends, goals/alerts, and offline/local-first privacy. See the linked research in the engineering notes for the rationale.
+## Product direction
+
+The feature set follows modern time-tracking patterns such as timer/manual entry, timeline history, category reports, daily targets, searchable reports and offline activity capture. The implementation intentionally remains local-first rather than adding a server account system.
 
 ## Run
 
