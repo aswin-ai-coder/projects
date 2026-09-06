@@ -1,7 +1,0 @@
-{
-  "version":2,
-  "mode":"standalone",
-  "features":["Goal hierarchy","Milestones","Progress tracking","Deadlines","Priority","Goal categories","Streaks","Weekly review","Search & tags","Progress analytics"],
-  "fields":[{"key":"title","label":"Goal title","type":"text"},{"key":"description","label":"Description","type":"textarea"},{"key":"category","label":"Category","type":"text"},{"key":"priority","label":"Priority","type":"select"},{"key":"deadline","label":"Deadline","type":"date"},{"key":"progress","label":"Progress","type":"number","min":0,"max":100},{"key":"milestones","label":"Milestones","type":"list"},{"key":"notes","label":"Notes","type":"textarea"}],
-  "storage":"localStorage"
-}
