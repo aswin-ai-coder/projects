@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Validate JavaScript syntax
         run: |
           node --check Personal-Notes-App/app.js
@@ -40,7 +40,7 @@ jobs:
           test -f Personal-Notes-App/icon.svg
       - name: Validate manifest JSON
         run: node -e "JSON.parse(require('fs').readFileSync('Personal-Notes-App/manifest.webmanifest','utf8'))"
-      - name: Check local references
+      - name: Validate HTML wiring
         run: |
           grep -q 'styles.css' Personal-Notes-App/index.html
           grep -q 'app.js' Personal-Notes-App/index.html
@@ -48,6 +48,13 @@ jobs:
           grep -q 'manifest.webmanifest' Personal-Notes-App/index.html
           grep -q 'sw.js' Personal-Notes-App/app.js
           grep -q 'advanced.js' Personal-Notes-App/sw.js
+      - name: Validate feature markers
+        run: |
+          grep -q 'Knowledge graph' Personal-Notes-App/advanced.js
+          grep -q 'Templates' Personal-Notes-App/advanced.js
+          grep -q 'Note properties' Personal-Notes-App/advanced.js
+          grep -q 'Storage health' Personal-Notes-App/advanced.js
+          grep -q 'Import Markdown' Personal-Notes-App/advanced.js
 
   deploy:
     needs: validate
@@ -57,11 +64,11 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
           path: Personal-Notes-App
       - name: Deploy to GitHub Pages
