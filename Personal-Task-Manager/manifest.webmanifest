@@ -1,4 +1,5 @@
 {
+  "id": "./",
   "name": "Focus — Personal Task Manager",
   "short_name": "Focus",
   "description": "A private, modern personal task manager that works offline.",
@@ -7,5 +8,10 @@
   "display": "standalone",
   "background_color": "#f6f7fb",
   "theme_color": "#5b5bd6",
-  "icons": [{"src":"./icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]
+  "categories": ["productivity", "utilities"],
+  "icons": [{"src":"./icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}],
+  "shortcuts": [
+    {"name":"Today","short_name":"Today","description":"Open tasks due today","url":"./#today"},
+    {"name":"New task","short_name":"New task","description":"Open Focus ready to add a task","url":"./#new-task"}
+  ]
 }
