@@ -26,6 +26,7 @@ jobs:
       - name: Validate JavaScript
         run: |
           node --check Simple-Kanban-Board/app.js
+          node --check Simple-Kanban-Board/advanced.js
           node --check Simple-Kanban-Board/sw.js
       - name: Validate manifest
         run: node -e "JSON.parse(require('fs').readFileSync('Simple-Kanban-Board/manifest.webmanifest','utf8')); console.log('manifest ok')"
@@ -34,6 +35,7 @@ jobs:
           test -s Simple-Kanban-Board/index.html
           test -s Simple-Kanban-Board/styles.css
           test -s Simple-Kanban-Board/app.js
+          test -s Simple-Kanban-Board/advanced.js
           test -s Simple-Kanban-Board/manifest.webmanifest
           test -s Simple-Kanban-Board/sw.js
           test -s Simple-Kanban-Board/icon.svg
@@ -42,6 +44,7 @@ jobs:
         run: |
           grep -q 'manifest.webmanifest' Simple-Kanban-Board/index.html
           grep -q 'app.js' Simple-Kanban-Board/index.html
+          grep -q 'advanced.js' Simple-Kanban-Board/index.html
           grep -q 'serviceWorker' Simple-Kanban-Board/app.js
           grep -q 'dragstart' Simple-Kanban-Board/app.js
           grep -q 'WIP' Simple-Kanban-Board/app.js
@@ -49,6 +52,14 @@ jobs:
           grep -q 'exportData' Simple-Kanban-Board/app.js
           grep -q 'analytics' Simple-Kanban-Board/app.js
           grep -q 'activity' Simple-Kanban-Board/app.js
+          grep -q 'Table view' Simple-Kanban-Board/advanced.js
+          grep -q 'Timeline / roadmap' Simple-Kanban-Board/advanced.js
+          grep -q 'Dependencies' Simple-Kanban-Board/advanced.js
+          grep -q 'Automation rules' Simple-Kanban-Board/advanced.js
+          grep -q 'Flow metrics' Simple-Kanban-Board/advanced.js
+          grep -q 'Bulk operations' Simple-Kanban-Board/advanced.js
+          grep -q 'Saved views' Simple-Kanban-Board/advanced.js
+          grep -q 'Export CSV' Simple-Kanban-Board/advanced.js
 
   deploy:
     needs: validate
