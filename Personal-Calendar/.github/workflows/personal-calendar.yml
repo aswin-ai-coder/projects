@@ -27,6 +27,7 @@ jobs:
         run: |
           node --check Personal-Calendar/app.js
           node --check Personal-Calendar/advanced.js
+          node --check Personal-Calendar/attachments.js
           node --check Personal-Calendar/sw.js
       - name: Check required files
         run: |
@@ -34,6 +35,7 @@ jobs:
           test -s Personal-Calendar/styles.css
           test -s Personal-Calendar/app.js
           test -s Personal-Calendar/advanced.js
+          test -s Personal-Calendar/attachments.js
           test -s Personal-Calendar/manifest.webmanifest
           test -s Personal-Calendar/sw.js
           test -s Personal-Calendar/icon.svg
@@ -44,6 +46,7 @@ jobs:
         run: |
           grep -q 'app.js' Personal-Calendar/index.html
           grep -q 'advanced.js' Personal-Calendar/index.html
+          grep -q 'attachments.js' Personal-Calendar/index.html
           grep -q 'serviceWorker' Personal-Calendar/app.js
           grep -q 'VEVENT' Personal-Calendar/app.js
           grep -q 'RRULE' Personal-Calendar/app.js
@@ -57,6 +60,7 @@ jobs:
           grep -q 'exportEnhancedICS' Personal-Calendar/advanced.js
           grep -q 'CATEGORIES' Personal-Calendar/advanced.js
           grep -q 'TRANSP' Personal-Calendar/advanced.js
+          grep -q 'indexedDB' Personal-Calendar/attachments.js
 
   deploy:
     needs: validate
