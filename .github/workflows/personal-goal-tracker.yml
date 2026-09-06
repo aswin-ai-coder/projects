@@ -1,0 +1,62 @@
+name: Personal Goal Tracker
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'Personal-Goal-Tracker/**'
+      - '.github/workflows/personal-goal-tracker.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Syntax checks
+        run: |
+          node --check Personal-Goal-Tracker/app.js
+          node --check Personal-Goal-Tracker/advanced.js
+          node --check Personal-Goal-Tracker/sw.js
+      - name: Required files
+        run: |
+          test -s Personal-Goal-Tracker/index.html
+          test -s Personal-Goal-Tracker/styles.css
+          test -s Personal-Goal-Tracker/app.js
+          test -s Personal-Goal-Tracker/advanced.js
+          test -s Personal-Goal-Tracker/manifest.webmanifest
+          test -s Personal-Goal-Tracker/sw.js
+          test -s Personal-Goal-Tracker/icon.svg
+          test -s Personal-Goal-Tracker/README.md
+      - name: Manifest and product checks
+        run: |
+          node -e "JSON.parse(require('fs').readFileSync('Personal-Goal-Tracker/manifest.webmanifest','utf8')); console.log('manifest ok')"
+          grep -q 'Goalpath' Personal-Goal-Tracker/index.html
+          grep -q 'checkins' Personal-Goal-Tracker/app.js
+          grep -q 'parentId' Personal-Goal-Tracker/app.js
+          grep -q 'status' Personal-Goal-Tracker/app.js
+          grep -q 'snapshots' Personal-Goal-Tracker/app.js
+          grep -q 'CSV' Personal-Goal-Tracker/index.html
+          grep -q 'serviceWorker' Personal-Goal-Tracker/advanced.js
+          grep -q 'OKR' Personal-Goal-Tracker/README.md
+  deploy:
+    needs: validate
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: Personal-Goal-Tracker
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
