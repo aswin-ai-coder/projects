@@ -14,9 +14,10 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - name: Validate JavaScript
-        run: node --check Activity-Logger/activity.js
-      - name: Validate service worker
-        run: node --check Activity-Logger/sw.js
+        run: |
+          node --check Activity-Logger/activity.js
+          node --check Activity-Logger/enhancements.js
+          node --check Activity-Logger/sw.js
       - name: Validate manifest
         run: node -e "JSON.parse(require('fs').readFileSync('Activity-Logger/manifest.webmanifest','utf8'))"
       - name: Validate required files and wiring
@@ -24,11 +25,13 @@ jobs:
           test -f Activity-Logger/index.html
           test -f Activity-Logger/activity.js
           test -f Activity-Logger/activity.css
+          test -f Activity-Logger/enhancements.js
           test -f Activity-Logger/features.json
           test -f Activity-Logger/manifest.webmanifest
           test -f Activity-Logger/sw.js
           test -f Activity-Logger/icon.svg
           grep -q 'activity.js' Activity-Logger/index.html
+          grep -q 'enhancements.js' Activity-Logger/index.html
           grep -q 'activity.css' Activity-Logger/index.html
           grep -q 'manifest.webmanifest' Activity-Logger/index.html
           grep -q 'serviceWorker' Activity-Logger/activity.js
