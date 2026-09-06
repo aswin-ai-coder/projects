@@ -6,22 +6,11 @@
   const SNAP='calm-calendar:snapshots:v1';
   const PREF='calm-calendar:advanced-settings:v1';
 
-  const defaults={
-    workingDays:[1,2,3,4,5],
-    focusMinutes:90,
-    defaultTravel:0,
-    defaultTimeZone:Intl.DateTimeFormat().resolvedOptions().timeZone||'UTC',
-    weekCapacity:2400,
-    smartBuffer:15
-  };
-
+  const defaults={workingDays:[1,2,3,4,5],focusMinutes:90,defaultTravel:0,defaultTimeZone:Intl.DateTimeFormat().resolvedOptions().timeZone||'UTC',weekCapacity:2400,smartBuffer:15};
   const load=(key,fallback)=>{try{return JSON.parse(localStorage.getItem(key)) ?? fallback}catch{return fallback}};
   const save=(key,value)=>localStorage.setItem(key,JSON.stringify(value));
   const state=()=>load(DATA,{calendars:[],events:[]});
-  let meta=load(META,{events:{},calendarNotes:{}});
-  let prefs={...defaults,...load(PREF,{})};
-  let clipboard=null;
-  let undoStack=[];
+  let meta=load(META,{events:{},calendarNotes:{}}), prefs={...defaults,...load(PREF,{})}, clipboard=null, undoStack=[];
   const pad=n=>String(n).padStart(2,'0');
   const uid=()=>crypto.randomUUID?crypto.randomUUID():Date.now().toString(36)+Math.random().toString(36).slice(2);
   const iso=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
@@ -39,166 +28,59 @@
   function ensureStyles(){
     if(document.querySelector('#advancedCalendarStyles'))return;
     const s=document.createElement('style');s.id='advancedCalendarStyles';s.textContent=`
-      .adv-toolbar{display:flex;gap:7px;flex-wrap:wrap;margin:0 0 12px}
-      .adv-toolbar button,.adv-card button,.adv-command button{border:1px solid var(--line);background:var(--panel);padding:8px 10px;border-radius:9px;font-size:12px}
-      .adv-toolbar .primary,.adv-card .primary{background:var(--primary);color:#fff;border-color:var(--primary)}
-      .adv-overlay{position:fixed;inset:0;background:rgba(12,15,25,.45);backdrop-filter:blur(4px);z-index:80;display:none;padding:20px;overflow:auto}
-      .adv-overlay.open{display:grid;place-items:center}
-      .adv-card{width:min(920px,100%);max-height:90vh;overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:20px;box-shadow:0 30px 90px rgba(0,0,0,.25)}
-      .adv-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:16px}
-      .adv-head h2{margin:3px 0;font-size:22px}.adv-muted{color:var(--muted);font-size:12px}
-      .adv-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
-      .adv-stat{border:1px solid var(--line);border-radius:13px;padding:12px;background:var(--panel2)}
-      .adv-stat strong{display:block;font-size:20px}.adv-stat span{font-size:11px;color:var(--muted)}
-      .adv-section{border-top:1px solid var(--line);margin-top:18px;padding-top:16px}
-      .adv-form{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-      .adv-form label{display:grid;gap:5px;font-size:11px;font-weight:700;color:var(--muted)}
-      .adv-form input,.adv-form select,.adv-form textarea{border:1px solid var(--line);border-radius:9px;padding:9px;background:var(--panel2);color:var(--text)}
-      .adv-full{grid-column:1/-1}
-      .adv-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:16px;flex-wrap:wrap}
-      .adv-list{display:grid;gap:8px}.adv-list-item{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:10px;padding:10px}
-      .adv-list-item .grow{flex:1}.adv-pill{display:inline-flex;padding:3px 7px;border-radius:20px;background:var(--primary-soft);font-size:10px}
-      .adv-slot{display:flex;align-items:center;justify-content:space-between;border:1px solid var(--line);border-radius:10px;padding:10px;background:var(--panel2)}
-      .adv-command{position:fixed;inset:0;z-index:100;display:none;background:rgba(0,0,0,.35);padding:10vh 16px}
-      .adv-command.open{display:block}.adv-command-box{max-width:620px;margin:auto;background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);overflow:hidden}
-      .adv-command input{width:100%;padding:14px;border:0;border-bottom:1px solid var(--line);background:transparent;color:var(--text);outline:0}
-      .adv-command-list{max-height:420px;overflow:auto;padding:6px}.adv-command button{width:100%;text-align:left;border:0;background:transparent}
-      .adv-command button:hover,.adv-command button:focus-visible{background:var(--panel2)}
-      .adv-help{padding:8px 12px;color:var(--muted);font-size:10px;border-top:1px solid var(--line)}
+      .adv-toolbar{display:flex;gap:7px;flex-wrap:wrap;margin:0 0 12px}.adv-toolbar button,.adv-card button,.adv-command button{border:1px solid var(--line);background:var(--panel);padding:8px 10px;border-radius:9px;font-size:12px}.adv-toolbar .primary,.adv-card .primary{background:var(--primary);color:#fff;border-color:var(--primary)}
+      .adv-overlay{position:fixed;inset:0;background:rgba(12,15,25,.45);backdrop-filter:blur(4px);z-index:80;display:none;padding:20px;overflow:auto}.adv-overlay.open{display:grid;place-items:center}.adv-card{width:min(920px,100%);max-height:90vh;overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:20px;box-shadow:0 30px 90px rgba(0,0,0,.25)}
+      .adv-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:16px}.adv-head h2{margin:3px 0;font-size:22px}.adv-muted{color:var(--muted);font-size:12px}.adv-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.adv-stat{border:1px solid var(--line);border-radius:13px;padding:12px;background:var(--panel2)}.adv-stat strong{display:block;font-size:20px}.adv-stat span{font-size:11px;color:var(--muted)}
+      .adv-section{border-top:1px solid var(--line);margin-top:18px;padding-top:16px}.adv-form{display:grid;grid-template-columns:1fr 1fr;gap:10px}.adv-form label{display:grid;gap:5px;font-size:11px;font-weight:700;color:var(--muted)}.adv-form input,.adv-form select,.adv-form textarea{border:1px solid var(--line);border-radius:9px;padding:9px;background:var(--panel2);color:var(--text)}.adv-full{grid-column:1/-1}.adv-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:16px;flex-wrap:wrap}
+      .adv-list{display:grid;gap:8px}.adv-list-item{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:10px;padding:10px}.adv-list-item .grow{flex:1}.adv-pill{display:inline-flex;padding:3px 7px;border-radius:20px;background:var(--primary-soft);font-size:10px}.adv-slot{display:flex;align-items:center;justify-content:space-between;border:1px solid var(--line);border-radius:10px;padding:10px;background:var(--panel2)}
+      .adv-command{position:fixed;inset:0;z-index:100;display:none;background:rgba(0,0,0,.35);padding:10vh 16px}.adv-command.open{display:block}.adv-command-box{max-width:620px;margin:auto;background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);overflow:hidden}.adv-command input{width:100%;padding:14px;border:0;border-bottom:1px solid var(--line);background:transparent;color:var(--text);outline:0}.adv-command-list{max-height:420px;overflow:auto;padding:6px}.adv-command button{width:100%;text-align:left;border:0;background:transparent}.adv-command button:hover,.adv-command button:focus-visible{background:var(--panel2)}.adv-help{padding:8px 12px;color:var(--muted);font-size:10px;border-top:1px solid var(--line)}
       @media(max-width:720px){.adv-grid,.adv-form{grid-template-columns:1fr}.adv-full{grid-column:auto}.adv-overlay{padding:8px}.adv-card{padding:15px}}
     `;document.head.appendChild(s);
   }
 
   function overlay(id,title,body){
-    let el=document.querySelector('#'+id);
-    if(!el){el=document.createElement('div');el.id=id;el.className='adv-overlay';document.body.appendChild(el)}
-    el.innerHTML=`<div class="adv-card" role="dialog" aria-modal="true" aria-label="${esc(title)}">
-      <div class="adv-head"><div><span class="eyebrow">ADVANCED CALENDAR</span><h2>${esc(title)}</h2></div><button type="button" class="icon-btn" data-adv-close>×</button></div>${body}</div>`;
-    el.classList.add('open');
-    el.querySelector('[data-adv-close]')?.focus();
-    el.querySelector('[data-adv-close]')?.addEventListener('click',()=>el.classList.remove('open'));
-    return el;
+    let el=document.querySelector('#'+id);if(!el){el=document.createElement('div');el.id=id;el.className='adv-overlay';document.body.appendChild(el)}
+    el.innerHTML=`<div class="adv-card" role="dialog" aria-modal="true" aria-label="${esc(title)}"><div class="adv-head"><div><span class="eyebrow">ADVANCED CALENDAR</span><h2>${esc(title)}</h2></div><button type="button" class="icon-btn" data-adv-close>×</button></div>${body}</div>`;
+    el.classList.add('open');el.querySelector('[data-adv-close]')?.focus();el.querySelector('[data-adv-close]')?.addEventListener('click',()=>el.classList.remove('open'));return el;
   }
   function closeOverlay(){document.querySelectorAll('.adv-overlay.open').forEach(x=>x.classList.remove('open'));document.querySelector('#advCommand')?.classList.remove('open')}
 
   function openControl(){
-    const s=state(), now=new Date(), today=iso(now), events=s.events.filter(e=>e.date===today);
-    const total=events.reduce((n,e)=>n+(e.allDay?0:Math.max(0,mins(e.end)-mins(e.start))),0);
-    const conflicts=countConflicts(s), upcoming=s.events.filter(e=>e.date>=today).length;
-    const body=`<div class="adv-grid">
-      <div class="adv-stat"><strong>${events.length}</strong><span>Events today</span></div>
-      <div class="adv-stat"><strong>${Math.round(total/60)}h</strong><span>Scheduled today</span></div>
-      <div class="adv-stat"><strong>${conflicts}</strong><span>Conflict pairs</span></div>
-      <div class="adv-stat"><strong>${upcoming}</strong><span>Upcoming events</span></div>
-      <div class="adv-stat"><strong>${s.calendars.length}</strong><span>Calendars</span></div>
-      <div class="adv-stat"><strong>${navigator.onLine?'Online':'Offline'}</strong><span>Connection</span></div>
-    </div>
-    <div class="adv-section"><div class="adv-actions" style="justify-content:flex-start">
-      <button class="primary" data-adv-action="insights">Calendar insights</button>
-      <button data-adv-action="smart">Smart free-time</button>
-      <button data-adv-action="backup">Snapshot / restore</button>
-      <button data-adv-action="storage">Storage & permissions</button>
-      <button data-adv-action="work">Planning preferences</button>
-    </div></div>
-    <div class="adv-section"><strong>Power features</strong><p class="adv-muted">Command palette, duplicate/copy-paste events, advanced event metadata, focus blocks, time-zone awareness, travel buffers, calendar health and local restore points.</p></div>`;
-    const el=overlay('advControl','Control Center',body);
-    el.querySelectorAll('[data-adv-action]').forEach(b=>b.onclick=()=>{const a=b.dataset.advAction;if(a==='insights')openInsights();if(a==='smart')openSmart();if(a==='backup')openBackups();if(a==='storage')openStorage();if(a==='work')openPreferences()});
+    const s=state(),today=iso(new Date()),events=s.events.filter(e=>e.date===today),total=events.reduce((n,e)=>n+(e.allDay?0:Math.max(0,mins(e.end)-mins(e.start))),0),conflicts=countConflicts(s),upcoming=s.events.filter(e=>e.date>=today).length;
+    const body=`<div class="adv-grid"><div class="adv-stat"><strong>${events.length}</strong><span>Events today</span></div><div class="adv-stat"><strong>${Math.round(total/60)}h</strong><span>Scheduled today</span></div><div class="adv-stat"><strong>${conflicts}</strong><span>Conflict pairs</span></div><div class="adv-stat"><strong>${upcoming}</strong><span>Upcoming events</span></div><div class="adv-stat"><strong>${s.calendars.length}</strong><span>Calendars</span></div><div class="adv-stat"><strong>${navigator.onLine?'Online':'Offline'}</strong><span>Connection</span></div></div><div class="adv-section"><div class="adv-actions" style="justify-content:flex-start"><button class="primary" data-adv-action="insights">Calendar insights</button><button data-adv-action="smart">Smart free-time</button><button data-adv-action="backup">Snapshot / restore</button><button data-adv-action="storage">Storage & permissions</button><button data-adv-action="work">Planning preferences</button></div></div><div class="adv-section"><strong>Power features</strong><p class="adv-muted">Command palette, duplicate/copy-paste events, advanced event metadata, focus blocks, time-zone awareness, travel buffers, calendar health and local restore points.</p></div>`;
+    const el=overlay('advControl','Control Center',body);el.querySelectorAll('[data-adv-action]').forEach(b=>b.onclick=()=>{const a=b.dataset.advAction;if(a==='insights')openInsights();if(a==='smart')openSmart();if(a==='backup')openBackups();if(a==='storage')openStorage();if(a==='work')openPreferences()});
   }
-
-  function countConflicts(s){
-    let n=0;for(const day of [...new Set(s.events.map(e=>e.date))]){const ev=s.events.filter(e=>e.date===day&&!e.allDay&&e.start&&e.end);for(let i=0;i<ev.length;i++)for(let j=i+1;j<ev.length;j++)if(mins(ev[i].start)<mins(ev[j].end)&&mins(ev[j].start)<mins(ev[i].end))n++}return n;
-  }
+  function countConflicts(s){let n=0;for(const day of [...new Set(s.events.map(e=>e.date))]){const ev=s.events.filter(e=>e.date===day&&!e.allDay&&e.start&&e.end);for(let i=0;i<ev.length;i++)for(let j=i+1;j<ev.length;j++)if(mins(ev[i].start)<mins(ev[j].end)&&mins(ev[j].start)<mins(ev[i].end))n++}return n}
 
   function openInsights(){
-    const s=state(), now=new Date(), from=new Date(now.getFullYear(),now.getMonth(),1), to=new Date(now.getFullYear(),now.getMonth()+1,0);
-    const month=s.events.filter(e=>{const d=dateObj(e.date);return d>=from&&d<=to});
-    const timed=month.filter(e=>!e.allDay&&e.start&&e.end);
-    const total=timed.reduce((n,e)=>n+Math.max(0,mins(e.end)-mins(e.start)),0);
-    const focus=timed.filter(e=>eventMeta(e.id).focus).reduce((n,e)=>n+Math.max(0,mins(e.end)-mins(e.start)),0);
-    const busyDays=[...new Set(timed.map(e=>e.date))].map(d=>({d,m:timed.filter(e=>e.date===d).reduce((n,e)=>n+Math.max(0,mins(e.end)-mins(e.start)),0)})).sort((a,b)=>b.m-a.m);
-    const busiest=busyDays[0];
-    const cats={};month.forEach(e=>{const c=eventMeta(e.id).category||'General';cats[c]=(cats[c]||0)+1});
-    const catRows=Object.entries(cats).sort((a,b)=>b[1]-a[1]).slice(0,8).map(([c,n])=>`<div class="adv-list-item"><span class="grow">${esc(c)}</span><span class="adv-pill">${n}</span></div>`).join('')||'<p class="adv-muted">No events yet.</p>';
-    overlay('advInsights','Calendar insights',`<div class="adv-grid">
-      <div class="adv-stat"><strong>${month.length}</strong><span>Events this month</span></div>
-      <div class="adv-stat"><strong>${(total/60).toFixed(1)}h</strong><span>Timed hours</span></div>
-      <div class="adv-stat"><strong>${(focus/60).toFixed(1)}h</strong><span>Focus hours</span></div>
-      <div class="adv-stat"><strong>${busiest?Math.round(busiest.m/60)+'h':'—'}</strong><span>Busiest day</span></div>
-      <div class="adv-stat"><strong>${countConflicts(s)}</strong><span>Conflict pairs</span></div>
-      <div class="adv-stat"><strong>${Math.round((total/(prefs.weekCapacity||2400))*100)}%</strong><span>Capacity ratio</span></div>
-    </div>
-    <div class="adv-section"><strong>Event categories</strong><div class="adv-list">${catRows}</div></div>
-    <div class="adv-section"><strong>Health checks</strong><div class="adv-list">
-      <div class="adv-list-item"><span class="grow">Overloaded days</span><span class="adv-pill">${busyDays.filter(x=>x.m>prefs.weekCapacity/7).length}</span></div>
-      <div class="adv-list-item"><span class="grow">Events without notes/location</span><span class="adv-pill">${month.filter(e=>!e.notes&&!e.location).length}</span></div>
-      <div class="adv-list-item"><span class="grow">Recurring series</span><span class="adv-pill">${month.filter(e=>e.repeat&&e.repeat!=='none').length}</span></div>
-    </div></div>`);
+    const s=state(),now=new Date(),from=new Date(now.getFullYear(),now.getMonth(),1),to=new Date(now.getFullYear(),now.getMonth()+1,0),month=s.events.filter(e=>{const d=dateObj(e.date);return d>=from&&d<=to}),timed=month.filter(e=>!e.allDay&&e.start&&e.end),total=timed.reduce((n,e)=>n+Math.max(0,mins(e.end)-mins(e.start)),0),focus=timed.filter(e=>eventMeta(e.id).focus).reduce((n,e)=>n+Math.max(0,mins(e.end)-mins(e.start)),0),busyDays=[...new Set(timed.map(e=>e.date))].map(d=>({d,m:timed.filter(e=>e.date===d).reduce((n,e)=>n+Math.max(0,mins(e.end)-mins(e.start)),0)})).sort((a,b)=>b.m-a.m),busiest=busyDays[0],cats={};month.forEach(e=>{const c=eventMeta(e.id).category||'General';cats[c]=(cats[c]||0)+1});const catRows=Object.entries(cats).sort((a,b)=>b[1]-a[1]).slice(0,8).map(([c,n])=>`<div class="adv-list-item"><span class="grow">${esc(c)}</span><span class="adv-pill">${n}</span></div>`).join('')||'<p class="adv-muted">No events yet.</p>';
+    overlay('advInsights','Calendar insights',`<div class="adv-grid"><div class="adv-stat"><strong>${month.length}</strong><span>Events this month</span></div><div class="adv-stat"><strong>${(total/60).toFixed(1)}h</strong><span>Timed hours</span></div><div class="adv-stat"><strong>${(focus/60).toFixed(1)}h</strong><span>Focus hours</span></div><div class="adv-stat"><strong>${busiest?Math.round(busiest.m/60)+'h':'—'}</strong><span>Busiest day</span></div><div class="adv-stat"><strong>${countConflicts(s)}</strong><span>Conflict pairs</span></div><div class="adv-stat"><strong>${Math.round((total/(prefs.weekCapacity||2400))*100)}%</strong><span>Capacity ratio</span></div></div><div class="adv-section"><strong>Event categories</strong><div class="adv-list">${catRows}</div></div><div class="adv-section"><strong>Health checks</strong><div class="adv-list"><div class="adv-list-item"><span class="grow">Overloaded days</span><span class="adv-pill">${busyDays.filter(x=>x.m>prefs.weekCapacity/7).length}</span></div><div class="adv-list-item"><span class="grow">Events without notes/location</span><span class="adv-pill">${month.filter(e=>!e.notes&&!e.location).length}</span></div><div class="adv-list-item"><span class="grow">Recurring series</span><span class="adv-pill">${month.filter(e=>e.repeat&&e.repeat!=='none').length}</span></div></div></div>`);
   }
 
   function openSmart(){
-    const today=iso(new Date());
-    const el=overlay('advSmart','Smart free-time',`<div class="adv-form">
-      <label>Date<input id="advFreeDate" type="date" value="${today}"></label>
-      <label>Duration<select id="advFreeDuration"><option value="30">30 minutes</option><option value="45">45 minutes</option><option value="60">1 hour</option><option value="90">90 minutes</option><option value="120">2 hours</option></select></label>
-      <label>Start<input id="advFreeStart" type="time" value="08:00"></label>
-      <label>End<input id="advFreeEnd" type="time" value="20:00"></label>
-      <label>Buffer<select id="advFreeBuffer"><option value="0">No buffer</option><option value="10">10 minutes</option><option value="15" selected>15 minutes</option><option value="30">30 minutes</option></select></label>
-      <label>Prefer<select id="advFreePrefer"><option value="balanced">Balanced</option><option value="morning">Morning</option><option value="afternoon">Afternoon</option></select></label>
-    </div><div id="advFreeResults" class="adv-list" style="margin-top:14px"></div><div class="adv-actions"><button type="button" data-adv-find>Find slots</button><button type="button" class="primary" data-adv-focus>Create focus block</button></div>`);
-    el.querySelector('[data-adv-find]').onclick=findSmartSlots;
-    el.querySelector('[data-adv-focus]').onclick=createFocusBlock;
-    findSmartSlots();
+    const el=overlay('advSmart','Smart free-time',`<div class="adv-form"><label>Date<input id="advFreeDate" type="date" value="${iso(new Date())}"></label><label>Duration<select id="advFreeDuration"><option value="30">30 minutes</option><option value="45">45 minutes</option><option value="60">1 hour</option><option value="90">90 minutes</option><option value="120">2 hours</option></select></label><label>Start<input id="advFreeStart" type="time" value="08:00"></label><label>End<input id="advFreeEnd" type="time" value="20:00"></label><label>Buffer<select id="advFreeBuffer"><option value="0">No buffer</option><option value="10">10 minutes</option><option value="15" selected>15 minutes</option><option value="30">30 minutes</option></select></label><label>Prefer<select id="advFreePrefer"><option value="balanced">Balanced</option><option value="morning">Morning</option><option value="afternoon">Afternoon</option></select></label></div><div id="advFreeResults" class="adv-list" style="margin-top:14px"></div><div class="adv-actions"><button type="button" data-adv-find>Find slots</button><button type="button" class="primary" data-adv-focus>Create focus block</button></div>`);el.querySelector('[data-adv-find]').onclick=findSmartSlots;el.querySelector('[data-adv-focus]').onclick=createFocusBlock;findSmartSlots();
   }
-
   function findSmartSlots(){
-    const s=state(), date=document.querySelector('#advFreeDate').value, dur=Number(document.querySelector('#advFreeDuration').value), start=mins(document.querySelector('#advFreeStart').value), end=mins(document.querySelector('#advFreeEnd').value), buffer=Number(document.querySelector('#advFreeBuffer').value), prefer=document.querySelector('#advFreePrefer').value;
-    const busy=s.events.filter(e=>e.date===date&&!e.allDay&&e.start&&e.end).map(e=>[mins(e.start)-buffer,mins(e.end)+buffer]).sort((a,b)=>a[0]-b[0]);
-    const slots=[];let cursor=start;
-    for(const [a,b] of busy){if(a-cursor>=dur)slots.push([cursor,a]);cursor=Math.max(cursor,b)}if(end-cursor>=dur)slots.push([cursor,end]);
-    let usable=slots.map(x=>x[0]);
-    if(prefer==='morning')usable.sort((a,b)=>a-b);else if(prefer==='afternoon')usable.sort((a,b)=>Math.abs(a-14*60)-Math.abs(b-14*60));else usable.sort((a,b)=>Math.abs(a-12*60)-Math.abs(b-12*60));
-    const box=document.querySelector('#advFreeResults');if(!box)return;
-    box.innerHTML=usable.slice(0,8).map(m=>`<div class="adv-slot"><span>${time(m)} – ${time(m+dur)}</span><button type="button" data-use-slot="${m}">Use</button></div>`).join('')||'<p class="adv-muted">No slot fits that duration and buffer.</p>';
-    box.querySelectorAll('[data-use-slot]').forEach(b=>b.onclick=()=>{const m=Number(b.dataset.useSlot);toast(`Suggested slot: ${time(m)} – ${time(m+dur)}`);document.querySelector('#advFreeDate').value=date});
+    const s=state(),date=document.querySelector('#advFreeDate').value,dur=Number(document.querySelector('#advFreeDuration').value),start=mins(document.querySelector('#advFreeStart').value),end=mins(document.querySelector('#advFreeEnd').value),buffer=Number(document.querySelector('#advFreeBuffer').value),prefer=document.querySelector('#advFreePrefer').value;
+    const busy=s.events.filter(e=>e.date===date&&!e.allDay&&e.start&&e.end).map(e=>{const travel=Number(eventMeta(e.id).travelMinutes)||0;return [mins(e.start)-Math.max(buffer,travel),mins(e.end)+Math.max(buffer,travel)]}).sort((a,b)=>a[0]-b[0]);
+    const slots=[];let cursor=start;for(const [a,b] of busy){if(a-cursor>=dur)slots.push([cursor,a]);cursor=Math.max(cursor,b)}if(end-cursor>=dur)slots.push([cursor,end]);let usable=slots.map(x=>x[0]);if(prefer==='morning')usable.sort((a,b)=>a-b);else if(prefer==='afternoon')usable.sort((a,b)=>Math.abs(a-14*60)-Math.abs(b-14*60));else usable.sort((a,b)=>Math.abs(a-12*60)-Math.abs(b-12*60));
+    const box=document.querySelector('#advFreeResults');if(!box)return;box.innerHTML=usable.slice(0,8).map(m=>`<div class="adv-slot"><span>${time(m)} – ${time(m+dur)}</span><button type="button" data-use-slot="${m}">Use</button></div>`).join('')||'<p class="adv-muted">No slot fits that duration and buffer.</p>';box.querySelectorAll('[data-use-slot]').forEach(b=>b.onclick=()=>toast(`Suggested slot: ${time(Number(b.dataset.useSlot))} – ${time(Number(b.dataset.useSlot)+dur)}`));
   }
-
   function createFocusBlock(){
-    const date=document.querySelector('#advFreeDate').value, dur=Number(document.querySelector('#advFreeDuration').value), start=mins(document.querySelector('#advFreeStart').value);
-    const s=state(), cal=s.calendars.find(c=>c.visible!==false)||s.calendars[0];remember();
-    const event={id:uid(),title:'Focus time',date,calendarId:cal?.id||'personal',start:time(start),end:time(start+dur),allDay:false,color:'auto',repeat:'none',repeatUntil:'',location:'',reminder:0,attendees:'',notes:'Protected focus block',exdates:[]};
-    s.events.push(event);save(DATA,s);setMeta(event.id,{focus:true,category:'Focus',availability:'busy',status:'confirmed',privacy:'private',tags:['focus'],timeZone:prefs.defaultTimeZone,travelMinutes:0});location.reload();
+    const date=document.querySelector('#advFreeDate').value,dur=Number(document.querySelector('#advFreeDuration').value),start=mins(document.querySelector('#advFreeStart').value),s=state(),cal=s.calendars.find(c=>c.visible!==false)||s.calendars[0];remember();const event={id:uid(),title:'Focus time',date,calendarId:cal?.id||'personal',start:time(start),end:time(start+dur),allDay:false,color:'auto',repeat:'none',repeatUntil:'',location:'',reminder:0,attendees:'',notes:'Protected focus block',exdates:[]};s.events.push(event);save(DATA,s);setMeta(event.id,{focus:true,category:'Focus',availability:'busy',status:'confirmed',privacy:'private',tags:['focus'],timeZone:prefs.defaultTimeZone,travelMinutes:0});location.reload();
   }
 
   function openEventInspector(id){
     const e=currentEvent(id);if(!e)return;const m=eventMeta(id),tags=(m.tags||[]).join(', ');
-    const body=`<form class="adv-form" id="advEventForm">
-      <label>Category<input id="advCategory" value="${esc(m.category)}" maxlength="40"></label>
-      <label>Status<select id="advStatus"><option ${m.status==='confirmed'?'selected':''}>confirmed</option><option ${m.status==='tentative'?'selected':''}>tentative</option><option ${m.status==='cancelled'?'selected':''}>cancelled</option></select></label>
-      <label>Availability<select id="advAvailability"><option value="busy" ${m.availability==='busy'?'selected':''}>Busy</option><option value="free" ${m.availability==='free'?'selected':''}>Free</option></select></label>
-      <label>Privacy<select id="advPrivacy"><option value="default" ${m.privacy==='default'?'selected':''}>Default</option><option value="private" ${m.privacy==='private'?'selected':''}>Private</option><option value="public" ${m.privacy==='public'?'selected':''}>Public</option></select></label>
-      <label>Time zone<select id="advTimeZone">${timeZones().map(z=>`<option value="${esc(z)}" ${m.timeZone===z?'selected':''}>${esc(z)}</option>`).join('')}</select></label>
-      <label>Travel buffer (minutes)<input id="advTravel" type="number" min="0" max="240" value="${Number(m.travelMinutes)||0}"></label>
-      <label class="adv-full">Category tags<input id="advTags" value="${esc(tags)}" placeholder="school, family, appointment"></label>
-      <label class="adv-full">Meeting / reference URL<input id="advUrl" type="url" value="${esc(m.url||'')}" placeholder="https://…"></label>
-      <label class="adv-full"><span>Focus block <input id="advFocus" type="checkbox" ${m.focus?'checked':''}> Treat this as protected focus time</span></label>
-    </form><div class="adv-actions"><button type="button" data-adv-copy>Copy</button><button type="button" data-adv-duplicate>Duplicate</button><button type="button" data-adv-save class="primary">Save details</button></div>`;
-    const el=overlay('advInspector',e.title,body);
-    el.querySelector('[data-adv-save]').onclick=()=>{remember();setMeta(id,{category:el.querySelector('#advCategory').value.trim()||'General',status:el.querySelector('#advStatus').value,availability:el.querySelector('#advAvailability').value,privacy:el.querySelector('#advPrivacy').value,timeZone:el.querySelector('#advTimeZone').value,travelMinutes:Number(el.querySelector('#advTravel').value)||0,tags:el.querySelector('#advTags').value.split(',').map(x=>x.trim()).filter(Boolean),url:el.querySelector('#advUrl').value.trim(),focus:el.querySelector('#advFocus').checked});closeOverlay();toast('Advanced event details saved')};
-    el.querySelector('[data-adv-copy]').onclick=()=>{clipboard=JSON.parse(JSON.stringify(e));toast('Event copied')};
-    el.querySelector('[data-adv-duplicate]').onclick=()=>duplicateEvent(id);
+    const body=`<form class="adv-form" id="advEventForm"><label>Category<input id="advCategory" value="${esc(m.category)}" maxlength="40"></label><label>Status<select id="advStatus"><option ${m.status==='confirmed'?'selected':''}>confirmed</option><option ${m.status==='tentative'?'selected':''}>tentative</option><option ${m.status==='cancelled'?'selected':''}>cancelled</option></select></label><label>Availability<select id="advAvailability"><option value="busy" ${m.availability==='busy'?'selected':''}>Busy</option><option value="free" ${m.availability==='free'?'selected':''}>Free</option></select></label><label>Privacy<select id="advPrivacy"><option value="default" ${m.privacy==='default'?'selected':''}>Default</option><option value="private" ${m.privacy==='private'?'selected':''}>Private</option><option value="public" ${m.privacy==='public'?'selected':''}>Public</option></select></label><label>Time zone<select id="advTimeZone">${timeZones().map(z=>`<option value="${esc(z)}" ${m.timeZone===z?'selected':''}>${esc(z)}</option>`).join('')}</select></label><label>Travel buffer (minutes)<input id="advTravel" type="number" min="0" max="240" value="${Number(m.travelMinutes)||0}"></label><label class="adv-full">Category tags<input id="advTags" value="${esc(tags)}" placeholder="school, family, appointment"></label><label class="adv-full">Meeting / reference URL<input id="advUrl" type="url" value="${esc(m.url||'')}" placeholder="https://…"></label><label class="adv-full"><span>Focus block <input id="advFocus" type="checkbox" ${m.focus?'checked':''}> Treat this as protected focus time</span></label></form><div class="adv-actions"><button type="button" data-adv-copy>Copy</button><button type="button" data-adv-duplicate>Duplicate</button><button type="button" data-adv-save class="primary">Save details</button></div>`;
+    const el=overlay('advInspector',e.title,body);el.querySelector('[data-adv-save]').onclick=()=>{remember();setMeta(id,{category:el.querySelector('#advCategory').value.trim()||'General',status:el.querySelector('#advStatus').value,availability:el.querySelector('#advAvailability').value,privacy:el.querySelector('#advPrivacy').value,timeZone:el.querySelector('#advTimeZone').value,travelMinutes:Number(el.querySelector('#advTravel').value)||0,tags:el.querySelector('#advTags').value.split(',').map(x=>x.trim()).filter(Boolean),url:el.querySelector('#advUrl').value.trim(),focus:el.querySelector('#advFocus').checked});closeOverlay();toast('Advanced event details saved')};el.querySelector('[data-adv-copy]').onclick=()=>{clipboard=JSON.parse(JSON.stringify(e));toast('Event copied')};el.querySelector('[data-adv-duplicate]').onclick=()=>duplicateEvent(id);
   }
-
-  function duplicateEvent(id){
-    const e=currentEvent(id);if(!e)return;remember();const s=state(),copy={...e,id:uid(),title:e.title+' (copy)',exdates:[]};const d=dateObj(e.date);d.setDate(d.getDate()+1);copy.date=iso(d);s.events.push(copy);save(DATA,s);setMeta(copy.id,eventMeta(id));location.reload();
-  }
-  function pasteEvent(){
-    if(!clipboard){toast('Copy an event first');return}remember();const s=state(),copy={...clipboard,id:uid(),title:clipboard.title+' (copy)',exdates:[]};copy.date=iso(new Date());s.events.push(copy);save(DATA,s);setMeta(copy.id,eventMeta(clipboard.id||''));location.reload();
-  }
+  function duplicateEvent(id){const e=currentEvent(id);if(!e)return;remember();const s=state(),copy={...e,id:uid(),title:e.title+' (copy)',exdates:[]},d=dateObj(e.date);d.setDate(d.getDate()+1);copy.date=iso(d);s.events.push(copy);save(DATA,s);setMeta(copy.id,eventMeta(id));location.reload()}
+  function pasteEvent(){if(!clipboard){toast('Copy an event first');return}remember();const s=state(),copy={...clipboard,id:uid(),title:clipboard.title+' (copy)',exdates:[]};copy.date=iso(new Date());s.events.push(copy);save(DATA,s);setMeta(copy.id,eventMeta(clipboard.id||''));location.reload()}
   function timeZones(){return [...new Set([prefs.defaultTimeZone,'UTC','Asia/Kolkata','Asia/Singapore','Europe/London','Europe/Paris','America/New_York','America/Los_Angeles','America/Chicago','Australia/Sydney','Pacific/Auckland'].filter(Boolean))]}
 
   function openBackups(){
-    const snaps=load(SNAP,[]);
-    const body=`<p class="adv-muted">Local restore points protect against accidental edits. They never leave this browser unless exported.</p><div class="adv-actions" style="justify-content:flex-start"><button class="primary" data-adv-snapshot>Save snapshot now</button><button data-adv-exportmeta>Export advanced metadata</button><button data-adv-importmeta>Import metadata</button></div><input id="advMetaFile" type="file" accept=".json,application/json" hidden><div class="adv-list" style="margin-top:14px">${snaps.slice().reverse().slice(0,12).map(x=>`<div class="adv-list-item"><div class="grow"><strong>${esc(new Date(x.at).toLocaleString())}</strong><small class="adv-muted">${x.events} events</small></div><button data-restore="${esc(x.id)}">Restore</button></div>`).join('')||'<p class="adv-muted">No snapshots yet.</p>'}</div>`;
+    const snaps=load(SNAP,[]),body=`<p class="adv-muted">Local restore points protect against accidental edits. They never leave this browser unless exported.</p><div class="adv-actions" style="justify-content:flex-start"><button class="primary" data-adv-snapshot>Save snapshot now</button><button data-adv-exportmeta>Export advanced metadata</button><button data-adv-importmeta>Import metadata</button></div><input id="advMetaFile" type="file" accept=".json,application/json" hidden><div class="adv-list" style="margin-top:14px">${snaps.slice().reverse().slice(0,12).map(x=>`<div class="adv-list-item"><div class="grow"><strong>${esc(new Date(x.at).toLocaleString())}</strong><small class="adv-muted">${x.events} events</small></div><button data-restore="${esc(x.id)}">Restore</button></div>`).join('')||'<p class="adv-muted">No snapshots yet.</p>'}</div>`;
     const el=overlay('advBackups','Snapshots & restore',body);el.querySelector('[data-adv-snapshot]').onclick=saveSnapshot;el.querySelector('[data-adv-exportmeta]').onclick=exportMeta;el.querySelector('[data-adv-importmeta]').onclick=()=>el.querySelector('#advMetaFile').click();el.querySelector('#advMetaFile').onchange=importMeta;el.querySelectorAll('[data-restore]').forEach(b=>b.onclick=()=>restoreSnapshot(b.dataset.restore));
   }
   function saveSnapshot(){const s=state(),arr=load(SNAP,[]);arr.push({id:uid(),at:new Date().toISOString(),events:s.events.length,state:s,meta:load(META,{events:{},calendarNotes:{}})});while(arr.length>12)arr.shift();save(SNAP,arr);toast('Snapshot saved');openBackups()}
@@ -207,27 +89,34 @@
   function importMeta(e){const file=e.target.files?.[0];if(!file)return;const r=new FileReader();r.onload=()=>{try{const x=JSON.parse(r.result);if(x.meta)meta=x.meta;if(x.prefs)prefs={...prefs,...x.prefs};save(META,meta);save(PREF,prefs);toast('Advanced metadata imported')}catch{toast('Invalid metadata file')}};r.readAsText(file)}
   function downloadBlob(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
 
+  function exportEnhancedICS(){
+    const s=state(),lines=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Calm Personal Calendar//EN','CALSCALE:GREGORIAN','METHOD:PUBLISH'];
+    const escText=v=>String(v??'').replace(/\\/g,'\\\\').replace(/;/g,'\\;').replace(/,/g,'\\,').replace(/\r?\n/g,'\\n');
+    const dtstamp=()=>new Date().toISOString().replace(/[-:]/g,'').replace(/\.\d{3}Z$/,'Z');
+    const stamp=(date,time,allDay)=>allDay?date.replace(/-/g,''):`${date.replace(/-/g,'')}T${(time||'00:00').replace(':','')}00`;
+    for(const e of s.events){const m=eventMeta(e.id);lines.push('BEGIN:VEVENT',`UID:${e.id}@calm`,`DTSTAMP:${dtstamp()}`);if(e.allDay)lines.push(`DTSTART;VALUE=DATE:${stamp(e.date,'',true)}`);else lines.push(`DTSTART:${stamp(e.date,e.start,false)}`,`DTEND:${stamp(e.date,e.end||time(mins(e.start)+60),false)}`);lines.push(`SUMMARY:${escText(e.title)}`);if(e.location)lines.push(`LOCATION:${escText(e.location)}`);if(e.notes)lines.push(`DESCRIPTION:${escText(e.notes)}`);if(e.attendees)String(e.attendees).split(',').map(x=>x.trim()).filter(Boolean).forEach(a=>lines.push(`ATTENDEE:${a.includes('@')?'MAILTO:':''}${escText(a)}`));if(m.url)lines.push(`URL:${m.url}`);if(m.category)lines.push(`CATEGORIES:${escText(m.category)}`);if(m.status)lines.push(`STATUS:${m.status.toUpperCase()}`);if(m.privacy==='private')lines.push('CLASS:PRIVATE');else if(m.privacy==='public')lines.push('CLASS:PUBLIC');lines.push(m.availability==='free'?'TRANSP:TRANSPARENT':'TRANSP:OPAQUE');if(m.timeZone)lines.push(`X-CALM-TIMEZONE:${escText(m.timeZone)}`);if(m.travelMinutes)lines.push(`X-CALM-TRAVEL-MINUTES:${m.travelMinutes}`);if(m.focus)lines.push('X-CALM-FOCUS:TRUE');if(e.repeat&&e.repeat!=='none'){const map={daily:'FREQ=DAILY',weekdays:'FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR',weekly:'FREQ=WEEKLY',biweekly:'FREQ=WEEKLY;INTERVAL=2',monthly:'FREQ=MONTHLY',yearly:'FREQ=YEARLY'};if(map[e.repeat])lines.push(`RRULE:${map[e.repeat]}${e.repeatUntil?`;UNTIL=${e.repeatUntil.replace(/-/g,'')}T235959`:''}`)}(e.exdates||[]).forEach(x=>lines.push(`EXDATE:${stamp(x,e.start,false)}`));lines.push('END:VEVENT')}
+    lines.push('END:VCALENDAR');downloadBlob(new Blob([lines.join('\r\n')+'\r\n'],{type:'text/calendar;charset=utf-8'}),'calm-calendar-enhanced.ics');toast('Enhanced iCalendar exported');
+  }
+
   function openStorage(){
-    const usage=navigator.storage?.estimate?navigator.storage.estimate():Promise.resolve({});
-    usage.then(x=>{const used=x.usage||0,quota=x.quota||0;const permission=('Notification' in window)?Notification.permission:'unsupported';const el=overlay('advStorage','Storage & permissions',`<div class="adv-grid"><div class="adv-stat"><strong>${formatBytes(used)}</strong><span>Used by origin</span></div><div class="adv-stat"><strong>${formatBytes(quota)}</strong><span>Estimated quota</span></div><div class="adv-stat"><strong>${permission}</strong><span>Notification permission</span></div></div><div class="adv-actions"><button data-adv-notify>Request reminders permission</button><button data-adv-persist>Request persistent storage</button></div><p class="adv-muted">Calendar records remain local. Larger attachments are intentionally not stored in localStorage; IndexedDB is the appropriate browser API for larger structured data.</p>`);el.querySelector('[data-adv-notify]').onclick=async()=>{if(!('Notification' in window)){toast('Notifications are not supported');return}const p=await Notification.requestPermission();toast('Notification permission: '+p);openStorage()};el.querySelector('[data-adv-persist]').onclick=async()=>{if(!navigator.storage?.persist){toast('Persistent storage is not supported');return}toast(await navigator.storage.persist()?'Persistent storage enabled':'Browser declined persistent storage')})});
+    const usage=navigator.storage?.estimate?navigator.storage.estimate():Promise.resolve({});usage.then(x=>{const used=x.usage||0,quota=x.quota||0,permission=('Notification' in window)?Notification.permission:'unsupported';const el=overlay('advStorage','Storage & permissions',`<div class="adv-grid"><div class="adv-stat"><strong>${formatBytes(used)}</strong><span>Used by origin</span></div><div class="adv-stat"><strong>${formatBytes(quota)}</strong><span>Estimated quota</span></div><div class="adv-stat"><strong>${permission}</strong><span>Notification permission</span></div></div><div class="adv-actions"><button data-adv-notify>Request reminders permission</button><button data-adv-persist>Request persistent storage</button></div><p class="adv-muted">Calendar records remain local. Larger attachments are intentionally not stored in localStorage; IndexedDB is the appropriate browser API for larger structured data.</p>`);el.querySelector('[data-adv-notify]').onclick=async()=>{if(!('Notification' in window)){toast('Notifications are not supported');return}toast('Notification permission: '+await Notification.requestPermission())};el.querySelector('[data-adv-persist]').onclick=async()=>{if(!navigator.storage?.persist){toast('Persistent storage is not supported');return}toast(await navigator.storage.persist()?'Persistent storage enabled':'Browser declined persistent storage')})});
   }
   const formatBytes=n=>n<1024?`${n} B`:n<1048576?`${(n/1024).toFixed(1)} KB`:n<1073741824?`${(n/1048576).toFixed(1)} MB`:`${(n/1073741824).toFixed(1)} GB`;
 
   function openPreferences(){
-    const el=overlay('advPrefs','Planning preferences',`<div class="adv-form"><label class="adv-full">Working days<select id="advWorkDays" multiple size="7">${[['1','Monday'],['2','Tuesday'],['3','Wednesday'],['4','Thursday'],['5','Friday'],['6','Saturday'],['0','Sunday']].map(([v,n])=>`<option value="${v}" ${prefs.workingDays.includes(Number(v))?'selected':''}>${n}</option>`).join('')}</select></label><label>Focus target (minutes)<input id="advFocusMinutes" type="number" min="15" max="480" value="${prefs.focusMinutes}"></label><label>Default travel buffer<input id="advDefaultTravel" type="number" min="0" max="240" value="${prefs.defaultTravel}"></label><label>Weekly capacity (minutes)<input id="advCapacity" type="number" min="60" max="10080" value="${prefs.weekCapacity}"></label><label>Smart scheduling buffer<input id="advBuffer" type="number" min="0" max="120" value="${prefs.smartBuffer}"></label><label class="adv-full">Default time zone<select id="advDefaultZone">${timeZones().map(z=>`<option ${prefs.defaultTimeZone===z?'selected':''}>${esc(z)}</option>`).join('')}</select></label></div><div class="adv-actions"><button class="primary" data-adv-save-prefs>Save preferences</button></div>`);
-    el.querySelector('[data-adv-save-prefs]').onclick=()=>{prefs.workingDays=[...el.querySelector('#advWorkDays').selectedOptions].map(x=>Number(x.value));prefs.focusMinutes=Number(el.querySelector('#advFocusMinutes').value)||90;prefs.defaultTravel=Number(el.querySelector('#advDefaultTravel').value)||0;prefs.weekCapacity=Number(el.querySelector('#advCapacity').value)||2400;prefs.smartBuffer=Number(el.querySelector('#advBuffer').value)||15;prefs.defaultTimeZone=el.querySelector('#advDefaultZone').value;save(PREF,prefs);toast('Planning preferences saved');closeOverlay()};
+    const el=overlay('advPrefs','Planning preferences',`<div class="adv-form"><label class="adv-full">Working days<select id="advWorkDays" multiple size="7">${[['1','Monday'],['2','Tuesday'],['3','Wednesday'],['4','Thursday'],['5','Friday'],['6','Saturday'],['0','Sunday']].map(([v,n])=>`<option value="${v}" ${prefs.workingDays.includes(Number(v))?'selected':''}>${n}</option>`).join('')}</select></label><label>Focus target (minutes)<input id="advFocusMinutes" type="number" min="15" max="480" value="${prefs.focusMinutes}"></label><label>Default travel buffer<input id="advDefaultTravel" type="number" min="0" max="240" value="${prefs.defaultTravel}"></label><label>Weekly capacity (minutes)<input id="advCapacity" type="number" min="60" max="10080" value="${prefs.weekCapacity}"></label><label>Smart scheduling buffer<input id="advBuffer" type="number" min="0" max="120" value="${prefs.smartBuffer}"></label><label class="adv-full">Default time zone<select id="advDefaultZone">${timeZones().map(z=>`<option ${prefs.defaultTimeZone===z?'selected':''}>${esc(z)}</option>`).join('')}</select></label></div><div class="adv-actions"><button class="primary" data-adv-save-prefs>Save preferences</button></div>`);el.querySelector('[data-adv-save-prefs]').onclick=()=>{prefs.workingDays=[...el.querySelector('#advWorkDays').selectedOptions].map(x=>Number(x.value));prefs.focusMinutes=Number(el.querySelector('#advFocusMinutes').value)||90;prefs.defaultTravel=Number(el.querySelector('#advDefaultTravel').value)||0;prefs.weekCapacity=Number(el.querySelector('#advCapacity').value)||2400;prefs.smartBuffer=Number(el.querySelector('#advBuffer').value)||15;prefs.defaultTimeZone=el.querySelector('#advDefaultZone').value;save(PREF,prefs);toast('Planning preferences saved');closeOverlay()};
   }
 
   function commandPalette(){
     const actions=[['New event','Open the event editor',()=>document.querySelector('#newBtn')?.click()],['Today','Jump to today',()=>document.querySelector('#todayBtn')?.click()],['Month view','Switch to month view',()=>document.querySelector('[data-view="month"]')?.click()],['Week view','Switch to week view',()=>document.querySelector('[data-view="week"]')?.click()],['Day view','Switch to day view',()=>document.querySelector('[data-view="day"]')?.click()],['Agenda view','Switch to agenda view',()=>document.querySelector('[data-view="agenda"]')?.click()],['Control Center','Open advanced tools',openControl],['Calendar insights','Analyze workload and conflicts',openInsights],['Smart free-time','Find conflict-free slots',openSmart],['Snapshots','Open restore points',openBackups],['Planning preferences','Configure workdays and capacity',openPreferences],['Storage & permissions','Inspect local storage and notifications',openStorage],['Paste event','Create a copied event',pasteEvent]];
-    let el=document.querySelector('#advCommand');if(!el){el=document.createElement('div');el.id='advCommand';el.className='adv-command';document.body.appendChild(el)}
-    el.innerHTML=`<div class="adv-command-box"><input id="advCommandInput" placeholder="Search commands…" autocomplete="off"><div id="advCommandList" class="adv-command-list"></div><div class="adv-help">Esc close · Enter run · Ctrl/Cmd+K open</div></div>`;
-    const input=el.querySelector('#advCommandInput'),list=el.querySelector('#advCommandList');const render=()=>{const q=input.value.toLowerCase();list.innerHTML=actions.filter(a=>(a[0]+' '+a[1]).toLowerCase().includes(q)).map((a,i)=>`<button type="button" data-cmd="${i}"><strong>${esc(a[0])}</strong><br><span class="adv-muted">${esc(a[1])}</span></button>`).join('')};input.oninput=render;list.onclick=e=>{const b=e.target.closest('[data-cmd]');if(!b)return;actions[Number(b.dataset.cmd)][2]();el.classList.remove('open')};input.onkeydown=e=>{if(e.key==='Escape')el.classList.remove('open');if(e.key==='Enter')list.querySelector('button')?.click()};el.classList.add('open');input.focus();render();
+    let el=document.querySelector('#advCommand');if(!el){el=document.createElement('div');el.id='advCommand';el.className='adv-command';document.body.appendChild(el)}el.innerHTML=`<div class="adv-command-box"><input id="advCommandInput" placeholder="Search commands…" autocomplete="off"><div id="advCommandList" class="adv-command-list"></div><div class="adv-help">Esc close · Enter run · Ctrl/Cmd+K open</div></div>`;
+    const input=el.querySelector('#advCommandInput'),list=el.querySelector('#advCommandList'),render=()=>{const q=input.value.toLowerCase();list.innerHTML=actions.filter(a=>(a[0]+' '+a[1]).toLowerCase().includes(q)).map((a,i)=>`<button type="button" data-cmd="${i}"><strong>${esc(a[0])}</strong><br><span class="adv-muted">${esc(a[1])}</span></button>`).join('')};input.oninput=render;list.onclick=e=>{const b=e.target.closest('[data-cmd]');if(!b)return;actions[Number(b.dataset.cmd)][2]();el.classList.remove('open')};input.onkeydown=e=>{if(e.key==='Escape')el.classList.remove('open');if(e.key==='Enter')list.querySelector('button')?.click()};el.classList.add('open');input.focus();render();
   }
 
   function wireEvents(){
     document.addEventListener('click',e=>{const node=e.target.closest('[data-event]');if(node&&e.detail===1&&!e.target.closest('button'))setTimeout(()=>openEventInspector(eventIdFromNode(node)),0)},true);
     document.addEventListener('keydown',e=>{const mod=e.ctrlKey||e.metaKey;if(mod&&e.key.toLowerCase()==='k'){e.preventDefault();commandPalette();return}if(e.key==='Escape'){closeOverlay();return}if(mod&&e.key.toLowerCase()==='v'&&e.target===document.body){e.preventDefault();pasteEvent()}if(e.key.toLowerCase()==='i'&&e.target===document.body)openControl()});
+    document.querySelector('#exportBtn')?.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();exportEnhancedICS()},true);
     const actions=document.querySelector('.top-actions');if(actions&&!document.querySelector('#advancedBtn')){const b=document.createElement('button');b.id='advancedBtn';b.textContent='More';b.title='Advanced calendar tools';b.onclick=openControl;actions.insertBefore(b,actions.firstElementChild)}
   }
   function start(){ensureStyles();wireEvents();if(location.search.includes('new=event'))setTimeout(()=>document.querySelector('#newBtn')?.click(),100);if(location.search.includes('view=today'))setTimeout(()=>document.querySelector('#todayBtn')?.click(),100)}
