@@ -49,7 +49,7 @@ jobs:
           grep -q 'risks' Personal-Goal-Tracker/advanced.js
           grep -q 'projection' Personal-Goal-Tracker/advanced.js
           grep -q 'OKR' Personal-Goal-Tracker/README.md
-          grep -q 'GoalOnTrack' Personal-Goal-Tracker/README.md
+          grep -q 'GoalsOnTrack' Personal-Goal-Tracker/README.md
           grep -q 'Strides' Personal-Goal-Tracker/README.md
       - name: No obvious placeholders
         run: |
