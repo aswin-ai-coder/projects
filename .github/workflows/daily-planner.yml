@@ -1,0 +1,69 @@
+name: Daily Planner
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'Daily-Planner/**'
+      - '.github/workflows/daily-planner.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: daily-planner-pages
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Validate JavaScript
+        run: node --check Daily-Planner/app.js
+      - name: Validate service worker
+        run: node --check Daily-Planner/sw.js
+      - name: Validate required files
+        run: |
+          test -f Daily-Planner/index.html
+          test -f Daily-Planner/styles.css
+          test -f Daily-Planner/app.js
+          test -f Daily-Planner/manifest.webmanifest
+          test -f Daily-Planner/sw.js
+          test -f Daily-Planner/icon.svg
+      - name: Validate manifest
+        run: node -e "JSON.parse(require('fs').readFileSync('Daily-Planner/manifest.webmanifest','utf8'))"
+      - name: Validate app wiring and feature markers
+        run: |
+          grep -q 'styles.css' Daily-Planner/index.html
+          grep -q 'app.js' Daily-Planner/index.html
+          grep -q 'manifest.webmanifest' Daily-Planner/index.html
+          grep -q 'serviceWorker' Daily-Planner/app.js
+          grep -q 'time-blocked' Daily-Planner/index.html
+          grep -q 'Big 3' Daily-Planner/index.html
+          grep -q 'Habits & routines' Daily-Planner/index.html
+          grep -q 'Daily review' Daily-Planner/index.html
+          grep -q 'Export' Daily-Planner/index.html
+
+  deploy:
+    needs: validate
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: Daily-Planner
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
