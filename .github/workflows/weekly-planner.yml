@@ -26,12 +26,14 @@ jobs:
       - name: Validate JavaScript
         run: |
           node --check Weekly-Planner/app.js
+          node --check Weekly-Planner/advanced.js
           node --check Weekly-Planner/sw.js
       - name: Validate required files
         run: |
           test -f Weekly-Planner/index.html
           test -f Weekly-Planner/styles.css
           test -f Weekly-Planner/app.js
+          test -f Weekly-Planner/advanced.js
           test -f Weekly-Planner/manifest.webmanifest
           test -f Weekly-Planner/sw.js
           test -f Weekly-Planner/icon.svg
@@ -42,6 +44,7 @@ jobs:
         run: |
           grep -q 'styles.css' Weekly-Planner/index.html
           grep -q 'app.js' Weekly-Planner/index.html
+          grep -q 'advanced.js' Weekly-Planner/index.html
           grep -q 'manifest.webmanifest' Weekly-Planner/index.html
           grep -q 'serviceWorker' Weekly-Planner/app.js
           grep -q 'Weekflow' Weekly-Planner/index.html
@@ -50,8 +53,15 @@ jobs:
           grep -q 'Weekly review' Weekly-Planner/index.html
           grep -q 'Auto-balance week' Weekly-Planner/index.html
           grep -q 'Daily capacity' Weekly-Planner/index.html
-          grep -q 'analytics' Weekly-Planner/app.js
+          grep -q 'Control center' Weekly-Planner/index.html
+          grep -q 'Smart-plan week' Weekly-Planner/index.html
+          grep -q 'Dependency-aware balance' Weekly-Planner/advanced.js
+          grep -q 'Export week as ICS' Weekly-Planner/advanced.js
+          grep -q 'Import ICS' Weekly-Planner/advanced.js
+          grep -q 'Natural-language capture' Weekly-Planner/advanced.js
+          grep -q 'Weekly focus goal' Weekly-Planner/advanced.js
           grep -q 'localStorage' Weekly-Planner/app.js
+          grep -q 'localStorage' Weekly-Planner/advanced.js
 
   deploy:
     needs: validate
