@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#4f46e5">
-  <meta name="description" content="A fast, private, local-first Kanban board with drag and drop, WIP limits, advanced views, dependencies, automation and flow analytics.">
+  <meta name="description" content="A fast, private, local-first Kanban board with drag and drop, WIP limits, advanced views, dependencies, automation, attachments and flow analytics.">
   <title>Flowboard — Simple Kanban</title>
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="icon" href="./icon.svg" type="image/svg+xml">
@@ -25,12 +25,7 @@
 
     <section class="board-toolbar">
       <div class="toolbar-left"><span id="boardTitle" class="board-title">My Board</span><span id="boardStats" class="muted"></span></div>
-      <div class="toolbar-actions">
-        <button id="filterButton" class="ghost-btn">Filter</button>
-        <button id="sortButton" class="ghost-btn">Sort</button>
-        <button id="addColumnButton" class="ghost-btn">+ Column</button>
-        <button id="moreButton" class="ghost-btn">More ▾</button>
-      </div>
+      <div class="toolbar-actions"><button id="filterButton" class="ghost-btn">Filter</button><button id="sortButton" class="ghost-btn">Sort</button><button id="addColumnButton" class="ghost-btn">+ Column</button><button id="moreButton" class="ghost-btn">More ▾</button></div>
     </section>
 
     <div id="filterBar" class="filterbar hidden">
@@ -49,45 +44,22 @@
     <div class="modal-head"><div><span class="eyebrow">CARD</span><h2 id="cardDialogTitle">New card</h2></div><button type="button" class="close-btn" data-close>×</button></div>
     <label>Title<input id="cardTitle" required maxlength="160" placeholder="What needs to be done?"></label>
     <label>Description<textarea id="cardDescription" rows="4" maxlength="5000" placeholder="Add context, links, acceptance notes…"></textarea></label>
-    <div class="form-grid">
-      <label>Column<select id="cardColumn"></select></label>
-      <label>Priority<select id="cardPriority"><option value="none">None</option><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option><option value="urgent">Urgent</option></select></label>
-      <label>Due date<input id="cardDue" type="date"></label>
-      <label>Assignee<input id="cardAssignee" maxlength="60" placeholder="Optional"></label>
-    </div>
+    <div class="form-grid"><label>Column<select id="cardColumn"></select></label><label>Priority<select id="cardPriority"><option value="none">None</option><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option><option value="urgent">Urgent</option></select></label><label>Due date<input id="cardDue" type="date"></label><label>Assignee<input id="cardAssignee" maxlength="60" placeholder="Optional"></label></div>
     <label>Labels <input id="cardLabels" placeholder="comma, separated, labels"></label>
     <label>Checklist <textarea id="cardChecklist" rows="4" placeholder="One item per line"></textarea></label>
     <div class="modal-actions"><button type="button" class="danger-btn hidden" id="deleteCardButton">Delete</button><span></span><button type="button" class="ghost-btn" data-close>Cancel</button><button class="primary-btn" value="default">Save card</button></div>
   </form></dialog>
 
-  <dialog id="columnDialog" class="modal"><form method="dialog" id="columnForm" class="modal-card compact-modal">
-    <div class="modal-head"><div><span class="eyebrow">COLUMN</span><h2 id="columnDialogTitle">New column</h2></div><button type="button" class="close-btn" data-close>×</button></div>
-    <label>Name<input id="columnName" required maxlength="40" placeholder="In progress"></label>
-    <label>WIP limit<input id="columnLimit" type="number" min="0" max="999" placeholder="0 = unlimited"></label>
-    <div class="modal-actions"><button type="button" class="danger-btn hidden" id="deleteColumnButton">Delete</button><span></span><button type="button" class="ghost-btn" data-close>Cancel</button><button class="primary-btn">Save column</button></div>
-  </form></dialog>
+  <dialog id="columnDialog" class="modal"><form method="dialog" id="columnForm" class="modal-card compact-modal"><div class="modal-head"><div><span class="eyebrow">COLUMN</span><h2 id="columnDialogTitle">New column</h2></div><button type="button" class="close-btn" data-close>×</button></div><label>Name<input id="columnName" required maxlength="40" placeholder="In progress"></label><label>WIP limit<input id="columnLimit" type="number" min="0" max="999" placeholder="0 = unlimited"></label><div class="modal-actions"><button type="button" class="danger-btn hidden" id="deleteColumnButton">Delete</button><span></span><button type="button" class="ghost-btn" data-close>Cancel</button><button class="primary-btn">Save column</button></div></form></dialog>
 
-  <dialog id="settingsDialog" class="modal"><form method="dialog" id="settingsForm" class="modal-card">
-    <div class="modal-head"><div><span class="eyebrow">WORKSPACE</span><h2>Board settings</h2></div><button type="button" class="close-btn" data-close>×</button></div>
-    <div class="settings-section"><h3>Appearance</h3><div class="form-grid"><label>Theme<select id="themeSetting"><option value="system">System</option><option value="light">Light</option><option value="dark">Dark</option></select></label><label>Card density<select id="densitySetting"><option value="comfortable">Comfortable</option><option value="compact">Compact</option></select></label></div></div>
-    <div class="settings-section"><h3>Workflow</h3><label class="check-row"><input id="doneArchiveSetting" type="checkbox"> Hide completed cards after 30 days</label><label class="check-row"><input id="confirmDeleteSetting" type="checkbox"> Confirm destructive actions</label></div>
-    <div class="settings-section"><h3>Data</h3><div class="button-row"><button type="button" id="exportButton" class="ghost-btn">Export JSON</button><button type="button" id="importButton" class="ghost-btn">Import JSON</button><button type="button" id="restoreButton" class="ghost-btn">Restore snapshot</button><button type="button" id="resetButton" class="danger-btn">Reset board</button></div><input id="importInput" type="file" accept="application/json" hidden></div>
-    <div class="modal-actions"><span class="muted">Local-first · no account · no server</span><button class="primary-btn">Done</button></div>
-  </form></dialog>
+  <dialog id="settingsDialog" class="modal"><form method="dialog" id="settingsForm" class="modal-card"><div class="modal-head"><div><span class="eyebrow">WORKSPACE</span><h2>Board settings</h2></div><button type="button" class="close-btn" data-close>×</button></div><div class="settings-section"><h3>Appearance</h3><div class="form-grid"><label>Theme<select id="themeSetting"><option value="system">System</option><option value="light">Light</option><option value="dark">Dark</option></select></label><label>Card density<select id="densitySetting"><option value="comfortable">Comfortable</option><option value="compact">Compact</option></select></label></div></div><div class="settings-section"><h3>Workflow</h3><label class="check-row"><input id="doneArchiveSetting" type="checkbox"> Hide completed cards after 30 days</label><label class="check-row"><input id="confirmDeleteSetting" type="checkbox"> Confirm destructive actions</label></div><div class="settings-section"><h3>Data</h3><div class="button-row"><button type="button" id="exportButton" class="ghost-btn">Export JSON</button><button type="button" id="importButton" class="ghost-btn">Import JSON</button><button type="button" id="restoreButton" class="ghost-btn">Restore snapshot</button><button type="button" id="resetButton" class="danger-btn">Reset board</button></div><input id="importInput" type="file" accept="application/json" hidden></div><div class="modal-actions"><span class="muted">Local-first · no account · no server</span><button class="primary-btn">Done</button></div></form></dialog>
 
-  <dialog id="analyticsDialog" class="modal"><div class="modal-card wide-modal">
-    <div class="modal-head"><div><span class="eyebrow">INSIGHTS</span><h2>Flow analytics</h2></div><button type="button" class="close-btn" data-close>×</button></div>
-    <div id="analyticsContent" class="analytics-grid"></div>
-  </div></dialog>
-
-  <dialog id="moreDialog" class="modal"><div class="modal-card compact-modal">
-    <div class="modal-head"><div><span class="eyebrow">BOARD TOOLS</span><h2>More</h2></div><button type="button" class="close-btn" data-close>×</button></div>
-    <div class="tool-list"><button data-tool="template">Use starter template</button><button data-tool="archive">Show archive</button><button data-tool="activity">Activity history</button><button data-tool="shortcuts">Keyboard shortcuts</button><button data-tool="print">Print board</button></div>
-  </div></dialog>
-
+  <dialog id="analyticsDialog" class="modal"><div class="modal-card wide-modal"><div class="modal-head"><div><span class="eyebrow">INSIGHTS</span><h2>Flow analytics</h2></div><button type="button" class="close-btn" data-close>×</button></div><div id="analyticsContent" class="analytics-grid"></div></div></dialog>
+  <dialog id="moreDialog" class="modal"><div class="modal-card compact-modal"><div class="modal-head"><div><span class="eyebrow">BOARD TOOLS</span><h2>More</h2></div><button type="button" class="close-btn" data-close>×</button></div><div class="tool-list"><button data-tool="template">Use starter template</button><button data-tool="archive">Show archive</button><button data-tool="activity">Activity history</button><button data-tool="shortcuts">Keyboard shortcuts</button><button data-tool="print">Print board</button></div></div></dialog>
   <dialog id="simpleDialog" class="modal"><div class="modal-card wide-modal"><div class="modal-head"><div><span id="simpleEyebrow" class="eyebrow">VIEW</span><h2 id="simpleTitle">Activity</h2></div><button type="button" class="close-btn" data-close>×</button></div><div id="simpleContent"></div></div></dialog>
 
   <script src="./app.js"></script>
   <script src="./advanced.js"></script>
+  <script src="./attachments.js"></script>
 </body>
 </html>
