@@ -41,7 +41,19 @@ jobs:
           grep -q 'snapshots' Personal-Goal-Tracker/app.js
           grep -q 'CSV' Personal-Goal-Tracker/index.html
           grep -q 'serviceWorker' Personal-Goal-Tracker/advanced.js
+          grep -q 'Goal Studio' Personal-Goal-Tracker/advanced.js
+          grep -q 'measures' Personal-Goal-Tracker/advanced.js
+          grep -q 'milestones' Personal-Goal-Tracker/advanced.js
+          grep -q 'actions' Personal-Goal-Tracker/advanced.js
+          grep -q 'habits' Personal-Goal-Tracker/advanced.js
+          grep -q 'risks' Personal-Goal-Tracker/advanced.js
+          grep -q 'projection' Personal-Goal-Tracker/advanced.js
           grep -q 'OKR' Personal-Goal-Tracker/README.md
+          grep -q 'GoalOnTrack' Personal-Goal-Tracker/README.md
+          grep -q 'Strides' Personal-Goal-Tracker/README.md
+      - name: No obvious placeholders
+        run: |
+          ! grep -RniE 'TODO|FIXME|coming soon|lorem ipsum' Personal-Goal-Tracker --exclude='README.md'
   deploy:
     needs: validate
     runs-on: ubuntu-latest
