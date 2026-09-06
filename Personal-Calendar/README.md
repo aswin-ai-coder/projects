@@ -43,6 +43,8 @@ A modern, private, local-first personal calendar built as a static Progressive W
 - Travel-time buffers
 - Protected focus-time classification
 - Advanced event inspector
+- Private local file attachments stored in IndexedDB
+- Attachment open/download/delete controls
 - Enhanced iCalendar export carrying categories, status, privacy, transparency, URL and local metadata extensions
 
 ### Planning and scheduling
@@ -80,7 +82,7 @@ A modern, private, local-first personal calendar built as a static Progressive W
 
 ### Modern PWA and privacy
 - Installable web app manifest
-- Offline service worker cache
+- Offline service worker cache, including the attachment layer
 - PWA shortcuts
 - Optional browser reminders with explicit permission
 - Local-first storage
@@ -107,7 +109,7 @@ The product scope was deliberately expanded after reviewing current calendar pat
 - Outlook documents multiple calendars, merged/side-by-side views, reminders, recurrence, categories, Scheduling Assistant and `.ics` support.
 - Apple Calendar documents multiple color-coded calendars, repeating events, alerts, locations/travel time, invitees, attachments, URLs, time zones, import/export and focus-related behavior.
 - RFC 5545 defines the iCalendar `VCALENDAR`/`VEVENT` model, recurrence rules, exception dates, event status, transparency and related event properties.
-- MDN documents PWA manifests, service workers, offline operation, Notifications, storage APIs and IndexedDB. IndexedDB is intentionally identified as the correct future layer for large attachments rather than inflating localStorage.
+- MDN documents PWA manifests, service workers, offline operation, Notifications, storage APIs and IndexedDB. IndexedDB is used here for event attachments because it is designed for larger structured client-side data and files.
 - WCAG/WAI guidance was used for keyboard access, visible focus and modal interaction patterns.
 
 ## Architecture
@@ -116,6 +118,7 @@ The product scope was deliberately expanded after reviewing current calendar pat
 - `styles.css` — responsive UI, calendar layouts and dark mode
 - `app.js` — calendar state, event engine, recurrence expansion, core import/export, reminders and views
 - `advanced.js` — advanced planning, event intelligence, command palette, snapshots, insights, smart scheduling and enhanced iCalendar export
+- `attachments.js` — private IndexedDB event attachment storage and controls
 - `manifest.webmanifest` — install metadata and PWA shortcuts
 - `sw.js` — offline cache and runtime fallback
 - `icon.svg` — application icon
@@ -125,7 +128,7 @@ The product scope was deliberately expanded after reviewing current calendar pat
 
 This project is intentionally **feature-complete for a static/local-first architecture**, not a cloud calendar clone. It does not pretend to provide live Google/Outlook/iCloud synchronization, multi-device cloud sync, server push, account authentication, online invitations, shared-calendar collaboration, real-time free/busy lookup, maps/weather, or hosted AI. Those features require provider APIs, identity, networking and/or a backend. Standard `.ics` exchange remains available.
 
-For larger binary attachments, IndexedDB is the appropriate browser technology; the current project keeps calendar records in localStorage so the core remains simple and portable.
+Large binary event attachments are kept in IndexedDB rather than localStorage. Calendar records and advanced metadata remain in localStorage for simple, portable core state.
 
 ## Keyboard shortcuts
 
@@ -141,7 +144,7 @@ For larger binary attachments, IndexedDB is the appropriate browser technology; 
 
 ## Privacy
 
-Calendar records and advanced metadata are stored locally in the browser. Exported files leave the browser only when the user explicitly exports them. Browser reminders require explicit permission. No calendar data is sent to a project server.
+Calendar records, advanced metadata and attachments stay in the browser. Exported files leave the browser only when the user explicitly exports them. Browser reminders require explicit permission. No calendar data or attachment is sent to a project server.
 
 ## Research references
 
