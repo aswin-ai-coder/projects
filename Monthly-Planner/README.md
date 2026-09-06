@@ -1,78 +1,107 @@
 # Monthflow — Monthly Planner
 
-Monthflow is a modern, private, local-first monthly planning PWA. It is designed to answer the monthly question: **what outcomes matter, how much work can realistically fit, and how should the month adapt when reality changes?**
+Monthflow is a modern, private, local-first monthly planning PWA. It is designed around the full monthly loop: **set outcomes → capture work → estimate capacity → schedule realistically → adapt when plans change → review results → carry learning forward**.
 
-## Feature set
+## Complete feature set
 
 ### Monthly planning
-- Full month calendar board
-- Previous/next/current month navigation
+- Full month calendar board with previous/next/current navigation
 - Drag-and-drop task rescheduling
 - Day workload indicators and overload warnings
-- Daily capacity and monthly usable-capacity limits
-- Configurable planning buffer
-- Work-hour and peak-energy settings
+- Daily capacity, monthly capacity and configurable planning buffer
+- Work-hour window and peak-energy window
 - Optional weekend planning
-- Automatic capacity-aware monthly planning
-- Dependency-aware auto-planning
+- Capacity-aware auto-scheduling
+- Dependency-aware scheduling that avoids blocked tasks
 - Deadline-aware prioritization
-- Backlog and carry-over work
+- Capacity rebalancing across the month
+- Long-task splitting into focused sessions
+- Unfinished-work carry-over to backlog
+- Monthly health check for overload, blockers, deadlines and goal alignment
 
 ### Tasks
-- Duration and start time
+- Title, notes, start time and duration
 - P1–P4 priority
-- Energy level
+- High/medium/low energy
 - Deadline
-- Notes
 - Projects/areas
 - Tags
 - Goal linkage
 - Task dependencies
 - Daily, weekday, weekly and monthly recurrence
-- Completion history
+- Completion state and completion timestamp
+- Drag/drop movement
+- Double-click editing
 - Keyboard-first quick creation
-- Natural-language quick capture for common date/duration/priority phrases
+- Deterministic natural-language smart capture for common dates, durations, priorities and energy
 
 ### Goals and outcomes
 - Monthly outcome goals
 - Target + unit
 - Linked-task progress
 - Goal completion percentage
-- Goal-oriented monthly review
+- Goal-focused monthly review
+- Goal alignment health signal
 
-### Advanced planning tools
-- Quick capture
+### Calendar and data portability
 - ICS calendar export
-- CSV export
-- JSON full-state backup/import
+- ICS calendar import
+- CSV month export
+- Full JSON state export/import from the core planner
 - Reusable monthly templates
-- Apply latest template to another month
-- Capacity/risk analytics
-- Priority and project workload analytics
+- Apply the latest saved template to a chosen starting date
+- Restore points before advanced mutations
+
+### Advanced planning controls
+- Smart scheduling
+- Capacity rebalancing
+- Dependency checks
+- Deadline protection
+- Focus-session splitting
+- Carry-over management
+- Focus-time target
+- Month health analysis
+- Snapshot/restore
+- Advanced Control Center
+- Search shortcut `/`
+- Command-center shortcut `Ctrl/⌘ K`
+- New-task shortcut `N`
+
+### Review and analytics
+- Monthly review ritual
+- Wins, blockers, changes and next-month focus
+- Completion analytics
+- Planned-vs-total work
+- Capacity utilization
+- Priority mix
+- Project workload
 - Deadline radar
-- Monthly review ritual with wins, blockers, changes and next focus
+- Overloaded-day detection
+- Goal progress
 
 ### Product quality
 - Responsive desktop/tablet/mobile UI
 - Light/dark/system theme
-- Accessible status messages and semantic controls
-- Persistent browser storage request
-- Offline PWA service worker
-- PWA install manifest and shortcuts
+- Semantic controls and live status messaging
+- Persistent browser storage
+- Offline PWA service worker including the advanced planner bundle
+- Installable web app manifest
 - No backend, account, telemetry, ads or external runtime dependency
+- GitHub Actions syntax, manifest, required-file, wiring and feature-marker validation
+- GitHub Pages deployment
 
-## Privacy
+## Privacy and limitations
 
-All planner data is stored in the browser's `localStorage`. The app does not upload planner data. Browser storage is not an encrypted vault, and local-first storage does not automatically synchronize between devices. Use JSON export for portable backups.
+All planner data stays in the browser's `localStorage`; the app does not upload planner data. Browser storage is not an encrypted vault and does not automatically synchronize between devices. JSON/CSV/ICS exports are the portable bridges. The smart planner is deliberately deterministic and explainable rather than pretending to be a server-side AI service.
 
 ## Architecture
 
-The project is intentionally dependency-free: HTML + CSS + browser JavaScript. `app.js` owns planner state and rendering. `advanced.js` adds portable calendar/data tools and templates. `sw.js` provides offline caching. GitHub Actions performs syntax, manifest, required-file, wiring and feature-marker validation before deploying the folder to GitHub Pages.
+The project is dependency-free HTML, CSS and browser JavaScript. `app.js` owns core planner state/rendering, `advanced.js` provides the advanced planning/data suite, `sw.js` provides offline caching, and GitHub Actions validates and deploys the folder.
 
 ## Research basis
 
-The design incorporates current productivity patterns including monthly objectives/reviews, task duration, planned time, deadlines, recurrence, projects/tags, time blocking, focus goals, workload-aware scheduling, adaptive routines, analytics and natural-language planning. These patterns were cross-checked against current product documentation from Sunsama, Akiflow, Reclaim and Notion.
+The feature design was cross-checked against current productivity patterns from Sunsama, Akiflow and Reclaim: guided planning/reviews, realistic workload limits, planned time and duration, recurrence, priorities, projects/tags, time blocking, natural-language planning, focus goals, adaptive task scheduling, buffers, analytics and calendar workflows. The implementation keeps those patterns that can be delivered honestly in a static local-first app.
 
-## Limitations by design
+## Scope boundary
 
-This is a static local-first application. It does not pretend to provide cloud accounts, multi-device synchronization, live external calendar synchronization or server-side AI. ICS/CSV/JSON are portable bridges that work without a backend.
+Monthflow does not claim live Google/Outlook calendar synchronization, multi-device cloud sync, accounts, team collaboration or a hosted AI agent. Those require external services and credentials; ICS/CSV/JSON provide real portable interoperability without fake integrations.
