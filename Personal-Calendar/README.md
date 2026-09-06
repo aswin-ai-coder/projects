@@ -2,7 +2,7 @@
 
 A modern, private, local-first personal calendar built as a static Progressive Web App. It is designed for a single person who wants a capable calendar without an account, server, telemetry, or cloud dependency.
 
-## Features
+## Feature-complete local-first scope
 
 ### Calendar experience
 - Month, week, day and 30-day agenda views
@@ -13,6 +13,7 @@ A modern, private, local-first personal calendar built as a static Progressive W
 - Configurable visible day window
 - Responsive mobile layout
 - Print-friendly browser output
+- Keyboard-accessible controls and visible focus states
 
 ### Events
 - Timed and all-day events
@@ -21,7 +22,7 @@ A modern, private, local-first personal calendar built as a static Progressive W
 - Calendar-specific colors
 - Location, notes and attendee fields
 - Search and filters
-- Conflict detection
+- Conflict detection and conflict filtering
 - Recurrence: daily, weekdays, weekly, every 2 weeks, monthly and yearly
 - Recurrence end date
 - Remove a single occurrence or an entire recurring series
@@ -29,74 +30,126 @@ A modern, private, local-first personal calendar built as a static Progressive W
 - Quick date controls
 - Natural-language quick capture such as `Study tomorrow 4pm 90 mins`
 - Drag events to another date/time in calendar views
-
-### Planning tools
-- Find free time for a chosen duration and working window
 - Event templates
-- Reusable calendar templates
-- Upcoming agenda
-- Conflict filter
-- Event duplication through templates
+- Duplicate/copy/paste events
 
-### Calendar management
+### Advanced event intelligence
+- Event status: confirmed, tentative, cancelled
+- Busy/free availability / transparency
+- Event privacy classification
+- Categories and tags
+- Meeting/reference URL metadata
+- Per-event time-zone metadata
+- Travel-time buffers
+- Protected focus-time classification
+- Advanced event inspector
+- Enhanced iCalendar export carrying categories, status, privacy, transparency, URL and local metadata extensions
+
+### Planning and scheduling
+- Find free time for a chosen duration and working window
+- Smart free-time suggestions with morning/afternoon/balanced preferences
+- Scheduling buffers
+- Travel-aware free-time calculations
+- One-click focus-block creation
+- Working-day configuration
+- Focus-time target
+- Weekly planning capacity
+- Default time zone
+- Calendar workload insights
+- Monthly event-hours and focus-hours analysis
+- Busiest-day detection
+- Conflict-pair analysis
+- Overloaded-day health checks
+- Event completeness checks
+- Recurring-series statistics
+
+### Calendar management and portability
 - Multiple personal calendars
 - Show/hide calendars
 - Calendar descriptions and colors
 - JSON backup/import
 - iCalendar `.ics` export/import
-- RFC 5545-style `VEVENT`, `DTSTART`, `DTEND` and basic `RRULE` portability
-- Local browser storage
+- RFC 5545-style `VEVENT`, `DTSTART`, `DTEND`, recurrence and exception portability
+- Enhanced export with `STATUS`, `CLASS`, `TRANSP`, `CATEGORIES`, `URL` and `EXDATE`
+- Local advanced metadata export/import
+- Local restore snapshots
+- Up to 12 local restore points
+- Storage usage/quota inspection
+- Optional persistent-storage request
 - Reset data
 
-### PWA and privacy
+### Modern PWA and privacy
 - Installable web app manifest
 - Offline service worker cache
 - PWA shortcuts
-- Optional browser reminders while the app is open
+- Optional browser reminders with explicit permission
+- Local-first storage
 - No backend
 - No accounts
 - No analytics or telemetry
 - No runtime third-party dependencies
+- No pretend cloud synchronization
 
-## Design basis
+### Power-user UX
+- Command palette with `Ctrl/Cmd + K`
+- Quick access to views and planning tools
+- Advanced Control Center
+- Mobile-friendly advanced panels
+- Keyboard Escape handling for overlays
+- Accessible native dialogs in the core UI
+- Visible focus indicators
 
-The feature set follows established calendar patterns: multiple color-coded calendars, recurring events, reminders, all-day events, agenda/day/week/month views, calendar portability and conflict/free-time awareness. Google Calendar documents separate calendars and repeating events; Outlook documents day/week/month views, reminders, recurrence, multiple/overlaid calendars and shared-calendar patterns; Apple Calendar documents multiple color-coded calendars, repeating events, alerts, locations, notes, import/export and multiple time zones. The app deliberately keeps its scope local-first instead of pretending to provide real-time collaboration or cloud synchronization.
+## Research basis
 
-The import/export model follows the iCalendar standard: RFC 5545 defines `VEVENT`, `DTSTART`, `DTEND`, recurrence rules and recurrence sets. The PWA architecture follows MDN guidance for manifests, service workers and offline operation.
+The product scope was deliberately expanded after reviewing current calendar patterns from Google Calendar, Outlook and Apple Calendar, plus the iCalendar standard and current browser/PWA guidance.
+
+- Google Calendar documents event creation, guests, colors, recurring events, suggested meeting times, working hours/location and focus-time concepts.
+- Outlook documents multiple calendars, merged/side-by-side views, reminders, recurrence, categories, Scheduling Assistant and `.ics` support.
+- Apple Calendar documents multiple color-coded calendars, repeating events, alerts, locations/travel time, invitees, attachments, URLs, time zones, import/export and focus-related behavior.
+- RFC 5545 defines the iCalendar `VCALENDAR`/`VEVENT` model, recurrence rules, exception dates, event status, transparency and related event properties.
+- MDN documents PWA manifests, service workers, offline operation, Notifications, storage APIs and IndexedDB. IndexedDB is intentionally identified as the correct future layer for large attachments rather than inflating localStorage.
+- WCAG/WAI guidance was used for keyboard access, visible focus and modal interaction patterns.
 
 ## Architecture
 
-- `index.html` — accessible application shell and dialogs
-- `styles.css` — responsive UI, month/week/day/agenda layouts and dark mode
-- `app.js` — calendar state, event engine, recurrence expansion, import/export, reminders and views
-- `advanced.js` — natural-language capture and drag scheduling enhancements
-- `manifest.webmanifest` — install metadata and shortcuts
+- `index.html` — accessible application shell and core dialogs
+- `styles.css` — responsive UI, calendar layouts and dark mode
+- `app.js` — calendar state, event engine, recurrence expansion, core import/export, reminders and views
+- `advanced.js` — advanced planning, event intelligence, command palette, snapshots, insights, smart scheduling and enhanced iCalendar export
+- `manifest.webmanifest` — install metadata and PWA shortcuts
 - `sw.js` — offline cache and runtime fallback
 - `icon.svg` — application icon
 - `.github/workflows/personal-calendar.yml` — syntax/asset validation and GitHub Pages deployment
 
-## Honest scope boundary
+## Honest architecture boundary
 
-This static/local-first version does **not** claim to provide live Google/Outlook/iCloud sync, multi-device cloud synchronization, server push notifications, account authentication, online invitations, shared-calendar collaboration or hosted AI. Those capabilities require service-side identity, synchronization and/or provider APIs. Users can still exchange calendar data using standard `.ics` files.
+This project is intentionally **feature-complete for a static/local-first architecture**, not a cloud calendar clone. It does not pretend to provide live Google/Outlook/iCloud synchronization, multi-device cloud sync, server push, account authentication, online invitations, shared-calendar collaboration, real-time free/busy lookup, maps/weather, or hosted AI. Those features require provider APIs, identity, networking and/or a backend. Standard `.ics` exchange remains available.
+
+For larger binary attachments, IndexedDB is the appropriate browser technology; the current project keeps calendar records in localStorage so the core remains simple and portable.
 
 ## Keyboard shortcuts
 
-- `Ctrl/Cmd + N` — new event
-- `/` — focus search
+- `Ctrl/Cmd + N` — new event (core)
+- `/` — focus search (core)
 - `M` — month view
 - `W` — week view
 - `D` — day view
 - `A` — agenda view
-- `Esc` — close dialogs
+- `Ctrl/Cmd + K` — command palette
+- `I` — open Advanced Control Center when the page body has focus
+- `Esc` — close dialogs/advanced overlays
 
 ## Privacy
 
-Calendar records are stored in browser `localStorage`. Exported files leave the browser only when the user explicitly exports or downloads them. Browser reminders are opt-in and are only scheduled by the app while the page is available; this project does not use a server push system.
+Calendar records and advanced metadata are stored locally in the browser. Exported files leave the browser only when the user explicitly exports them. Browser reminders require explicit permission. No calendar data is sent to a project server.
 
 ## Research references
 
-- Google Calendar Help — events, separate calendars and recurring events: https://support.google.com/calendar/answer/72143 and https://support.google.com/calendar/answer/37115
-- Microsoft Support — Outlook Calendar, scheduling, multiple calendars and sharing: https://support.microsoft.com/en-us/outlook/calendar/introduction-to-the-outlook-calendar
-- Apple Support — Calendar User Guide: https://support.apple.com/guide/calendar/welcome/mac
-- RFC 5545 — iCalendar: https://datatracker.ietf.org/doc/html/rfc5545
-- MDN — Progressive Web Apps and offline operation: https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/Guides/What_is_a_progressive_web_app and https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/Guides/Offline_and_background_operation
+- Google Calendar Help: event creation, recurring events, guests, working hours and focus time — https://support.google.com/calendar/
+- Microsoft Support: Outlook Calendar and scheduling — https://support.microsoft.com/en-us/outlook/calendar/
+- Apple Support: Calendar User Guide — https://support.apple.com/guide/calendar/welcome/mac
+- RFC 5545: Internet Calendaring and Scheduling Core Object Specification — https://www.rfc-editor.org/rfc/rfc5545
+- MDN: Progressive Web Apps — https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/Reference
+- MDN: Notifications API — https://developer.mozilla.org/en-US/docs/Web/API/Notifications_API
+- MDN: IndexedDB API — https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API
+- W3C WAI: WCAG 2.2 — https://www.w3.org/TR/WCAG22/
