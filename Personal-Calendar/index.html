@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="description" content="Calm — private local-first personal calendar with multiple calendars, month/week/day/agenda views, recurrence, reminders and iCalendar portability.">
+  <meta name="description" content="Calm — private local-first personal calendar with multiple calendars, month/week/day/agenda views, recurrence, reminders and advanced planning intelligence.">
   <meta name="theme-color" content="#5b5bd6">
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="icon" href="./icon.svg" type="image/svg+xml">
@@ -37,6 +37,6 @@
   <dialog id="freeTimeDialog" class="modal"><div class="modal-card"><div class="modal-head"><div><span class="eyebrow">SMART SCHEDULING</span><h2>Find free time</h2></div><button class="icon-btn" data-close>×</button></div><div class="form-grid"><label>Date<input id="freeDate" type="date"></label><label>Duration<select id="freeDuration"><option value="30">30 minutes</option><option value="60">1 hour</option><option value="90">90 minutes</option><option value="120">2 hours</option></select></label><label>Window start<input id="freeStart" type="time" value="08:00"></label><label>Window end<input id="freeEnd" type="time" value="20:00"></label></div><div id="freeResults" class="free-results"></div><div class="modal-actions"><span></span><button type="button" data-close>Close</button></div></div></dialog>
   <dialog id="templatesDialog" class="modal"><div class="modal-card"><div class="modal-head"><div><span class="eyebrow">REUSABLE EVENTS</span><h2>Event templates</h2></div><button class="icon-btn" data-close>×</button></div><div id="templateList" class="template-list"></div><div class="modal-actions"><button id="saveTemplateBtn" type="button">Save current event as template</button><span></span><button type="button" data-close>Close</button></div></div></dialog>
   <input id="fileInput" type="file" accept=".ics,.ical,.json,text/calendar,application/json" hidden><div id="toast" class="toast" role="status" aria-live="polite"></div>
-  <script src="./app.js"></script><script src="./advanced.js"></script>
+  <script src="./app.js"></script><script src="./advanced.js"></script><script src="./attachments.js"></script>
 </body>
 </html>
