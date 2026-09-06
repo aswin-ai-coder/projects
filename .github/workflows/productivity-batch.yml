@@ -3,57 +3,7 @@ on:
   push:
     branches: [main]
     paths:
-      - 'Daily-Planner/**'
-      - 'Weekly-Planner/**'
-      - 'Monthly-Planner/**'
-      - 'Personal-Calendar/**'
-      - 'Simple-Kanban-Board/**'
-      - 'Personal-Goal-Tracker/**'
-      - 'Habit-Tracker/**'
-      - 'Routine-Tracker/**'
-      - 'Daily-Checklist/**'
-      - 'Personal-Journal/**'
-      - 'Digital-Diary/**'
-      - 'Mood-Journal/**'
-      - 'Gratitude-Journal/**'
-      - 'Reading-Tracker/**'
-      - 'Movie-Watchlist/**'
-      - 'TV-Show-Tracker/**'
-      - 'Game-Backlog-Tracker/**'
-      - 'Book-Library-Manager/**'
-      - 'Personal-Bookmark-Manager/**'
-      - 'Link-Collection-Manager/**'
-      - 'Personal-Contact-Manager/**'
-      - 'Birthday-Manager/**'
-      - 'Important-Dates-Manager/**'
-      - 'Reminder-Manager/**'
-      - 'Countdown-Manager/**'
-      - 'Focus-Timer/**'
-      - 'Pomodoro-App/**'
-      - 'Study-Timer/**'
-      - 'Break-Reminder/**'
-      - 'Time-Tracker/**'
-      - 'Activity-Logger/**'
-      - 'Personal-Dashboard/**'
-      - 'Productivity-Dashboard/**'
-      - 'Personal-Statistics-Dashboard/**'
-      - 'Daily-Reflection-App/**'
-      - 'Personal-Goal-Journal/**'
-      - 'Weekly-Review-App/**'
-      - 'Monthly-Review-App/**'
-      - 'Daily-Routine-Dashboard/**'
-      - 'Personal-Checklist-Builder/**'
-      - 'Personal-Template-Manager/**'
-      - 'Quick-Notes-App/**'
-      - 'Sticky-Notes-App/**'
-      - 'Desktop-Memo-App/**'
-      - 'Personal-Information-Organizer/**'
-      - 'Personal-Life-Dashboard/**'
-      - 'Simple-Second-Brain-App/**'
-      - 'Personal-Organizer-Suite/**'
-      - '_shared/**'
-      - 'batch-manifest.json'
-      - '.github/workflows/productivity-batch.yml'
+      - '**'
   workflow_dispatch:
 jobs:
   validate:
@@ -62,20 +12,25 @@ jobs:
       - uses: actions/checkout@v6
       - name: Validate shared JavaScript
         run: node --check _shared/organizer.js
-      - name: Validate batch manifest and projects
+      - name: Validate batch manifest and project apps
         run: |
           node - <<'NODE'
           const fs=require('fs');
           const m=JSON.parse(fs.readFileSync('batch-manifest.json','utf8'));
           if(m.projects.length!==48) throw new Error(`Expected 48 projects, found ${m.projects.length}`);
           for(const p of m.projects){
-            const f=`${p}/index.html`;
-            if(!fs.existsSync(f)) throw new Error(`Missing ${f}`);
-            const s=fs.readFileSync(f,'utf8');
-            if(!s.includes('../_shared/organizer.js')) throw new Error(`Missing shared JS in ${f}`);
-            if(!s.includes('../_shared/organizer.css')) throw new Error(`Missing shared CSS in ${f}`);
+            const html=`${p}/index.html`, features=`${p}/features.json`;
+            if(!fs.existsSync(html)) throw new Error(`Missing ${html}`);
+            if(!fs.existsSync(features)) throw new Error(`Missing ${features}`);
+            const s=fs.readFileSync(html,'utf8');
+            if(!s.includes('../_shared/organizer.js')) throw new Error(`Missing shared JS in ${html}`);
+            if(!s.includes('../_shared/organizer.css')) throw new Error(`Missing shared CSS in ${html}`);
+            const f=JSON.parse(fs.readFileSync(features,'utf8'));
+            if(!Array.isArray(f.features)||f.features.length<5) throw new Error(`Weak feature manifest: ${features}`);
+            if(!Array.isArray(f.fields)||f.fields.length<2) throw new Error(`Weak field model: ${features}`);
+            if(!f.mode) throw new Error(`Missing mode: ${features}`);
           }
-          console.log(`Validated ${m.projects.length} projects`);
+          console.log(`Validated ${m.projects.length} project-specific feature manifests`);
           NODE
       - name: Validate HTML shells
         run: |
@@ -83,3 +38,11 @@ jobs:
           grep -q 'Personal Organizer Suite' Personal-Organizer-Suite/index.html
           grep -q 'Daily Planner' Personal-Organizer-Suite/index.html
           grep -q 'Simple Second Brain' Personal-Organizer-Suite/index.html
+      - name: Validate feature diversity
+        run: |
+          node - <<'NODE'
+          const fs=require('fs');const m=JSON.parse(fs.readFileSync('batch-manifest.json','utf8'));
+          const modes=new Set(m.projects.map(p=>JSON.parse(fs.readFileSync(`${p}/features.json`,'utf8')).mode));
+          if(modes.size<4) throw new Error(`Expected at least 4 workflow modes, found ${modes.size}`);
+          console.log([...modes].join(', '));
+          NODE
