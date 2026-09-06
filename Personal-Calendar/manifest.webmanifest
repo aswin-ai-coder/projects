@@ -1,0 +1,15 @@
+{
+  "name":"Calm — Personal Calendar",
+  "short_name":"Calm Calendar",
+  "start_url":"./",
+  "scope":"./",
+  "display":"standalone",
+  "background_color":"#f5f6fb",
+  "theme_color":"#5b5bd6",
+  "description":"Private local-first personal calendar with multiple calendars, recurring events, reminders and iCalendar portability.",
+  "icons":[{"src":"./icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}],
+  "shortcuts":[
+    {"name":"New event","short_name":"New event","url":"./?new=event"},
+    {"name":"Today","short_name":"Today","url":"./?view=today"}
+  ]
+}
