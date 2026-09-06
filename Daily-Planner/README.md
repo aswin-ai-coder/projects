@@ -1,28 +1,59 @@
 # Dayflow — Daily Planner
 
-A polished, private, local-first daily planning PWA built as a standalone static app. It combines a task inbox, visual time blocking, Big 3 priorities, routines, habits, focus sessions and daily review without requiring an account or backend.
+A polished, private, local-first daily planning PWA built as a standalone static app. It combines task capture, visual time blocking, Big 3 priorities, habits, routines, focus sessions, daily review and advanced capacity-aware planning without an account or backend.
 
-## Features
+## Core features
 
 - Visual daily timeline from 6 AM–10 PM
 - Quick capture with natural shortcuts such as `tomorrow`, `5pm`, `60m`, `#school`, and `!p1`
 - Task priorities, duration, notes, tags and recurring tasks
 - Big 3 daily priorities
-- Unscheduled inbox for tasks that still need a time block
+- Unscheduled inbox
 - Day navigation and 7-day weekly overview
-- Drag-ready task blocks with edit/complete/focus actions
-- Built-in focus timer with configurable session length
-- Habits with daily/weekday/weekend schedules and streaks
-- Reusable routines for repeated sequences
+- Task editing, completion, deletion and focus actions
+- Built-in focus timer
+- Habits, schedules and streaks
+- Reusable routines
 - Daily review with wins, learnings and tomorrow planning
-- Search and task filters
+- Search, status/priority filters and sorting
 - Light, dark and system themes
 - Compact mode and responsive mobile layout
 - Browser reminders while the app is open
-- JSON export/import for portable backups
-- Persistent-storage request in Settings
-- Installable PWA with offline service worker
-- No accounts, analytics, ads, cloud database or third-party runtime dependencies
+- JSON export/import
+- Persistent-storage request
+- Installable PWA and offline service worker
+
+## Advanced planning intelligence
+
+The Control Center adds the deeper planning features found in modern time-blocking and daily-planning workflows:
+
+- Capacity-aware daily workload meter
+- Configurable work window and daily capacity
+- Protected planning buffers
+- Peak-energy and low-energy planning windows
+- Priority/deadline-aware auto-planning
+- Dependency-aware task blocking fields
+- Energy level per task
+- Deadline per task
+- Location/context per task
+- Eisenhower urgent/important matrix
+- Goal tracking with task linkage
+- Project tracking with task linkage
+- Task splitting into smaller work blocks
+- Carry overdue unfinished work forward
+- Seven-day workload rebalance
+- Tomorrow planning shortcut
+- Reusable day templates
+- Template application for repeated plans
+- Seven-day capacity visualization
+- Calendar `.ics` export
+- Calendar `.ics` import
+- Print-friendly daily plan
+- Advanced task intelligence editor
+- Mobile-friendly advanced control center
+- Keyboard shortcut `Alt/Option + P` (or `Cmd + P` on supported keyboards) for planning intelligence
+
+The auto-planner is deterministic and transparent rather than pretending to be an AI scheduler: it prioritizes deadlines and priority, uses energy preferences, respects the configured work window and buffers, and avoids placing tasks that are blocked by unfinished dependencies.
 
 ## Privacy and storage
 
@@ -32,26 +63,39 @@ Browser storage is not a secure vault. Do not store passwords, authentication to
 
 The service worker caches the application shell so the planner can continue to open offline after its first successful load.
 
-## Project structure
+## Architecture
 
 ```text
 Daily-Planner/
 ├── index.html
 ├── styles.css
 ├── app.js
+├── advanced.js
 ├── manifest.webmanifest
 ├── sw.js
 ├── icon.svg
 └── README.md
 ```
 
+No backend or third-party runtime dependency is required. External calendar integration is deliberately file-based through ICS import/export so the static GitHub Pages deployment remains private and self-contained.
+
 ## Validation
 
-The GitHub Actions workflow checks JavaScript syntax, service-worker syntax, required files, manifest JSON, application wiring and feature markers before deploying the folder to GitHub Pages.
+The GitHub Actions workflow checks:
+
+- JavaScript syntax for the core and advanced modules
+- Service-worker syntax
+- Required files
+- Manifest JSON
+- Script/offline wiring
+- Advanced feature markers
+- GitHub Pages deployment configuration
 
 ## Product decisions
 
-The planner deliberately stays static and local-first. Cloud sync, accounts, collaborative calendars and AI scheduling would require a backend/service and a different privacy model, so they are not silently added to this standalone version.
+The planner was designed around the complete planning loop: capture → prioritize → estimate → allocate capacity → time-block → focus → complete → review → carry forward/rebalance.
+
+Cloud synchronization, accounts, collaborative calendars and server-side AI scheduling are intentionally not added to this standalone version because they would change the privacy and deployment model. The local deterministic scheduler provides advanced planning without requiring a server or sending planner data elsewhere.
 
 ## Deployment
 
