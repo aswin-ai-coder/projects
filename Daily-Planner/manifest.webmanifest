@@ -1,0 +1,16 @@
+{
+  "name": "Dayflow — Daily Planner",
+  "short_name": "Dayflow",
+  "description": "A private local-first daily planner with time blocking, routines, habits and focus sessions.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f6f7fb",
+  "theme_color": "#5b5bd6",
+  "orientation": "portrait-primary",
+  "icons": [{"src":"./icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}],
+  "shortcuts": [
+    {"name":"Plan today","short_name":"Today","url":"./#today","icons":[{"src":"./icon.svg","sizes":"any","type":"image/svg+xml"}]},
+    {"name":"New task","short_name":"New task","url":"./#new","icons":[{"src":"./icon.svg","sizes":"any","type":"image/svg+xml"}]}
+  ]
+}
