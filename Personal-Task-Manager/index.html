@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A fast, private personal task manager.">
+  <title>Focus — Personal Task Manager</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark" aria-hidden="true">✓</span><span>Focus</span></div>
+    <div class="top-actions">
+      <button class="icon-btn" id="themeBtn" type="button" aria-label="Toggle theme" title="Toggle theme">☾</button>
+      <button class="btn ghost" id="exportBtn" type="button">Export</button>
+      <label class="btn ghost file-btn">Import<input id="importInput" type="file" accept="application/json"></label>
+    </div>
+  </header>
+
+  <main class="layout">
+    <aside class="sidebar" aria-label="Task views">
+      <button class="nav-item active" data-view="all"><span>Inbox</span><span class="count" id="allCount">0</span></button>
+      <button class="nav-item" data-view="today"><span>Today</span><span class="count" id="todayCount">0</span></button>
+      <button class="nav-item" data-view="upcoming"><span>Upcoming</span></button>
+      <button class="nav-item" data-view="completed"><span>Completed</span><span class="count" id="completedCount">0</span></button>
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-label">Categories</div>
+      <div id="categoryNav"></div>
+      <button class="category-add" id="addCategoryBtn" type="button">+ Add category</button>
+    </aside>
+
+    <section class="content">
+      <div class="page-heading">
+        <div><p class="eyebrow" id="dateLabel"></p><h1 id="viewTitle">Inbox</h1></div>
+        <div class="stats" aria-label="Task summary"><span id="progressText">0 tasks</span><div class="progress"><span id="progressBar"></span></div></div>
+      </div>
+
+      <form class="composer" id="taskForm">
+        <input id="taskTitle" name="title" required maxlength="160" autocomplete="off" placeholder="What needs to be done?" aria-label="Task title">
+        <select id="taskPriority" aria-label="Priority"><option value="low">Low</option><option value="medium" selected>Medium</option><option value="high">High</option></select>
+        <input id="taskDue" type="date" aria-label="Due date">
+        <select id="taskCategory" aria-label="Category"></select>
+        <button class="btn primary" type="submit">Add task</button>
+      </form>
+
+      <div class="toolbar">
+        <div class="search-wrap"><span aria-hidden="true">⌕</span><input id="search" type="search" placeholder="Search tasks…" aria-label="Search tasks"></div>
+        <select id="statusFilter" aria-label="Filter by status"><option value="all">All status</option><option value="active">Active</option><option value="completed">Completed</option></select>
+        <select id="priorityFilter" aria-label="Filter by priority"><option value="all">All priorities</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select>
+        <select id="sortBy" aria-label="Sort tasks"><option value="due">Due date</option><option value="priority">Priority</option><option value="created">Recently added</option><option value="title">Title</option></select>
+      </div>
+
+      <div class="bulkbar hidden" id="bulkbar"><span id="selectedText">0 selected</span><button id="completeSelected" type="button">Complete</button><button id="deleteSelected" class="danger-text" type="button">Delete</button><button id="clearSelection" type="button">Clear</button></div>
+      <div class="task-list" id="taskList" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <div class="toast" id="toast" role="status"></div>
+  <dialog id="categoryDialog">
+    <form method="dialog" id="categoryForm" class="dialog-card"><button class="dialog-close" value="cancel" aria-label="Close">×</button><h2>New category</h2><p>Create a category to organize your tasks.</p><input id="categoryName" maxlength="30" required placeholder="e.g. School"><button class="btn primary" value="default">Create category</button></form>
+  </dialog>
+  <script src="app.js"></script>
+</body>
+</html>
