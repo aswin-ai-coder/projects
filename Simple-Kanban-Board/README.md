@@ -1,48 +1,72 @@
 # Flowboard — Simple Kanban Board
 
-A polished, private, local-first Kanban board designed to stay simple while still covering the features expected from a modern personal workflow board.
+A polished, private, local-first Kanban board that stays approachable while covering the core patterns found in modern personal and project boards.
 
-## Features
+## Feature-complete scope
 
 ### Board and flow
 - Multiple local boards
 - Four-column starter workflow
 - Create, rename and delete columns
 - Per-column WIP limits with blocking when a limit is reached
-- Real drag-and-drop card movement
-- Responsive desktop and mobile board layout
-- Compact or comfortable card density
+- Drag-and-drop card movement
+- Responsive desktop/mobile layout
+- Compact or comfortable density
+- Board statistics and activity history
 
-### Cards
+### Cards and structured work
 - Title and long description
 - Priority: urgent, high, medium, low, none
-- Due dates with overdue/today indicators
-- Assignee text with avatar initials
+- Start and due dates
+- Assignee and avatar initials
 - Labels/tags
-- Checklists with progress counts
-- Column selection
-- Edit, delete and quick-add
+- Checklists with progress
+- Work type: Task, Bug, Feature, Chore, Idea, Milestone
+- Estimate in minutes
+- Project and milestone metadata
+- Cycle/iteration metadata
+- Prerequisite dependencies
+- External blocked state and reason
+- Related links
+- Completed timestamps
 
-### Find and organize
-- Full-text search across title, description, labels and assignee
-- Priority, label and due-date filters
-- Sort by priority, due date, title or last update
-- Completed-card/archive view
-- Activity history
-- Board statistics
+### Modern views
+- Native Kanban board
+- Table view with searchable rows
+- Calendar-style dated work view
+- Timeline/roadmap view
+- Dependency view
+- Saved filter views
+- Quick filtering by text, priority, label and due date
+- Sorting by priority, due date, title or update time
 
-### Insights and workflow health
-- Total cards and completed cards
-- Overdue count
-- Checklist completion rate
-- Cards-by-column flow chart
-- WIP-limit health check
-- Activity log for meaningful board changes
+### Bulk and automation
+- Bulk card selection
+- Bulk move
+- Bulk priority updates
+- Bulk label updates
+- Local deterministic automation rules
+- Trigger rules on card save or movement
+- Conditions for Done, overdue, urgent and blocked work
+- Actions to add labels, set priority or move cards
+- Automation data remains private in browser storage
 
-### Data and privacy
-- Local browser storage only
-- JSON export/import backups
-- Local restore snapshot before reset/template operations
+### Flow intelligence
+- WIP count
+- Throughput over the last seven days
+- Median cycle-time estimate
+- Oldest active work age
+- Done ratio
+- Blocked-work count
+- Dependency health
+- Existing board analytics and checklist completion
+- WIP-limit health guidance
+
+### Data and portability
+- JSON backup/import
+- Restore snapshot
+- Advanced metadata stored separately from core board data
+- CSV export with structured card metadata
 - No account, backend, telemetry or external runtime dependency
 - Offline service worker
 - Installable PWA
@@ -51,15 +75,26 @@ A polished, private, local-first Kanban board designed to stay simple while stil
 - `N` — new card
 - `/` — search
 - `Ctrl/Cmd + K` — search
+- `Ctrl/Cmd + Shift + P` — flow metrics
+- `Ctrl/Cmd + Shift + B` — bulk operations
 - `?` — keyboard shortcut help
 - `Escape` — close active dialogs
-- Print-friendly browser output
+- Print-friendly board
+- Mobile-friendly advanced views
 
 ## Research basis
 
-The scope follows current Kanban/project-board patterns: visual board views, custom metadata, filtering and sorting, WIP-aware flow, checklists, due dates, labels, analytics and lightweight automation. GitHub Projects documents board/table/roadmap views, custom fields, grouping, filtering, charts and built-in automation. Trello documents labels, due dates, attachments, checklists, custom fields, sorting and automation. The implementation intentionally keeps only the features that fit a focused local-first board.
+The scope was reviewed against current product patterns from GitHub Projects, Trello, Jira and Linear. GitHub Projects supports board/table/roadmap views, custom fields, filtering, sorting, grouping, charts, iterations and automation. Trello documents board filtering, table/calendar/timeline/dashboard views, custom fields, checklists, due/start dates, automation and dependency-oriented workflows. Jira documents WIP limits, quick filters, swimlanes, configurable card fields and flow metrics. Linear documents grouping, sub-grouping, custom views, cycles, display properties and dependency visualization.
 
-Flowboard deliberately does not pretend to provide cloud collaboration, server-side AI, real-time multi-user presence, or external integrations.
+Sources researched:
+- GitHub Projects: https://docs.github.com/en/issues/planning-and-tracking-with-projects
+- Trello search/filter/views: https://support.atlassian.com/trello/docs/search-filter-and-custom-views/
+- Trello automation: https://support.atlassian.com/trello/docs/automation-overview/
+- Trello dependencies: https://support.atlassian.com/trello/docs/creating-and-managing-task-dependencies/
+- Jira Kanban: https://www.atlassian.com/software/jira/features/kanban-boards
+- Linear board layout: https://linear.app/docs/board-layout
+
+Flowboard intentionally keeps the implementation honest and local-first. It does **not** pretend to provide cloud collaboration, real-time multi-user presence, hosted AI, or live third-party integrations.
 
 ## Architecture
 
@@ -68,20 +103,22 @@ Simple-Kanban-Board/
 ├── index.html
 ├── styles.css
 ├── app.js
+├── advanced.js
 ├── manifest.webmanifest
 ├── sw.js
 ├── icon.svg
-└── README.md
+├── README.md
+└── .github/workflows/simple-kanban-board.yml
 ```
 
 No framework or build step is required.
 
 ## Validation
 
-The GitHub Actions workflow checks JavaScript syntax, manifest JSON, required files, PWA wiring and important product markers before deploying the folder to GitHub Pages.
+GitHub Actions validates JavaScript syntax for both application bundles and the service worker, manifest JSON, required files, PWA wiring and advanced product markers before deploying the folder to GitHub Pages.
 
 ## Deployment
 
-Expected public path:
+Public path:
 
 `https://aswin-ai-coder.github.io/projects/Simple-Kanban-Board/`
