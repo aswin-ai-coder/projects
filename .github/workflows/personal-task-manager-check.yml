@@ -22,14 +22,23 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
       - name: Validate JavaScript syntax
-        run: node --check Personal-Task-Manager/app.js
+        run: |
+          node --check Personal-Task-Manager/app.js
+          node --check Personal-Task-Manager/enhancements.js
       - name: Validate required app files
         run: |
           test -f Personal-Task-Manager/index.html
           test -f Personal-Task-Manager/styles.css
           test -f Personal-Task-Manager/app.js
+          test -f Personal-Task-Manager/enhancements.js
+          test -f Personal-Task-Manager/manifest.webmanifest
+          test -f Personal-Task-Manager/sw.js
           test -f Personal-Task-Manager/README.md
+      - name: Validate manifest JSON
+        run: node -e "JSON.parse(require('fs').readFileSync('Personal-Task-Manager/manifest.webmanifest','utf8')); console.log('manifest ok')"
       - name: Check local asset references
         run: |
           grep -q 'styles.css' Personal-Task-Manager/index.html
           grep -q 'app.js' Personal-Task-Manager/index.html
+          grep -q 'enhancements.js' Personal-Task-Manager/index.html
+          grep -q 'enhancements.js' Personal-Task-Manager/sw.js
