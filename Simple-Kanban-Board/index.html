@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#4f46e5">
-  <meta name="description" content="A fast, private, local-first Kanban board with drag and drop, WIP limits, checklists, labels, analytics and offline support.">
+  <meta name="description" content="A fast, private, local-first Kanban board with drag and drop, WIP limits, advanced views, dependencies, automation and flow analytics.">
   <title>Flowboard — Simple Kanban</title>
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="icon" href="./icon.svg" type="image/svg+xml">
@@ -42,7 +42,6 @@
     </div>
 
     <main id="board" class="board" aria-label="Kanban board"></main>
-
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
   </div>
 
@@ -83,13 +82,12 @@
 
   <dialog id="moreDialog" class="modal"><div class="modal-card compact-modal">
     <div class="modal-head"><div><span class="eyebrow">BOARD TOOLS</span><h2>More</h2></div><button type="button" class="close-btn" data-close>×</button></div>
-    <div class="tool-list">
-      <button data-tool="template">Use starter template</button><button data-tool="archive">Show archive</button><button data-tool="activity">Activity history</button><button data-tool="shortcuts">Keyboard shortcuts</button><button data-tool="print">Print board</button>
-    </div>
+    <div class="tool-list"><button data-tool="template">Use starter template</button><button data-tool="archive">Show archive</button><button data-tool="activity">Activity history</button><button data-tool="shortcuts">Keyboard shortcuts</button><button data-tool="print">Print board</button></div>
   </div></dialog>
 
   <dialog id="simpleDialog" class="modal"><div class="modal-card wide-modal"><div class="modal-head"><div><span id="simpleEyebrow" class="eyebrow">VIEW</span><h2 id="simpleTitle">Activity</h2></div><button type="button" class="close-btn" data-close>×</button></div><div id="simpleContent"></div></div></dialog>
 
   <script src="./app.js"></script>
+  <script src="./advanced.js"></script>
 </body>
 </html>
