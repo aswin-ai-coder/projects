@@ -48,7 +48,7 @@ jobs:
           grep -q 'manifest.webmanifest' Daily-Planner/index.html
           grep -q 'serviceWorker' Daily-Planner/app.js
           grep -q 'advanced.js' Daily-Planner/sw.js
-          grep -q 'time-blocked' Daily-Planner/index.html
+          grep -q 'Timeline' Daily-Planner/index.html
           grep -q 'Big 3' Daily-Planner/index.html
           grep -q 'Habits & routines' Daily-Planner/index.html
           grep -q 'Daily review' Daily-Planner/index.html
