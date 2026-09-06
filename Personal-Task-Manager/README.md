@@ -1,38 +1,59 @@
-# Personal Task Manager
+# Focus — Personal Task Manager
 
-Focus is a privacy-friendly, responsive task manager that runs entirely in the browser. Tasks and preferences are persisted with `localStorage`, so no backend or account is required.
+A modern, privacy-first personal task manager that runs entirely in the browser. No account or backend is required.
 
 ## Features
 
-- Create, edit, complete, and delete tasks
-- Full task editing for title, priority, due date, and category
-- Priorities and custom categories
-- Due dates with local-time Today / Upcoming views and overdue detection
-- Search, status, priority, and category filters
-- Sort by due date, priority, creation time, or title
-- Dashboard completion statistics
-- Bulk complete and bulk delete
-- Keyboard shortcuts (`N` for a new task, `Ctrl/Cmd+K` for search)
-- Import/export JSON backups with validation and normalization
+- Create, edit, duplicate, complete, reopen, and delete tasks
+- Notes and multi-step subtasks
+- Low / medium / high priorities
+- Due dates and optional due times
+- Overdue, Today, Upcoming, Completed, Inbox, and 14-day Calendar views
+- Recurring tasks: daily, weekdays, weekly, monthly, yearly
+- Optional in-browser reminder notifications
+- Custom categories and tags
+- Search across titles, notes, categories, and tags
+- Status, priority, category, and tag filters
+- Due-date, priority, recent, and title sorting
+- Bulk completion and deletion
+- Undo for destructive deletion/clear-completed actions
+- Quick-add date/tag recognition (`tomorrow`, `today`, `YYYY-MM-DD`, `#tag`)
+- Dark mode and compact mode support in the data model
+- JSON backup export/import with validation and merge/replace behavior
+- Keyboard shortcuts: `N` new task, `C` category, `Ctrl/Cmd+K` search
 - Responsive accessible UI
-- Dark/light theme preference
-- Defensive localStorage and file-error handling
+- Installable PWA with offline caching
 - No external runtime dependencies
+
+## Data and privacy
+
+Tasks and preferences are stored locally in the browser with `localStorage`. Nothing is sent to a server by the application. Export a backup if the data is important.
+
+Reminder notifications are browser notifications and require permission. Because this is a static local-first app, reminder checking occurs while the app is open.
 
 ## Run
 
-Open `index.html` in a modern browser. No build step or server is required.
+Open `index.html` in a modern browser, or serve the folder over HTTPS/localhost. GitHub Pages provides HTTPS and can install the app as a PWA.
 
-## Data
+## Backup
 
-Tasks and preferences are stored locally in the browser using `localStorage`. Use **Export** regularly if the data is important. Imported backups are validated and invalid task records are ignored.
+Use **Export** to save a JSON backup. **Import** can replace the current dataset or merge new task IDs into the existing dataset.
 
-## Development checks
+## Project structure
 
-GitHub Actions validates the JavaScript syntax, required project files, and local asset references on changes to this project. GitHub Pages deploys the contents of this folder from `main`.
+- `index.html` — application shell and task editor
+- `styles.css` — responsive design system
+- `app.js` — state, persistence, task logic, views, import/export, reminders
+- `manifest.webmanifest` — PWA metadata
+- `sw.js` — offline cache/service worker
+- `icon.svg` — app icon
 
-## Structure
+## Verification
 
-- `index.html` — application shell and task/category edit dialogs
-- `styles.css` — responsive UI and design system
-- `app.js` — task state, persistence, validation, filtering, rendering, import/export, and interactions
+The project is intentionally dependency-free. Recommended checks are:
+
+```bash
+node --check app.js
+```
+
+Then open the app in a browser and test add/edit/complete/delete, recurrence, subtasks, search/filtering, import/export, notifications, and offline/PWA behavior.

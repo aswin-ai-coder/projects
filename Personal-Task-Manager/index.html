@@ -2,89 +2,50 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="A fast, private personal task manager.">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="description" content="Focus — a private, modern personal task manager that works offline.">
+  <meta name="theme-color" content="#5b5bd6">
+  <meta name="color-scheme" content="light dark">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./icon.svg" type="image/svg+xml">
   <title>Focus — Personal Task Manager</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
-  <header class="topbar">
-    <div class="brand"><span class="brand-mark" aria-hidden="true">✓</span><span>Focus</span></div>
-    <div class="top-actions">
-      <button class="icon-btn" id="themeBtn" type="button" aria-label="Toggle theme" title="Toggle theme">☾</button>
-      <button class="btn ghost" id="exportBtn" type="button">Export</button>
-      <label class="btn ghost file-btn">Import<input id="importInput" type="file" accept="application/json"></label>
-    </div>
-  </header>
-
-  <main class="layout">
-    <aside class="sidebar" aria-label="Task views">
-      <button class="nav-item active" data-view="all"><span>Inbox</span><span class="count" id="allCount">0</span></button>
-      <button class="nav-item" data-view="today"><span>Today</span><span class="count" id="todayCount">0</span></button>
-      <button class="nav-item" data-view="upcoming"><span>Upcoming</span></button>
-      <button class="nav-item" data-view="completed"><span>Completed</span><span class="count" id="completedCount">0</span></button>
-      <div class="sidebar-divider"></div>
-      <div class="sidebar-label">Categories</div>
-      <div id="categoryNav"></div>
-      <button class="category-add" id="addCategoryBtn" type="button">+ Add category</button>
-    </aside>
-
-    <section class="content">
-      <div class="page-heading">
-        <div><p class="eyebrow" id="dateLabel"></p><h1 id="viewTitle">Inbox</h1></div>
-        <div class="stats" aria-label="Task summary"><span id="progressText">0 tasks</span><div class="progress"><span id="progressBar"></span></div></div>
-      </div>
-
-      <form class="composer" id="taskForm">
-        <input id="taskTitle" name="title" required maxlength="160" autocomplete="off" placeholder="What needs to be done?" aria-label="Task title">
-        <select id="taskPriority" aria-label="Priority"><option value="low">Low</option><option value="medium" selected>Medium</option><option value="high">High</option></select>
-        <input id="taskDue" type="date" aria-label="Due date">
-        <select id="taskCategory" aria-label="Category"></select>
-        <button class="btn primary" type="submit">Add task</button>
-      </form>
-
-      <div class="toolbar">
-        <div class="search-wrap"><span aria-hidden="true">⌕</span><input id="search" type="search" placeholder="Search tasks…" aria-label="Search tasks"></div>
-        <select id="statusFilter" aria-label="Filter by status"><option value="all">All status</option><option value="active">Active</option><option value="completed">Completed</option></select>
-        <select id="priorityFilter" aria-label="Filter by priority"><option value="all">All priorities</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select>
-        <select id="sortBy" aria-label="Sort tasks"><option value="due">Due date</option><option value="priority">Priority</option><option value="created">Recently added</option><option value="title">Title</option></select>
-      </div>
-
-      <div class="bulkbar hidden" id="bulkbar"><span id="selectedText">0 selected</span><button id="completeSelected" type="button">Complete</button><button id="deleteSelected" class="danger-text" type="button">Delete</button><button id="clearSelection" type="button">Clear</button></div>
-      <div class="task-list" id="taskList" aria-live="polite"></div>
-    </section>
-  </main>
-
-  <div class="toast" id="toast" role="status"></div>
-
-  <dialog id="categoryDialog">
-    <form method="dialog" id="categoryForm" class="dialog-card">
-      <button class="dialog-close" value="cancel" aria-label="Close">×</button>
-      <h2>New category</h2><p>Create a category to organize your tasks.</p>
-      <input id="categoryName" maxlength="30" required placeholder="e.g. School">
-      <button class="btn primary" value="default">Create category</button>
-    </form>
-  </dialog>
-
-  <dialog id="editDialog">
-    <form method="dialog" id="editForm" class="dialog-card">
-      <button class="dialog-close" value="cancel" aria-label="Close">×</button>
-      <h2>Edit task</h2><p>Update the task details and save your changes.</p>
-      <label class="field-label" for="editTitle">Task</label>
-      <input id="editTitle" maxlength="160" required autocomplete="off">
-      <label class="field-label" for="editPriority">Priority</label>
-      <select id="editPriority"><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option></select>
-      <label class="field-label" for="editDue">Due date</label>
-      <input id="editDue" type="date">
-      <label class="field-label" for="editCategory">Category</label>
-      <select id="editCategory"></select>
-      <div class="dialog-actions">
-        <button class="btn ghost" value="cancel">Cancel</button>
-        <button class="btn primary" id="saveEditBtn" value="default">Save changes</button>
-      </div>
-    </form>
-  </dialog>
-
-  <script src="app.js"></script>
+<header class="topbar">
+  <div class="brand"><span class="brand-mark" aria-hidden="true">✓</span><span>Focus</span></div>
+  <div class="top-actions">
+    <button class="icon-btn" id="themeBtn" type="button" aria-label="Toggle theme" title="Toggle theme">☾</button>
+    <button class="btn ghost" id="notifyBtn" type="button" title="Enable task reminders">Reminders</button>
+    <button class="btn ghost hidden" id="installBtn" type="button">Install</button>
+    <button class="btn ghost" id="exportBtn" type="button">Export</button>
+    <label class="btn ghost file-btn">Import<input id="importInput" type="file" accept="application/json"></label>
+  </div>
+</header>
+<main class="layout">
+  <aside class="sidebar" aria-label="Task views">
+    <button class="nav-item active" data-view="all"><span>Inbox</span><span class="count" id="allCount">0</span></button>
+    <button class="nav-item" data-view="today"><span>Today</span><span class="count" id="todayCount">0</span></button>
+    <button class="nav-item" data-view="upcoming"><span>Upcoming</span></button>
+    <button class="nav-item" data-view="overdue"><span>Overdue</span><span class="count danger-count" id="overdueCount">0</span></button>
+    <button class="nav-item" data-view="calendar"><span>Calendar</span></button>
+    <button class="nav-item" data-view="completed"><span>Completed</span><span class="count" id="completedCount">0</span></button>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-label">Categories</div>
+    <div id="categoryNav"></div>
+    <button class="category-add" id="addCategoryBtn" type="button">+ Add category <kbd>C</kbd></button>
+  </aside>
+  <section class="content">
+    <div class="page-heading"><div><p class="eyebrow" id="dateLabel"></p><h1 id="viewTitle">Inbox</h1></div><div class="stats"><span id="progressText">0 tasks</span><div class="progress" aria-hidden="true"><span id="progressBar"></span></div></div></div>
+    <form class="composer" id="taskForm"><input id="taskTitle" name="title" required maxlength="160" autocomplete="off" placeholder="What needs to be done? Try “Buy milk tomorrow #shopping”" aria-label="Task title"><select id="taskPriority" aria-label="Priority"><option value="low">Low</option><option value="medium" selected>Medium</option><option value="high">High</option></select><input id="taskDue" type="date" aria-label="Due date"><select id="taskCategory" aria-label="Category"></select><button class="btn primary" type="submit">Add task</button></form>
+    <div class="toolbar"><div class="search-wrap"><span aria-hidden="true">⌕</span><input id="search" type="search" placeholder="Search title, notes, tags…" aria-label="Search tasks"></div><select id="statusFilter" aria-label="Filter by status"><option value="all">All status</option><option value="active">Active</option><option value="completed">Completed</option></select><select id="priorityFilter" aria-label="Filter by priority"><option value="all">All priorities</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select><select id="categoryFilter" aria-label="Filter by category"></select><select id="tagFilter" aria-label="Filter by tag"></select><select id="sortBy" aria-label="Sort tasks"><option value="due">Due date</option><option value="priority">Priority</option><option value="created">Recently added</option><option value="title">Title</option></select></div>
+    <div class="bulkbar hidden" id="bulkbar"><span id="selectedText">0 selected</span><button id="completeSelected" type="button">Complete</button><button id="deleteSelected" class="danger-text" type="button">Delete</button><button id="clearSelection" type="button">Clear</button></div>
+    <div class="task-list" id="taskList" aria-live="polite"></div>
+    <div class="list-footer"><button class="btn ghost hidden" id="clearCompleted" type="button">Clear completed</button><span>Data stays in this browser. Export a backup when needed.</span></div>
+  </section>
+</main>
+<div class="toast" id="toast" role="status"></div><div class="undo" id="undo" role="status"></div>
+<dialog id="editDialog"><form method="dialog" id="editForm" class="dialog-card"><button class="dialog-close" value="cancel" aria-label="Close">×</button><h2>Edit task</h2><p>Keep the details you need, without leaving the task list.</p><label class="field-label" for="editTitle">Task</label><input id="editTitle" maxlength="160" required autocomplete="off"><label class="field-label" for="editNotes">Notes</label><textarea id="editNotes" maxlength="4000" rows="4" placeholder="Details, links, context…"></textarea><div class="field-grid"><div><label class="field-label" for="editPriority">Priority</label><select id="editPriority"><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option></select></div><div><label class="field-label" for="editCategory">Category</label><select id="editCategory"></select></div><div><label class="field-label" for="editDue">Due date</label><input id="editDue" type="date"></div><div><label class="field-label" for="editDueTime">Due time</label><input id="editDueTime" type="time"></div><div><label class="field-label" for="editRecurrence">Repeat</label><select id="editRecurrence"><option value="">Does not repeat</option><option value="daily">Daily</option><option value="weekdays">Weekdays</option><option value="weekly">Weekly</option><option value="monthly">Monthly</option><option value="yearly">Yearly</option></select></div><div><label class="field-label" for="editReminder">Reminder time</label><input id="editReminder" type="time"></div></div><label class="field-label" for="editTags">Tags</label><input id="editTags" maxlength="250" placeholder="school, project, errands"><div class="subtasks-head"><span class="field-label">Steps</span><span class="muted">Break a task into smaller actions</span></div><div id="subtaskList" class="subtask-list"></div><div class="subtask-add"><input id="newSubtask" maxlength="120" placeholder="Add a step…"><button class="btn ghost" id="addSubtaskBtn" type="button">Add step</button></div><div class="dialog-actions"><button class="btn ghost" value="cancel">Cancel</button><button class="btn primary" value="default">Save changes</button></div></form></dialog>
+<script src="./app.js"></script>
 </body>
 </html>

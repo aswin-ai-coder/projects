@@ -1,0 +1,11 @@
+{
+  "name": "Focus — Personal Task Manager",
+  "short_name": "Focus",
+  "description": "A private, modern personal task manager that works offline.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f6f7fb",
+  "theme_color": "#5b5bd6",
+  "icons": [{"src":"./icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]
+}
