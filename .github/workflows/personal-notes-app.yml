@@ -24,7 +24,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Validate JavaScript syntax
-        run: node --check Personal-Notes-App/app.js
+        run: |
+          node --check Personal-Notes-App/app.js
+          node --check Personal-Notes-App/advanced.js
       - name: Validate service worker syntax
         run: node --check Personal-Notes-App/sw.js
       - name: Validate required files
@@ -32,6 +34,7 @@ jobs:
           test -f Personal-Notes-App/index.html
           test -f Personal-Notes-App/styles.css
           test -f Personal-Notes-App/app.js
+          test -f Personal-Notes-App/advanced.js
           test -f Personal-Notes-App/manifest.webmanifest
           test -f Personal-Notes-App/sw.js
           test -f Personal-Notes-App/icon.svg
@@ -41,8 +44,10 @@ jobs:
         run: |
           grep -q 'styles.css' Personal-Notes-App/index.html
           grep -q 'app.js' Personal-Notes-App/index.html
+          grep -q 'advanced.js' Personal-Notes-App/index.html
           grep -q 'manifest.webmanifest' Personal-Notes-App/index.html
           grep -q 'sw.js' Personal-Notes-App/app.js
+          grep -q 'advanced.js' Personal-Notes-App/sw.js
 
   deploy:
     needs: validate
