@@ -28,6 +28,7 @@ jobs:
           node --check Simple-Kanban-Board/app.js
           node --check Simple-Kanban-Board/advanced.js
           node --check Simple-Kanban-Board/attachments.js
+          node --check Simple-Kanban-Board/comments.js
           node --check Simple-Kanban-Board/sw.js
       - name: Validate manifest
         run: node -e "JSON.parse(require('fs').readFileSync('Simple-Kanban-Board/manifest.webmanifest','utf8')); console.log('manifest ok')"
@@ -38,6 +39,7 @@ jobs:
           test -s Simple-Kanban-Board/app.js
           test -s Simple-Kanban-Board/advanced.js
           test -s Simple-Kanban-Board/attachments.js
+          test -s Simple-Kanban-Board/comments.js
           test -s Simple-Kanban-Board/manifest.webmanifest
           test -s Simple-Kanban-Board/sw.js
           test -s Simple-Kanban-Board/icon.svg
@@ -48,6 +50,7 @@ jobs:
           grep -q 'app.js' Simple-Kanban-Board/index.html
           grep -q 'advanced.js' Simple-Kanban-Board/index.html
           grep -q 'attachments.js' Simple-Kanban-Board/index.html
+          grep -q 'comments.js' Simple-Kanban-Board/index.html
           grep -q 'serviceWorker' Simple-Kanban-Board/app.js
           grep -q 'dragstart' Simple-Kanban-Board/app.js
           grep -q 'WIP' Simple-Kanban-Board/app.js
@@ -64,6 +67,7 @@ jobs:
           grep -q 'Saved views' Simple-Kanban-Board/advanced.js
           grep -q 'Export CSV' Simple-Kanban-Board/advanced.js
           grep -q 'indexedDB' Simple-Kanban-Board/attachments.js
+          grep -q 'comments' Simple-Kanban-Board/comments.js
 
   deploy:
     needs: validate
