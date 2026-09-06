@@ -1,0 +1,44 @@
+name: Activity Logger Validation
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'Activity-Logger/**'
+      - '.github/workflows/activity-logger.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Validate JavaScript
+        run: node --check Activity-Logger/activity.js
+      - name: Validate service worker
+        run: node --check Activity-Logger/sw.js
+      - name: Validate manifest
+        run: node -e "JSON.parse(require('fs').readFileSync('Activity-Logger/manifest.webmanifest','utf8'))"
+      - name: Validate required files and wiring
+        run: |
+          test -f Activity-Logger/index.html
+          test -f Activity-Logger/activity.js
+          test -f Activity-Logger/activity.css
+          test -f Activity-Logger/features.json
+          test -f Activity-Logger/manifest.webmanifest
+          test -f Activity-Logger/sw.js
+          test -f Activity-Logger/icon.svg
+          grep -q 'activity.js' Activity-Logger/index.html
+          grep -q 'activity.css' Activity-Logger/index.html
+          grep -q 'manifest.webmanifest' Activity-Logger/index.html
+          grep -q 'serviceWorker' Activity-Logger/activity.js
+      - name: Validate feature manifest
+        run: |
+          node - <<'NODE'
+          const fs=require('fs');
+          const f=JSON.parse(fs.readFileSync('Activity-Logger/features.json','utf8'));
+          if(f.features.length<20) throw new Error('Feature manifest is incomplete');
+          if(f.fields.length<8) throw new Error('Activity data model is incomplete');
+          if(f.mode!=='standalone') throw new Error('Activity Logger must use its standalone implementation');
+          console.log(`Validated ${f.features.length} features and ${f.fields.length} fields`);
+          NODE
