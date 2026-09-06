@@ -7,7 +7,7 @@ A polished, private, local-first Kanban board designed to stay simple while stil
 ### Board and flow
 - Multiple local boards
 - Four-column starter workflow
-- Create, rename, reorder-ready columns and delete columns
+- Create, rename and delete columns
 - Per-column WIP limits with blocking when a limit is reached
 - Real drag-and-drop card movement
 - Responsive desktop and mobile board layout
@@ -57,9 +57,9 @@ A polished, private, local-first Kanban board designed to stay simple while stil
 
 ## Research basis
 
-The product scope was shaped by current Kanban and project-board patterns. Modern boards commonly combine board/list views with custom fields, filtering, sorting, iterations, insights and automation; Trello emphasizes labels, due dates, attachments, checklists, custom fields, sorting and automation; GitHub Projects combines board views with custom fields, grouping, filtering, charts and workflow automation. citeturn0search0turn0search4turn0search5turn0search8
+The scope follows current Kanban/project-board patterns: visual board views, custom metadata, filtering and sorting, WIP-aware flow, checklists, due dates, labels, analytics and lightweight automation. GitHub Projects documents board/table/roadmap views, custom fields, grouping, filtering, charts and built-in automation. Trello documents labels, due dates, attachments, checklists, custom fields, sorting and automation. The implementation intentionally keeps only the features that fit a focused local-first board.
 
-Flowboard deliberately keeps the implementation local-first and deterministic. It does not pretend to provide cloud collaboration, server-side AI, real-time multi-user presence, or external integrations.
+Flowboard deliberately does not pretend to provide cloud collaboration, server-side AI, real-time multi-user presence, or external integrations.
 
 ## Architecture
 
@@ -71,8 +71,7 @@ Simple-Kanban-Board/
 ├── manifest.webmanifest
 ├── sw.js
 ├── icon.svg
-├── README.md
-└── .github/workflows/simple-kanban-board.yml
+└── README.md
 ```
 
 No framework or build step is required.
