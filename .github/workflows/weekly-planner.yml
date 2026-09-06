@@ -1,0 +1,73 @@
+name: Weekly Planner
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'Weekly-Planner/**'
+      - '.github/workflows/weekly-planner.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: weekly-planner-pages
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Validate JavaScript
+        run: |
+          node --check Weekly-Planner/app.js
+          node --check Weekly-Planner/sw.js
+      - name: Validate required files
+        run: |
+          test -f Weekly-Planner/index.html
+          test -f Weekly-Planner/styles.css
+          test -f Weekly-Planner/app.js
+          test -f Weekly-Planner/manifest.webmanifest
+          test -f Weekly-Planner/sw.js
+          test -f Weekly-Planner/icon.svg
+          test -f Weekly-Planner/README.md
+      - name: Validate manifest
+        run: node -e "JSON.parse(require('fs').readFileSync('Weekly-Planner/manifest.webmanifest','utf8'))"
+      - name: Validate wiring and product markers
+        run: |
+          grep -q 'styles.css' Weekly-Planner/index.html
+          grep -q 'app.js' Weekly-Planner/index.html
+          grep -q 'manifest.webmanifest' Weekly-Planner/index.html
+          grep -q 'serviceWorker' Weekly-Planner/app.js
+          grep -q 'Weekflow' Weekly-Planner/index.html
+          grep -q 'Weekly objectives' Weekly-Planner/index.html
+          grep -q 'Backlog' Weekly-Planner/index.html
+          grep -q 'Weekly review' Weekly-Planner/index.html
+          grep -q 'Auto-balance week' Weekly-Planner/index.html
+          grep -q 'Daily capacity' Weekly-Planner/index.html
+          grep -q 'analytics' Weekly-Planner/app.js
+          grep -q 'localStorage' Weekly-Planner/app.js
+
+  deploy:
+    needs: validate
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: Weekly-Planner
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
