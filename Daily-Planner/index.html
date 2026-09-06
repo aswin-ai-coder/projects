@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#5b5bd6">
-<meta name="description" content="Dayflow — a private local-first daily planner with time blocking, priorities, routines and focus sessions.">
+<meta name="description" content="Dayflow — a private local-first daily planner with time blocking, priorities, routines and advanced planning intelligence.">
 <meta name="color-scheme" content="light dark">
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" href="./icon.svg" type="image/svg+xml">
@@ -12,78 +12,16 @@
 <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
-<header class="topbar">
-  <a class="brand" href="#" aria-label="Dayflow home"><span class="brand-mark">D</span><span>Dayflow</span></a>
-  <div class="top-actions">
-    <button class="icon-btn" id="themeBtn" title="Cycle theme" aria-label="Cycle theme">◐</button>
-    <button class="btn ghost" id="todayBtn">Today</button>
-    <button class="btn ghost" id="notifyBtn">Reminders</button>
-    <button class="btn ghost" id="settingsBtn">Settings</button>
-    <button class="btn ghost hidden" id="installBtn">Install</button>
-    <button class="btn ghost" id="exportBtn">Export</button>
-    <label class="btn ghost file-btn">Import<input id="importInput" type="file" accept="application/json"></label>
-  </div>
-</header>
-<main class="app-shell">
-  <aside class="sidebar" aria-label="Planner navigation">
-    <button class="nav-item active" data-view="day">Today <span id="todayBadge">0</span></button>
-    <button class="nav-item" data-view="week">Week</button>
-    <button class="nav-item" data-view="tasks">All tasks <span id="taskBadge">0</span></button>
-    <button class="nav-item" data-view="habits">Habits</button>
-    <button class="nav-item" data-view="review">Daily review</button>
-    <div class="sidebar-divider"></div>
-    <div class="sidebar-label">Plan</div>
-    <button class="nav-item" id="addTaskNav">+ New task <kbd>N</kbd></button>
-    <button class="nav-item" id="routineBtn">Routines</button>
-    <div class="sidebar-card"><strong>Plan realistically</strong><p>Pick your Big 3, protect focus time, and leave room for the unexpected.</p></div>
-  </aside>
-  <section class="content">
-    <section id="dayView" class="view active-view">
-      <div class="page-heading">
-        <div><p class="eyebrow" id="dateLabel"></p><h1 id="dayTitle">Today</h1></div>
-        <div class="heading-actions"><button class="btn ghost" id="prevDay">←</button><button class="btn ghost" id="nextDay">→</button></div>
-      </div>
-      <div class="day-summary" id="daySummary"></div>
-      <form class="quick-add" id="taskForm">
-        <input id="taskTitle" required maxlength="160" autocomplete="off" placeholder="Add a task… try “Study 5pm 60m #school !p1”" aria-label="New task">
-        <input id="taskDate" type="date" aria-label="Task date">
-        <input id="taskStart" type="time" aria-label="Start time">
-        <input id="taskDuration" type="number" min="5" max="720" step="5" placeholder="min" aria-label="Duration in minutes">
-        <select id="taskPriority" aria-label="Priority"><option value="high">P1</option><option value="medium" selected>P2</option><option value="low">P3</option></select>
-        <button class="btn primary" type="submit">Add</button>
-      </form>
-      <div class="quick-hint"><kbd>N</kbd> new task · <kbd>Ctrl/⌘ K</kbd> search · Drag tasks to reorder · Click a block to edit</div>
-      <div class="planner-grid">
-        <section class="panel timeline-panel">
-          <div class="panel-head"><div><h2>Timeline</h2><p>Tasks and time blocks for this day.</p></div><button class="btn ghost" id="fitDayBtn">Fit day</button></div>
-          <div class="timeline" id="timeline" aria-live="polite"></div>
-        </section>
-        <aside class="right-column">
-          <section class="panel big3-panel"><div class="panel-head"><div><h2>Big 3</h2><p>Your three most important outcomes.</p></div><span id="big3Count">0/3</span></div><div id="big3List"></div></section>
-          <section class="panel inbox-panel"><div class="panel-head"><div><h2>Inbox</h2><p>Unscheduled tasks to place later.</p></div></div><div id="inboxList"></div></section>
-          <section class="panel focus-panel"><div class="panel-head"><div><h2>Focus</h2><p>One task, one session.</p></div></div><div class="focus-clock" id="focusClock">25:00</div><div class="focus-task" id="focusTask">Choose a task to focus.</div><div class="focus-actions"><button class="btn primary" id="startFocus">Start</button><button class="btn ghost" id="resetFocus">Reset</button></div></section>
-        </aside>
-      </div>
-    </section>
-    <section id="weekView" class="view">
-      <div class="page-heading"><div><p class="eyebrow">7-day overview</p><h1>Week</h1></div></div>
-      <div class="week-nav"><button class="btn ghost" id="prevWeek">← Previous</button><strong id="weekRange"></strong><button class="btn ghost" id="nextWeek">Next →</button></div>
-      <div class="week-grid" id="weekGrid"></div>
-    </section>
-    <section id="tasksView" class="view">
-      <div class="page-heading"><div><p class="eyebrow">Everything in one place</p><h1>All tasks</h1></div></div>
-      <div class="toolbar"><div class="search-wrap"><span>⌕</span><input id="search" type="search" placeholder="Search tasks, notes or tags…" aria-label="Search tasks"></div><select id="statusFilter"><option value="active">Active</option><option value="all">All</option><option value="completed">Completed</option></select><select id="priorityFilter"><option value="all">All priorities</option><option value="high">P1</option><option value="medium">P2</option><option value="low">P3</option></select><select id="sortBy"><option value="due">Due</option><option value="priority">Priority</option><option value="created">Recently added</option><option value="title">Title</option></select></div>
-      <div id="taskList" class="task-list"></div>
-    </section>
-    <section id="habitsView" class="view"><div class="page-heading"><div><p class="eyebrow">Small actions, repeated</p><h1>Habits & routines</h1></div><button class="btn primary" id="addHabitBtn">Add habit</button></div><div id="habitGrid" class="habit-grid"></div></section>
-    <section id="reviewView" class="view"><div class="page-heading"><div><p class="eyebrow">Close the loop</p><h1>Daily review</h1></div></div><div class="review-grid"><section class="panel" id="reviewStats"></section><section class="panel"><h2>Wins</h2><textarea id="reviewWins" rows="5" placeholder="What went well today?"></textarea></section><section class="panel"><h2>Learnings</h2><textarea id="reviewLearnings" rows="5" placeholder="What would you change tomorrow?"></textarea></section><section class="panel"><h2>Tomorrow</h2><textarea id="reviewTomorrow" rows="5" placeholder="What matters most next?"></textarea><button class="btn primary" id="saveReview">Save review</button></section></div></section>
-  </section>
-</main>
+<header class="topbar"><a class="brand" href="#" aria-label="Dayflow home"><span class="brand-mark">D</span><span>Dayflow</span></a><div class="top-actions"><button class="icon-btn" id="themeBtn" title="Cycle theme" aria-label="Cycle theme">◐</button><button class="btn ghost" id="todayBtn">Today</button><button class="btn ghost" id="notifyBtn">Reminders</button><button class="btn ghost" id="settingsBtn">Settings</button><button class="btn ghost hidden" id="installBtn">Install</button><button class="btn ghost" id="exportBtn">Export</button><label class="btn ghost file-btn">Import<input id="importInput" type="file" accept="application/json"></label></div></header>
+<main class="app-shell"><aside class="sidebar" aria-label="Planner navigation"><button class="nav-item active" data-view="day">Today <span id="todayBadge">0</span></button><button class="nav-item" data-view="week">Week</button><button class="nav-item" data-view="tasks">All tasks <span id="taskBadge">0</span></button><button class="nav-item" data-view="habits">Habits</button><button class="nav-item" data-view="review">Daily review</button><div class="sidebar-divider"></div><div class="sidebar-label">Plan</div><button class="nav-item" id="addTaskNav">+ New task <kbd>N</kbd></button><button class="nav-item" id="routineBtn">Routines</button><div class="sidebar-card"><strong>Plan realistically</strong><p>Pick your Big 3, protect focus time, and leave room for the unexpected.</p></div></aside>
+<section class="content"><section id="dayView" class="view active-view"><div class="page-heading"><div><p class="eyebrow" id="dateLabel"></p><h1 id="dayTitle">Today</h1></div><div class="heading-actions"><button class="btn ghost" id="prevDay">←</button><button class="btn ghost" id="nextDay">→</button></div></div><div class="day-summary" id="daySummary"></div><form class="quick-add" id="taskForm"><input id="taskTitle" required maxlength="160" autocomplete="off" placeholder="Add a task… try “Study 5pm 60m #school !p1" aria-label="New task"><input id="taskDate" type="date" aria-label="Task date"><input id="taskStart" type="time" aria-label="Start time"><input id="taskDuration" type="number" min="5" max="720" step="5" placeholder="min" aria-label="Duration in minutes"><select id="taskPriority" aria-label="Priority"><option value="high">P1</option><option value="medium" selected>P2</option><option value="low">P3</option></select><button class="btn primary" type="submit">Add</button></form><div class="quick-hint"><kbd>N</kbd> new task · <kbd>Ctrl/⌘ K</kbd> search · Drag tasks to reorder · Click a block to edit</div><div class="planner-grid"><section class="panel timeline-panel"><div class="panel-head"><div><h2>Timeline</h2><p>Tasks and time blocks for this day.</p></div><button class="btn ghost" id="fitDayBtn">Fit day</button></div><div class="timeline" id="timeline" aria-live="polite"></div></section><aside class="right-column"><section class="panel big3-panel"><div class="panel-head"><div><h2>Big 3</h2><p>Your three most important outcomes.</p></div><span id="big3Count">0/3</span></div><div id="big3List"></div></section><section class="panel inbox-panel"><div class="panel-head"><div><h2>Inbox</h2><p>Unscheduled tasks to place later.</p></div></div><div id="inboxList"></div></section><section class="panel focus-panel"><div class="panel-head"><div><h2>Focus</h2><p>One task, one session.</p></div></div><div class="focus-clock" id="focusClock">25:00</div><div class="focus-task" id="focusTask">Choose a task to focus.</div><div class="focus-actions"><button class="btn primary" id="startFocus">Start</button><button class="btn ghost" id="resetFocus">Reset</button></div></section></aside></div></section>
+<section id="weekView" class="view"><div class="page-heading"><div><p class="eyebrow">7-day overview</p><h1>Week</h1></div></div><div class="week-nav"><button class="btn ghost" id="prevWeek">← Previous</button><strong id="weekRange"></strong><button class="btn ghost" id="nextWeek">Next →</button></div><div class="week-grid" id="weekGrid"></div></section>
+<section id="tasksView" class="view"><div class="page-heading"><div><p class="eyebrow">Everything in one place</p><h1>All tasks</h1></div></div><div class="toolbar"><div class="search-wrap"><span>⌕</span><input id="search" type="search" placeholder="Search tasks, notes or tags…" aria-label="Search tasks"></div><select id="statusFilter"><option value="active">Active</option><option value="all">All</option><option value="completed">Completed</option></select><select id="priorityFilter"><option value="all">All priorities</option><option value="high">P1</option><option value="medium">P2</option><option value="low">P3</option></select><select id="sortBy"><option value="due">Due</option><option value="priority">Priority</option><option value="created">Recently added</option><option value="title">Title</option></select></div><div id="taskList" class="task-list"></div></section>
+<section id="habitsView" class="view"><div class="page-heading"><div><p class="eyebrow">Small actions, repeated</p><h1>Habits & routines</h1></div><button class="btn primary" id="addHabitBtn">Add habit</button></div><div id="habitGrid" class="habit-grid"></div></section>
+<section id="reviewView" class="view"><div class="page-heading"><div><p class="eyebrow">Close the loop</p><h1>Daily review</h1></div></div><div class="review-grid"><section class="panel" id="reviewStats"></section><section class="panel"><h2>Wins</h2><textarea id="reviewWins" rows="5" placeholder="What went well today?"></textarea></section><section class="panel"><h2>Learnings</h2><textarea id="reviewLearnings" rows="5" placeholder="What would you change tomorrow?"></textarea></section><section class="panel"><h2>Tomorrow</h2><textarea id="reviewTomorrow" rows="5" placeholder="What matters most next?"></textarea><button class="btn primary" id="saveReview">Save review</button></section></div></section></section></main>
 <dialog id="taskDialog"><form method="dialog" id="taskEditForm" class="dialog-card"><button class="dialog-close" value="cancel">×</button><h2>Edit task</h2><p>Adjust the task, schedule and effort without leaving the planner.</p><label>Task<input id="editTitle" maxlength="160" required></label><label>Notes<textarea id="editNotes" rows="4" maxlength="3000"></textarea></label><div class="field-grid"><label>Date<input id="editDate" type="date"></label><label>Start<input id="editStart" type="time"></label><label>Duration (min)<input id="editDuration" type="number" min="5" max="720" step="5"></label><label>Priority<select id="editPriority"><option value="high">P1</option><option value="medium">P2</option><option value="low">P3</option></select></label><label>Repeat<select id="editRepeat"><option value="">None</option><option value="daily">Daily</option><option value="weekdays">Weekdays</option><option value="weekly">Weekly</option><option value="monthly">Monthly</option></select></label></div><label>Tags<input id="editTags" placeholder="school, project, home"></label><div class="dialog-actions"><button class="btn ghost" value="cancel">Cancel</button><button class="btn danger" id="deleteTaskBtn" type="button">Delete</button><button class="btn primary" value="default">Save</button></div></form></dialog>
 <dialog id="habitDialog"><form method="dialog" class="dialog-card" id="habitForm"><button class="dialog-close" value="cancel">×</button><h2>Habit</h2><label>Name<input id="habitName" maxlength="80" required placeholder="Read for 20 minutes"></label><label>Target days<select id="habitDays"><option value="daily">Every day</option><option value="weekdays">Weekdays</option><option value="weekends">Weekends</option></select></label><label>Color<select id="habitIcon"><option>●</option><option>◆</option><option>★</option><option>✦</option><option>○</option></select></label><div class="dialog-actions"><button class="btn ghost" value="cancel">Cancel</button><button class="btn primary" value="default">Add habit</button></div></form></dialog>
 <dialog id="routineDialog"><form method="dialog" class="dialog-card" id="routineForm"><button class="dialog-close" value="cancel">×</button><h2>Routines</h2><p>Save a repeatable group of tasks for mornings, study sessions or shutdowns.</p><div id="routineList"></div><div class="dialog-actions"><button class="btn ghost" value="cancel">Close</button><button class="btn primary" id="newRoutine" type="button">Create routine</button></div></form></dialog>
 <dialog id="settingsDialog"><form method="dialog" class="dialog-card settings-card"><button class="dialog-close" value="cancel">×</button><h2>Settings</h2><label>Theme<select id="settingsTheme"><option value="system">System</option><option value="light">Light</option><option value="dark">Dark</option></select></label><label>Default focus minutes<input id="focusMinutes" type="number" min="5" max="120" step="5" value="25"></label><label class="toggle-row"><span><strong>Compact timeline</strong><small>Use smaller schedule rows.</small></span><input id="compactToggle" type="checkbox"></label><label class="toggle-row"><span><strong>Browser reminders</strong><small>Checks reminders while Dayflow is open.</small></span><input id="notificationToggle" type="checkbox"></label><div class="settings-section"><strong>Local storage</strong><p id="storageStats" class="muted"></p><button class="btn ghost" id="persistStorage" type="button">Request persistent storage</button></div><div class="dialog-actions"><button class="btn ghost" value="cancel">Cancel</button><button class="btn primary" id="saveSettings" value="default">Save</button></div></form></dialog>
-<div class="toast" id="toast" role="status"></div>
-<script src="./app.js"></script>
-</body>
-</html>
+<div class="toast" id="toast" role="status"></div><script src="./app.js"></script><script src="./advanced.js"></script>
+</body></html>
