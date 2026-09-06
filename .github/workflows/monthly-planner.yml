@@ -1,0 +1,64 @@
+name: Monthly Planner
+on:
+  push:
+    branches: [main]
+    paths: ['Monthly-Planner/**','.github/workflows/monthly-planner.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: monthly-planner-pages
+  cancel-in-progress: true
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Validate JavaScript
+        run: |
+          node --check Monthly-Planner/app.js
+          node --check Monthly-Planner/advanced.js
+          node --check Monthly-Planner/sw.js
+      - name: Validate required files
+        run: |
+          test -s Monthly-Planner/index.html
+          test -s Monthly-Planner/styles.css
+          test -s Monthly-Planner/app.js
+          test -s Monthly-Planner/advanced.js
+          test -s Monthly-Planner/manifest.webmanifest
+          test -s Monthly-Planner/sw.js
+          test -s Monthly-Planner/icon.svg
+          test -s Monthly-Planner/README.md
+      - name: Validate manifest
+        run: node -e "const fs=require('fs'); const x=JSON.parse(fs.readFileSync('Monthly-Planner/manifest.webmanifest','utf8')); if(x.name!=='Monthflow — Monthly Planner'||!x.start_url||!x.icons?.length) process.exit(1)"
+      - name: Validate wiring and product markers
+        run: |
+          grep -q 'app.js' Monthly-Planner/index.html
+          grep -q 'advanced.js' Monthly-Planner/index.html
+          grep -q 'serviceWorker' Monthly-Planner/app.js
+          grep -q 'Monthly goals' Monthly-Planner/index.html
+          grep -q 'Auto-plan month' Monthly-Planner/index.html
+          grep -q 'monthlyCapacity\|monthCapacity' Monthly-Planner/app.js
+          grep -q 'dependency' Monthly-Planner/README.md
+          grep -q 'ICS' Monthly-Planner/README.md
+          grep -q 'natural-language' Monthly-Planner/README.md
+          grep -q 'templates' Monthly-Planner/README.md
+  deploy:
+    needs: validate
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: Monthly-Planner
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
