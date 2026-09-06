@@ -21,6 +21,8 @@ A polished, private, local-first Kanban board that stays approachable while cove
 - Assignee and avatar initials
 - Labels/tags
 - Checklists with progress
+- Private comments/notes
+- Private local file attachments stored in IndexedDB
 - Work type: Task, Bug, Feature, Chore, Idea, Milestone
 - Estimate in minutes
 - Project and milestone metadata
@@ -67,6 +69,7 @@ A polished, private, local-first Kanban board that stays approachable while cove
 - Restore snapshot
 - Advanced metadata stored separately from core board data
 - CSV export with structured card metadata
+- Local IndexedDB attachment storage
 - No account, backend, telemetry or external runtime dependency
 - Offline service worker
 - Installable PWA
@@ -84,13 +87,14 @@ A polished, private, local-first Kanban board that stays approachable while cove
 
 ## Research basis
 
-The scope was reviewed against current product patterns from GitHub Projects, Trello, Jira and Linear. GitHub Projects supports board/table/roadmap views, custom fields, filtering, sorting, grouping, charts, iterations and automation. Trello documents board filtering, table/calendar/timeline/dashboard views, custom fields, checklists, due/start dates, automation and dependency-oriented workflows. Jira documents WIP limits, quick filters, swimlanes, configurable card fields and flow metrics. Linear documents grouping, sub-grouping, custom views, cycles, display properties and dependency visualization.
+The scope was reviewed against current product patterns from GitHub Projects, Trello, Jira and Linear. GitHub Projects supports board/table/roadmap views, custom fields, filtering, sorting, grouping, charts, iterations and automation. Trello documents board filtering, table/calendar/timeline/dashboard views, custom fields, checklists, due/start dates, attachments, automation and dependency-oriented workflows. Jira documents WIP limits, quick filters, swimlanes, configurable card fields and flow metrics. Linear documents grouping, sub-grouping, custom views, cycles, display properties and dependency visualization.
 
 Sources researched:
 - GitHub Projects: https://docs.github.com/en/issues/planning-and-tracking-with-projects
 - Trello search/filter/views: https://support.atlassian.com/trello/docs/search-filter-and-custom-views/
 - Trello automation: https://support.atlassian.com/trello/docs/automation-overview/
 - Trello dependencies: https://support.atlassian.com/trello/docs/creating-and-managing-task-dependencies/
+- Trello attachments/cards: https://support.atlassian.com/trello/docs/add-and-customize-cards-and-lists/
 - Jira Kanban: https://www.atlassian.com/software/jira/features/kanban-boards
 - Linear board layout: https://linear.app/docs/board-layout
 
@@ -104,6 +108,8 @@ Simple-Kanban-Board/
 ├── styles.css
 ├── app.js
 ├── advanced.js
+├── attachments.js
+├── comments.js
 ├── manifest.webmanifest
 ├── sw.js
 ├── icon.svg
@@ -115,7 +121,7 @@ No framework or build step is required.
 
 ## Validation
 
-GitHub Actions validates JavaScript syntax for both application bundles and the service worker, manifest JSON, required files, PWA wiring and advanced product markers before deploying the folder to GitHub Pages.
+GitHub Actions validates JavaScript syntax for the core app, advanced layer, attachment layer, comment layer and service worker; manifest JSON; required files; PWA wiring; IndexedDB wiring; and advanced product markers before deploying the folder to GitHub Pages.
 
 ## Deployment
 
