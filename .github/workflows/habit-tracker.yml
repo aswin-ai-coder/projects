@@ -47,8 +47,16 @@ jobs:
           grep -q 'Export JSON' Habit-Tracker/index.html
           grep -q '90-day heatmap' Habit-Tracker/index.html
           grep -q 'Routine' Habit-Tracker/index.html
-          grep -q 'SMART INSIGHTS' Habit-Tracker/advanced.js
-          grep -q 'Quick capture' Habit-Tracker/advanced.js
+          grep -q 'strength' Habit-Tracker/advanced.js
+          grep -q 'skipProtectsStreak' Habit-Tracker/advanced.js
+          grep -q 'yearTarget' Habit-Tracker/advanced.js
+          grep -q 'challengeTarget' Habit-Tracker/advanced.js
+          grep -q 'reflections' Habit-Tracker/advanced.js
+          grep -q 'moods' Habit-Tracker/advanced.js
+          grep -q 'snapshots' Habit-Tracker/advanced.js
+          grep -q 'Deep Insights' Habit-Tracker/advanced.js
+          grep -q 'Loop' Habit-Tracker/README.md
+          grep -q 'Habitify' Habit-Tracker/README.md
       - name: Reject obvious placeholders
         run: |
           ! grep -RniE 'TODO|FIXME|coming soon|lorem ipsum|not implemented' Habit-Tracker --exclude=README.md
