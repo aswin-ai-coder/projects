@@ -1,0 +1,71 @@
+name: Habit Tracker
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'Habit-Tracker/**'
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: habit-tracker-pages
+  cancel-in-progress: true
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Validate JavaScript
+        run: |
+          node --check Habit-Tracker/app.js
+          node --check Habit-Tracker/advanced.js
+          node --check Habit-Tracker/sw.js
+      - name: Validate required files
+        run: |
+          test -f Habit-Tracker/index.html
+          test -f Habit-Tracker/styles.css
+          test -f Habit-Tracker/app.js
+          test -f Habit-Tracker/advanced.js
+          test -f Habit-Tracker/manifest.webmanifest
+          test -f Habit-Tracker/sw.js
+          test -f Habit-Tracker/icon.svg
+          test -f Habit-Tracker/README.md
+      - name: Validate manifest
+        run: node -e "JSON.parse(require('fs').readFileSync('Habit-Tracker/manifest.webmanifest','utf8')); console.log('manifest ok')"
+      - name: Validate product markers
+        run: |
+          grep -q 'Habitflow' Habit-Tracker/index.html
+          grep -q 'streak' Habit-Tracker/app.js
+          grep -q 'completionRate' Habit-Tracker/app.js
+          grep -q 'weekly' Habit-Tracker/app.js
+          grep -q 'skipped' Habit-Tracker/app.js
+          grep -q 'archive' Habit-Tracker/app.js
+          grep -q 'Export JSON' Habit-Tracker/index.html
+          grep -q '90-day heatmap' Habit-Tracker/index.html
+          grep -q 'Routine' Habit-Tracker/index.html
+          grep -q 'SMART INSIGHTS' Habit-Tracker/advanced.js
+          grep -q 'quick capture' Habit-Tracker/advanced.js
+      - name: Reject obvious placeholders
+        run: |
+          ! grep -RniE 'TODO|FIXME|coming soon|lorem ipsum|not implemented' Habit-Tracker --exclude=README.md
+  deploy:
+    needs: validate
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: Habit-Tracker
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
