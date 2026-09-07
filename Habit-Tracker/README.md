@@ -1,80 +1,119 @@
 # Habitflow — Personal Habit Tracker
 
-A modern, private, local-first habit tracker designed for real routines rather than perfect streaks.
+A modern, private, local-first habit system designed around consistency, recovery, flexible schedules and useful reflection rather than perfect streaks.
 
-## Features
+## Feature-complete scope
 
-### Habit system
-- Build good habits or reduce bad habits
-- Daily, weekday, weekend, selected-day, weekly-target and interval schedules
-- Targets with check-in, times, minutes, hours and pages units
+### Habit engine
+- Build habits or reduce habits
+- Daily, weekdays, weekends, selected weekdays, weekly quota and every-N-days schedules
+- Check-in, count, minutes, hours, pages and custom-style numeric targets
 - Areas, tags, notes, start/end dates and time-of-day preferences
-- Per-habit reminder time with browser Notification support
+- Per-habit browser reminder time
 - Archive/restore without deleting history
-- Habit templates and quick natural-language capture
+- Habit templates and quick capture
+- Habit stacks / routines
+- Backdated corrections
 
-### Daily journal
-- Today view with due habits
-- One-tap completion and detailed check-ins
+### Advanced Habit Studio
+- Per-habit icon and color metadata
+- Cue / trigger, minimum action and reward fields
+- Optional skip-protects-streak policy
+- Pause-until date
+- Early-reminder preference
+- Annual target
+- Challenge start/end and numeric target
+- Challenge notes / finish-line planning
+- Automatic 7, 14, 30, 100 and 365-day milestones
+- 90% consistency milestone
+- Local habit reflections with mood and energy
+- Full habit check-in history
+
+### Daily tracking
+- Today journal
+- One-tap completion
+- Detailed check-ins with value and notes
 - Done, partial, skipped and missed states
-- Backdated check-ins
-- Notes per check-in
-- Skips are explicit and are not silently treated as failure
+- Gentle recovery language instead of guilt-oriented scoring
 - Focus action for the next unfinished habit
+- Mood capture for the day
 
-### Analytics
-- Current and best streaks
+### Analytics and intelligence
+- Current streak and best streak
+- Habit-strength score inspired by consistency-over-time models rather than streak-only scoring
 - 7/30/90-day completion rates
-- 90-day heatmap
-- Weekly rhythm by weekday
+- Momentum: recent performance versus baseline
+- Rising and falling habit detection
+- Weakest/recovery habit detection
+- Strongest habit detection
+- 90-day / 182-day visual history
+- Weekly weekday rhythm
 - Habit leaderboard
 - Area balance
-- Habit detail view
-- Smart recovery/consistency insights
-- Explainable, deterministic calculations; no fake AI
+- Annual target progress
+- Challenge progress
+- Habit-level profile dashboard
+- Portfolio-level deep insights
+- Explainable deterministic calculations; no fake AI
 
-### Routines
-- Create habit stacks such as morning, study or evening routines
-- Reorder-free lightweight routine groups with one-click completion
+### Deep Insights workspace
+- Dedicated analytics navigation
+- Per-habit profile selection
+- Long-range calendar history
+- Weekly review focus
+- Recovery / momentum / trend guidance
+- Habit-strength and consistency comparison
 
-### Data & platform
+### Data ownership
 - LocalStorage persistence
-- JSON backup/import
+- Advanced JSON backup
+- Existing JSON import
 - CSV check-in export
-- Storage health panel
-- Responsive desktop/mobile UI
+- Local restore snapshots, retaining recent restore points
+- Storage health information
+- No account, backend, telemetry or advertising required
+
+### UX / platform
+- Responsive desktop and mobile UI
 - System/light/dark themes
-- Installable PWA and offline cache
-- Keyboard shortcuts: `N` new habit, `T` today, `A` analytics, `/` search, `Ctrl/Cmd+Shift+A` quick capture
-- No account, backend or telemetry required
+- Installable PWA
+- Offline cache
+- Browser reminders when permission and browser support are available
+- Keyboard shortcuts
+- Fast one-tap tracking
+- Accessible labels and semantic controls
 
-## Product design decisions
+## Product principles
 
-Habitflow intentionally separates **scheduled**, **completed**, **partial**, **skipped**, and **missed** states. This keeps a skipped day from automatically destroying a streak and makes the history more truthful.
+Habitflow separates **scheduled**, **completed**, **partial**, **skipped**, and **missed** states. A skip is explicit rather than silently becoming a success or failure. Advanced analytics can optionally treat a skip as streak-protecting, while the default remains conservative.
 
-Weekly-target habits use a weekly quota rather than pretending that a 3×/week habit is a daily habit. Progress calculations cap each week's contribution at the configured target.
+Weekly-target habits are measured against their weekly quota rather than pretending a 3×/week habit is a daily habit. Advanced strength scoring uses a decaying history so one missed day does not erase months of evidence.
 
-The advanced insights are local and deterministic: they explain which habits are weakest/strongest recently and suggest a smaller recovery action instead of claiming machine-learning personalization.
+The intelligence layer is deterministic and explainable. It does not claim to be machine learning, does not upload habit data, and does not manufacture recommendations from external personal data.
 
 ## Research basis
 
-The product model was informed by current habit-tracking patterns from Habitify, Habitica and broader 2026 habit-tracking feature research: flexible schedules, custom units, reminders, areas, streaks, heatmaps, progress views, weekly rhythm, bad-habit tracking, routines/stacks, and actionable analytics.
+The 2026 feature pass reviewed current patterns from Habitify, Loop Habit Tracker, TickTick, Streaks and open-source habit trackers. The resulting scope covers the recurring patterns found across these products: flexible schedules, per-habit reminders, streaks, habit-strength/consistency scoring, heatmaps, long-range statistics, weekday patterns, bad-habit tracking, notes, mood/reflection, areas, habit stacks, finish lines, annual targets, challenges, skip handling, local-first privacy and exportability.
 
-References:
-- https://habitify.me/
-- https://habitify.me/onboarding-instruction/create-new-habit
-- https://feedback.habitify.me/changelog/all-new-progress-view-2
-- https://feedback.habitify.me/changelog/habitify-web-and-desktop-270-new-habit-settings-with-ai-smart-fill
-- https://translate.habitica.com/projects/habitica/overview/en/
-- https://clickup.com/learn/topic/productivity/tools/habit-tracking/
+Research references:
+- Habitify progress and bad-habit reporting: https://feedback.habitify.me/changelog/all-new-progress-view-2
+- Habitify current progress controls: https://intercom.help/habitify-app/en/articles/11203360-view-the-progress-of-a-habit-on-website-desktop-app
+- Habitify finish lines and yearly goals: https://feedback.habitify.me/changelog/habitify-web-and-desktop-280-upgraded-single-progress-view
+- Habitify pause/reflection and current challenge direction: https://apps.apple.com/us/app/habitify-habit-tracker/id1111447047
+- Loop flexible schedules, reminders, scoring and data export: https://github.com/isoron/uhabits
+- Loop current app feature summary: https://play.google.com/store/apps/details/?hl=en-IN&id=org.isoron.uhabits
+- TickTick reminders, recurring rules, habit statistics and shortcuts: https://ticktick.com/features
+- Streaks current habit model, mood, notes, flexible schedules and privacy: https://apps.apple.com/in/app/streaks-track-reflect-improve/id6761472324
+- Open-source local-first habit tracker patterns: https://github.com/FriesI23/mhabit
+- Privacy-first PWA patterns: https://github.com/iNikAnn/DoHabit
 
 ## Honest scope boundary
 
-No external health, wearable, location or social integrations are faked. The project is deliberately local-first and works without accounts or paid services. Browser reminders depend on browser permission/support and are not guaranteed after a browser is fully closed.
+External health/wearable integrations, location reminders, social accounts, shared challenges and native home-screen widgets are not faked. They require platform APIs or a backend and would conflict with this project's static, local-first GitHub Pages architecture. The implemented project instead provides local equivalents where the browser can support them.
+
+Browser notifications depend on permission and browser behavior; a fully closed browser cannot be guaranteed to deliver a reminder.
 
 ## Deployment
-
-The folder is intended to be published as a static GitHub Pages project at:
 
 `https://aswin-ai-coder.github.io/projects/Habit-Tracker/`
 
