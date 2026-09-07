@@ -1,0 +1,11 @@
+{
+  "name": "Habitflow — Habit Tracker",
+  "short_name": "Habitflow",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f6f7fb",
+  "theme_color": "#111827",
+  "description": "A private, local-first habit tracker with flexible schedules and analytics.",
+  "icons": [{"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]
+}
