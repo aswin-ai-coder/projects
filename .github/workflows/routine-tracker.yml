@@ -47,6 +47,12 @@ jobs:
           grep -q 'Export JSON' Routine-Tracker/index.html
           grep -q '30-day activity' Routine-Tracker/index.html
           grep -q 'snapshots' Routine-Tracker/advanced.js
+          grep -q 'Routine intelligence' Routine-Tracker/advanced.js
+          grep -q 'Adaptive plan' Routine-Tracker/advanced.js
+          grep -q 'Recovery mode' Routine-Tracker/advanced.js
+          grep -q 'Run history' Routine-Tracker/advanced.js
+          grep -q 'goals' Routine-Tracker/advanced.js
+          grep -q 'Enriched CSV' Routine-Tracker/advanced.js
           grep -q 'Routinery' Routine-Tracker/README.md
           grep -q 'RoutineFlow' Routine-Tracker/README.md
       - name: Reject obvious placeholders
