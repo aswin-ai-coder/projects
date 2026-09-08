@@ -1,8 +1,8 @@
 # Routinecraft — Routine Tracker
 
-Routinecraft is a complete local-first routine planner and guided routine runner for people who want repeatable sequences rather than another generic task list.
+Routinecraft is a modern, private, local-first routine planner and guided routine runner for repeatable sequences rather than another generic task list.
 
-## What is included
+## Product scope
 
 ### Routine builder
 - Ordered routines with editable steps
@@ -10,7 +10,7 @@ Routinecraft is a complete local-first routine planner and guided routine runner
 - Morning / afternoon / evening / any-time placement
 - Daily, weekday, weekend, selected-day, weekly-target and interval schedules
 - Start time and reminder metadata
-- Areas and tags
+- Areas, tags, color and notes
 - Pause/archive support
 - Starter routines for morning reset, study launch, evening wind-down and weekly reset
 
@@ -19,52 +19,65 @@ Routinecraft is a complete local-first routine planner and guided routine runner
 - Countdown timer with progress bar
 - Pause/resume, back, skip and finish controls
 - Checklist-mode steps
-- Live step list and progress
+- Transition countdown
 - Run history with completion status, duration and completed-step count
+- Repeatable runs without overwriting history
 
 ### Planning & analytics
-- Today dashboard with due/completed routines and total planned minutes
-- Seven-day rhythm strip
-- Weekly planner with scheduled routine cards
+- Today dashboard with due/completed routines and planned minutes
+- Seven-day rhythm strip and weekly planner
 - 30-day activity heatmap
 - Completion rates and streaks
-- Routine leaderboard
-- Weekly review guidance
-- Duration and run-volume totals
-- Routine-health guidance for low-consistency routines
+- Routine leaderboard and weekly review
+- Planned-vs-actual duration tracking
+- Routine health and consistency guidance
+
+### Advanced Routine Intelligence
+- Health scoring based on consistency, duration accuracy and step-completion fidelity
+- Adaptive-plan recommendations that suggest simplifying low-performing routines or splitting long routines
+- Recovery-aware planning preference that keeps recommendations flexible rather than punishing misses
+- Optional streak-protection preference for intentional skips
+- Advanced run-history workspace with enriched CSV export
+- Daily reflection/mood signal stored locally for pattern review
+- Measurable routine goals with target runs and optional deadlines
+- Local restore points with one-click restore
+- Complete JSON backup containing core and advanced data
+- Keyboard shortcut for local snapshots
+- Privacy-safe, deterministic analytics; no remote AI or account required
 
 ### Data ownership
 - LocalStorage only; no account or server required
 - Full JSON backup/import
-- CSV run-history export
+- Enriched CSV run-history export
 - Local restore snapshots
-- Advanced full-backup export
 - Reset controls
 
 ### Platform
 - Responsive desktop/mobile UI
 - Light/dark/system themes
 - PWA manifest and offline service worker
-- Keyboard shortcut: Ctrl/Cmd+K opens Routine Studio; Ctrl/Cmd+Shift+S saves a local snapshot
+- Keyboard shortcuts
 - GitHub Pages deployment
 
-## Product decisions from research
+## Deep research basis
 
-Modern routine products increasingly emphasize step-by-step execution, timers, flexible schedules, reminders, progress views and offline/privacy-first storage. Routinery highlights sequential timed execution, scheduling, reminders and progress analytics; RoutineFlow emphasizes drag-and-drop routine building, focus timers, heatmaps, local reminders and offline operation. The open-source Routine Tracker project also reinforces local/offline ownership and the value of measurable, repeatable routines. This project combines those useful patterns while keeping the implementation browser-local and dependency-free.
+The product was reviewed against current routine and visual-planning patterns. Routinery emphasizes step-by-step timed execution, flexible scheduling, reminders, progress analytics, location-aware starts, widgets, voice guidance and timer customization. Tiimo emphasizes visual timelines, flexible rescheduling, focus timers, AI-assisted task breakdown, mood/reflection and accessibility. Fabulous emphasizes guided routines, journeys, challenges and reflective coaching. Routinely emphasizes habit stacking, schedules, reminders, undo/skip behavior, streaks, period comparisons and heatmaps. These patterns informed the advanced feature set while keeping this implementation dependency-free and local-first.
 
-Sources reviewed:
-- https://apps.apple.com/in/app/routine-planner-habit-tracker/id1450486923
-- https://apps.apple.com/in/app/routineflow-guided-routines/id1639800794
-- https://play.google.com/store/apps/details?id=com.rrtech.routineflow
-- https://github.com/DanielRendox/RoutineTracker
-- https://www.routinery.app/blog/best-routines-planner-apps
+Research reviewed:
+- Routinery current product and update history
+- Tiimo current planner, timer, calendar and AI-planning features
+- Fabulous current routine/journey model
+- Routinely current routine, analytics and privacy model
+- Open-source routine-tracking patterns from GitHub
 
-## Scope boundary
+The implementation deliberately does **not** pretend to provide cloud sync, accounts, native push delivery, calendar synchronization, smartwatch integrations or server-side AI. Browser APIs and local storage are used only where the platform can support them honestly.
 
-This is intentionally a private browser application. It does not pretend to provide server synchronization, native push notifications, shared accounts, cloud collaboration or calendar integrations. Reminder time is stored as routine metadata; browser notification scheduling varies by platform and is not represented as a fake guaranteed service.
+## Completion status
+
+Feature-complete for a browser-first routine tracker: routine creation, scheduling, guided execution, timers, planning, analytics, history, adaptive recommendations, goals, reflections, recovery preferences, backup/restore, portability, responsive UX and offline/local-first operation are implemented.
 
 ## Deployment
 
 GitHub Pages path: `https://aswin-ai-coder.github.io/projects/Routine-Tracker/`
 
-The root repository workflow validates the application and publishes this folder to GitHub Pages.
+The root repository workflow validates JavaScript, required assets, manifest integrity, advanced product markers and placeholder scans before publishing this folder to GitHub Pages.
