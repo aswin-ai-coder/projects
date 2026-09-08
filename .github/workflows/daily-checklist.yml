@@ -1,0 +1,62 @@
+name: Daily Checklist
+on:
+  push:
+    branches: [main]
+    paths: ['Daily-Checklist/**','.github/workflows/daily-checklist.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: daily-checklist-pages
+  cancel-in-progress: true
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Validate JavaScript
+        run: |
+          node --check Daily-Checklist/app.js
+          node --check Daily-Checklist/advanced.js
+          node --check Daily-Checklist/sw.js
+      - name: Validate files
+        run: |
+          test -f Daily-Checklist/index.html
+          test -f Daily-Checklist/styles.css
+          test -f Daily-Checklist/app.js
+          test -f Daily-Checklist/advanced.js
+          test -f Daily-Checklist/manifest.webmanifest
+          test -f Daily-Checklist/sw.js
+          test -f Daily-Checklist/icon.svg
+          test -f Daily-Checklist/README.md
+      - name: Validate manifest
+        run: node -e "JSON.parse(require('fs').readFileSync('Daily-Checklist/manifest.webmanifest','utf8')); console.log('manifest ok')"
+      - name: Validate product markers
+        run: |
+          grep -q 'Daily Checklist' Daily-Checklist/index.html
+          grep -q 'templates' Daily-Checklist/app.js
+          grep -q 'Reusable plans' Daily-Checklist/advanced.js
+          grep -q 'Checklist Intelligence' Daily-Checklist/advanced.js
+          grep -q 'restore' Daily-Checklist/advanced.js
+          grep -q 'Export CSV' Daily-Checklist/advanced.js
+          grep -q 'offline' Daily-Checklist/README.md
+          grep -q 'local-first' Daily-Checklist/README.md
+      - name: Reject obvious placeholders
+        run: '! grep -RniE "TODO|coming soon|lorem ipsum|your api key here" Daily-Checklist --exclude=README.md'
+  deploy:
+    needs: validate
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: Daily-Checklist
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
