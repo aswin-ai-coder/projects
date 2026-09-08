@@ -61,13 +61,14 @@ Routinecraft is a modern, private, local-first routine planner and guided routin
 
 ## Deep research basis
 
-The product was reviewed against current routine and visual-planning patterns. Routinery emphasizes step-by-step timed execution, flexible scheduling, reminders, progress analytics, location-aware starts, widgets, voice guidance and timer customization. Tiimo emphasizes visual timelines, flexible rescheduling, focus timers, AI-assisted task breakdown, mood/reflection and accessibility. Fabulous emphasizes guided routines, journeys, challenges and reflective coaching. Routinely emphasizes habit stacking, schedules, reminders, undo/skip behavior, streaks, period comparisons and heatmaps. These patterns informed the advanced feature set while keeping this implementation dependency-free and local-first.
+The product was reviewed against current routine and visual-planning patterns. Routinery emphasizes step-by-step timed execution, flexible scheduling, reminders, progress analytics, location-aware starts, widgets, voice guidance and timer customization. Tiimo emphasizes visual timelines, flexible rescheduling, focus timers, AI-assisted task breakdown, mood/reflection and accessibility. Fabulous emphasizes guided routines, journeys, challenges and reflective coaching. Routinely emphasizes habit stacking, schedules, reminders, undo/skip behavior, streaks, period comparisons and heatmaps. RoutineFlow was also reviewed for guided routine construction, focus-oriented execution and visual progress patterns. These patterns informed the advanced feature set while keeping this implementation dependency-free and local-first.
 
 Research reviewed:
 - Routinery current product and update history
 - Tiimo current planner, timer, calendar and AI-planning features
 - Fabulous current routine/journey model
 - Routinely current routine, analytics and privacy model
+- RoutineFlow guided-routine patterns
 - Open-source routine-tracking patterns from GitHub
 
 The implementation deliberately does **not** pretend to provide cloud sync, accounts, native push delivery, calendar synchronization, smartwatch integrations or server-side AI. Browser APIs and local storage are used only where the platform can support them honestly.
