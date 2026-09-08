@@ -52,7 +52,7 @@ jobs:
           grep -q 'Recovery mode' Routine-Tracker/advanced.js
           grep -q 'Run history' Routine-Tracker/advanced.js
           grep -q 'goals' Routine-Tracker/advanced.js
-          grep -q 'Enriched CSV' Routine-Tracker/advanced.js
+          grep -q 'Export enriched CSV' Routine-Tracker/advanced.js
           grep -q 'Routinery' Routine-Tracker/README.md
           grep -q 'RoutineFlow' Routine-Tracker/README.md
       - name: Reject obvious placeholders
