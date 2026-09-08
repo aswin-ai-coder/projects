@@ -1,0 +1,72 @@
+name: Routine Tracker
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'Routine-Tracker/**'
+      - '.github/workflows/routine-tracker.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: routine-tracker-pages
+  cancel-in-progress: true
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Validate JavaScript
+        run: |
+          node --check Routine-Tracker/app.js
+          node --check Routine-Tracker/advanced.js
+          node --check Routine-Tracker/sw.js
+      - name: Validate required files
+        run: |
+          test -f Routine-Tracker/index.html
+          test -f Routine-Tracker/styles.css
+          test -f Routine-Tracker/app.js
+          test -f Routine-Tracker/advanced.js
+          test -f Routine-Tracker/manifest.webmanifest
+          test -f Routine-Tracker/sw.js
+          test -f Routine-Tracker/icon.svg
+          test -f Routine-Tracker/README.md
+      - name: Validate manifest
+        run: node -e "JSON.parse(require('fs').readFileSync('Routine-Tracker/manifest.webmanifest','utf8')); console.log('manifest ok')"
+      - name: Validate product markers
+        run: |
+          grep -q 'Routinecraft' Routine-Tracker/index.html
+          grep -q 'routineRate' Routine-Tracker/app.js
+          grep -q 'streak' Routine-Tracker/app.js
+          grep -q 'weekly' Routine-Tracker/app.js
+          grep -q 'interval' Routine-Tracker/app.js
+          grep -q 'runner' Routine-Tracker/app.js
+          grep -q 'Export JSON' Routine-Tracker/index.html
+          grep -q '30-day activity' Routine-Tracker/index.html
+          grep -q 'snapshots' Routine-Tracker/advanced.js
+          grep -q 'Routinery' Routine-Tracker/README.md
+          grep -q 'RoutineFlow' Routine-Tracker/README.md
+      - name: Reject obvious placeholders
+        run: |
+          ! grep -RniE 'TODO|FIXME|coming soon|lorem ipsum|not implemented' Routine-Tracker --exclude=README.md
+  deploy:
+    needs: validate
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: Routine-Tracker
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
