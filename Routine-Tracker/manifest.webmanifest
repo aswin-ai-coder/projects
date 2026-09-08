@@ -1,0 +1,10 @@
+{
+  "name":"Routinecraft — Routine Tracker",
+  "short_name":"Routinecraft",
+  "start_url":"./",
+  "display":"standalone",
+  "background_color":"#f5f7fb",
+  "theme_color":"#111827",
+  "description":"A private local-first routine planner, runner and tracker.",
+  "icons":[{"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]
+}
