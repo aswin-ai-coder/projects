@@ -20,6 +20,7 @@ jobs:
         run: |
           node --check Mood-Journal/app.js
           node --check Mood-Journal/advanced.js
+          node --check Mood-Journal/enhancements.js
           node --check Mood-Journal/sw.js
       - name: Validate required files
         run: |
@@ -27,6 +28,7 @@ jobs:
           test -f Mood-Journal/styles.css
           test -f Mood-Journal/app.js
           test -f Mood-Journal/advanced.js
+          test -f Mood-Journal/enhancements.js
           test -f Mood-Journal/sw.js
           test -f Mood-Journal/manifest.webmanifest
           test -f Mood-Journal/icon.svg
@@ -42,6 +44,9 @@ jobs:
           grep -q 'association, not causation' Mood-Journal/advanced.js
           grep -q 'AES-256-GCM' Mood-Journal/advanced.js
           grep -q 'Year in pixels' Mood-Journal/advanced.js
+          grep -q 'Custom trackers' Mood-Journal/enhancements.js
+          grep -q 'Personal experiments' Mood-Journal/enhancements.js
+          grep -q 'Daily reminder' Mood-Journal/enhancements.js
           grep -q 'local-first' Mood-Journal/README.md
           ! grep -RniE 'TODO|FIXME|lorem ipsum|coming soon|placeholder text' Mood-Journal --exclude=README.md
   deploy:
