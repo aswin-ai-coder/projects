@@ -19,6 +19,7 @@ jobs:
       - name: Check JavaScript
         run: |
           node --check Gratitude-Journal/app.js
+          node --check Gratitude-Journal/media.js
           node --check Gratitude-Journal/advanced.js
           node --check Gratitude-Journal/sw.js
       - name: Required files
@@ -26,6 +27,7 @@ jobs:
           test -f Gratitude-Journal/index.html
           test -f Gratitude-Journal/styles.css
           test -f Gratitude-Journal/app.js
+          test -f Gratitude-Journal/media.js
           test -f Gratitude-Journal/advanced.js
           test -f Gratitude-Journal/sw.js
           test -f Gratitude-Journal/manifest.webmanifest
@@ -34,12 +36,16 @@ jobs:
       - name: Product checks
         run: |
           grep -q 'Gratitude Journal' Gratitude-Journal/index.html
+          grep -q '3 Good Things' Gratitude-Journal/index.html
           grep -q 'Memories' Gratitude-Journal/index.html
           grep -q 'Calendar' Gratitude-Journal/index.html
           grep -q 'GRATITUDE STUDIO' Gratitude-Journal/index.html
+          grep -q 'Appreciation' Gratitude-Journal/index.html
           grep -q '365-day gratitude map' Gratitude-Journal/advanced.js
           grep -q 'AES-256-GCM' Gratitude-Journal/advanced.js
-          grep -q 'Prompt library' Gratitude-Journal/advanced.js
+          grep -q 'Appreciation letters' Gratitude-Journal/advanced.js
+          grep -q 'reminderTime' Gratitude-Journal/advanced.js
+          grep -q 'gratitude-journal-media-v1' Gratitude-Journal/media.js
           grep -q 'local-first' Gratitude-Journal/README.md
           ! grep -RniE 'TODO|FIXME|lorem ipsum|coming soon|placeholder text' Gratitude-Journal --exclude=README.md
       - name: Upload Pages artifact
