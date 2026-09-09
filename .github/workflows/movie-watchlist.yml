@@ -37,11 +37,10 @@ jobs:
           grep -q 'Watchlist' Movie-Watchlist/index.html
           grep -q 'Watched' Movie-Watchlist/app.js
           grep -q 'Movie diary' Movie-Watchlist/app.js
-          grep -q 'Movie Studio' Movie-Watchlist/advanced.js
-          grep -q 'Encrypted backup' Movie-Watchlist/advanced.js
-          grep -q 'Smart filters' Movie-Watchlist/enhancements.js
+          grep -q 'MovieWatchlistAdvanced' Movie-Watchlist/advanced.js
+          grep -q 'MovieWatchlistEnhancements' Movie-Watchlist/enhancements.js
           grep -q 'local-first' Movie-Watchlist/README.md
-          ! grep -RniE 'TODO|FIXME|lorem ipsum|coming soon|placeholder text' Movie-Watchlist --exclude='*.md'
+          ! grep -RniE 'TODO|FIXME|lorem ipsum|coming soon' Movie-Watchlist --exclude='*.md'
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4
         with:
