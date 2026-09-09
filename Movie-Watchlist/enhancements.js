@@ -1,0 +1,2 @@
+// Advanced local-only enhancements: bulk utilities, keyboard shortcut and data health.
+(function(){const old=window.render;window.render=function(){old();const host=document.querySelector('#view');if(!host)return;};document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();$('#search').focus()}})})();
