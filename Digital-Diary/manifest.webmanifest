@@ -1,0 +1,1 @@
+{"name":"Digital Diary","short_name":"Diary","start_url":"./","display":"standalone","background_color":"#f6f5fb","theme_color":"#6d5dfc","description":"A private local-first digital diary.","icons":[{"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]}
