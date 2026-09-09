@@ -43,7 +43,7 @@ jobs:
           grep -q 'DNF' Reading-Tracker/app.js
           grep -q 'reading session' Reading-Tracker/app.js
           grep -q 'Power Studio' Reading-Tracker/enhancements.js
-          grep -q 'encrypted backup' Reading-Tracker/enhancements.js
+          grep -q 'encrypted export' Reading-Tracker/enhancements.js
           grep -q 'Reading plan' Reading-Tracker/enhancements.js
           grep -q 'Year comparison' Reading-Tracker/enhancements.js
           grep -q 'local-first' Reading-Tracker/README.md
