@@ -1,0 +1,61 @@
+name: Personal Journal
+on:
+  push:
+    branches: [main]
+    paths: ['Personal-Journal/**','.github/workflows/personal-journal.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: personal-journal-pages
+  cancel-in-progress: true
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Validate JavaScript
+        run: |
+          node --check Personal-Journal/app.js
+          node --check Personal-Journal/advanced.js
+          node --check Personal-Journal/sw.js
+      - name: Validate files
+        run: |
+          test -f Personal-Journal/index.html
+          test -f Personal-Journal/styles.css
+          test -f Personal-Journal/app.js
+          test -f Personal-Journal/advanced.js
+          test -f Personal-Journal/manifest.webmanifest
+          test -f Personal-Journal/sw.js
+          test -f Personal-Journal/icon.svg
+          test -f Personal-Journal/README.md
+      - name: Validate manifest
+        run: node -e "JSON.parse(require('fs').readFileSync('Personal-Journal/manifest.webmanifest','utf8')); console.log('manifest ok')"
+      - name: Validate product markers
+        run: |
+          grep -q 'Personal Journal' Personal-Journal/index.html
+          grep -q 'On this day' Personal-Journal/index.html
+          grep -q 'templates' Personal-Journal/app.js
+          grep -q 'Journal Studio' Personal-Journal/advanced.js
+          grep -q 'restore' Personal-Journal/advanced.js
+          grep -q 'local-first' Personal-Journal/README.md
+          grep -q 'offline' Personal-Journal/README.md
+      - name: Reject obvious placeholders
+        run: '! grep -RniE "TODO|coming soon|lorem ipsum|your api key here" Personal-Journal --exclude=README.md'
+  deploy:
+    needs: validate
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: Personal-Journal
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
