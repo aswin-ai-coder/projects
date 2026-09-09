@@ -1,0 +1,1 @@
+{"name":"Mood Journal","short_name":"Mood Journal","start_url":"./","display":"standalone","background_color":"#f7f7fb","theme_color":"#6d5dfc","description":"A private local-first mood journal for check-ins, reflection and pattern discovery.","icons":[{"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]}
