@@ -1,0 +1,62 @@
+name: Gratitude Journal
+on:
+  push:
+    branches: [main]
+    paths: ['Gratitude-Journal/**','.github/workflows/gratitude-journal.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages-gratitude-journal
+  cancel-in-progress: true
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Check JavaScript
+        run: |
+          node --check Gratitude-Journal/app.js
+          node --check Gratitude-Journal/advanced.js
+          node --check Gratitude-Journal/sw.js
+      - name: Required files
+        run: |
+          test -f Gratitude-Journal/index.html
+          test -f Gratitude-Journal/styles.css
+          test -f Gratitude-Journal/app.js
+          test -f Gratitude-Journal/advanced.js
+          test -f Gratitude-Journal/sw.js
+          test -f Gratitude-Journal/manifest.webmanifest
+          test -f Gratitude-Journal/icon.svg
+          node -e "JSON.parse(require('fs').readFileSync('Gratitude-Journal/manifest.webmanifest','utf8')); console.log('manifest ok')"
+      - name: Product checks
+        run: |
+          grep -q 'Gratitude Journal' Gratitude-Journal/index.html
+          grep -q 'Memories' Gratitude-Journal/index.html
+          grep -q 'Calendar' Gratitude-Journal/index.html
+          grep -q 'GRATITUDE STUDIO' Gratitude-Journal/index.html
+          grep -q '365-day gratitude map' Gratitude-Journal/advanced.js
+          grep -q 'AES-256-GCM' Gratitude-Journal/advanced.js
+          grep -q 'Prompt library' Gratitude-Journal/advanced.js
+          grep -q 'local-first' Gratitude-Journal/README.md
+          ! grep -RniE 'TODO|FIXME|lorem ipsum|coming soon|placeholder text' Gratitude-Journal --exclude=README.md
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: Gratitude-Journal
+  deploy:
+    needs: validate
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: Gratitude-Journal
+      - id: deployment
+        uses: actions/deploy-pages@v4
