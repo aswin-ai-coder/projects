@@ -1,0 +1,1 @@
+{"name":"Gratitude Journal","short_name":"Gratitude","start_url":"./","display":"standalone","background_color":"#f7f3ed","theme_color":"#f5efe6","description":"A private local-first gratitude journal.","icons":[{"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]}
