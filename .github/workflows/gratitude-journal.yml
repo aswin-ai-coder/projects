@@ -48,10 +48,6 @@ jobs:
           grep -q 'gratitude-journal-media-v1' Gratitude-Journal/media.js
           grep -q 'local-first' Gratitude-Journal/README.md
           ! grep -RniE 'TODO|FIXME|lorem ipsum|coming soon|placeholder text' Gratitude-Journal --exclude=README.md
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v4
-        with:
-          path: Gratitude-Journal
   deploy:
     needs: validate
     runs-on: ubuntu-latest
