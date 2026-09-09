@@ -21,6 +21,7 @@ jobs:
           node --check Digital-Diary/app.js
           node --check Digital-Diary/advanced.js
           node --check Digital-Diary/media.js
+          node --check Digital-Diary/polish.js
           node --check Digital-Diary/sw.js
       - name: Validate required files
         run: |
@@ -29,6 +30,7 @@ jobs:
           test -f Digital-Diary/app.js
           test -f Digital-Diary/advanced.js
           test -f Digital-Diary/media.js
+          test -f Digital-Diary/polish.js
           test -f Digital-Diary/sw.js
           test -f Digital-Diary/manifest.webmanifest
           test -f Digital-Diary/icon.svg
@@ -39,7 +41,11 @@ jobs:
           grep -q 'Calendar' Digital-Diary/index.html
           grep -q 'Memories' Digital-Diary/index.html
           grep -q 'Attachments' Digital-Diary/index.html
+          grep -q 'Private entry' Digital-Diary/index.html
           grep -q 'DIGITAL DIARY STUDIO' Digital-Diary/advanced.js
+          grep -q 'AES-256-GCM' Digital-Diary/advanced.js
+          grep -q 'RECOVERY BIN' Digital-Diary/advanced.js
+          grep -q 'MEDIA LIBRARY' Digital-Diary/polish.js
           grep -q 'IndexedDB' Digital-Diary/README.md
           grep -q 'local-first' Digital-Diary/README.md
           ! grep -RniE 'TODO|FIXME|lorem ipsum|coming soon|placeholder text' Digital-Diary --exclude=README.md
