@@ -2,46 +2,74 @@
 
 A modern, private, local-first journal for writing daily entries, preserving memories, and reviewing your writing rhythm.
 
-## Features
+## Feature-complete scope
 
+### Writing and memory capture
 - Timeline, calendar, favorites, and **On this day** views
 - Rich-text writing with headings, lists, links, bold, italic and underline
-- Multiple entries per day with date/time metadata
+- Multiple entries per day with editable date/time
 - Mood, weather, location, tags, favorite and private-note metadata
-- Full-text search plus journal/tag/mood filters
-- Daily writing prompts and guided prompts
-- Reusable journal templates and custom templates
-- Journaling streak and activity insights
-- 21-day activity heatmap and writing statistics
-- Journal Studio with weekly reflection, restore points and enriched exports
-- JSON backup/import, CSV export and Markdown export
-- Full local restore points for safer experimentation
-- Optional local app lock using a PIN hash
+- Daily prompts plus an expanded guided prompt library
+- Reusable built-in and custom journal templates
+- Autosaved draft recovery for unfinished writing
+- Focus mode for distraction-free writing
+
+### Organization and discovery
+- Multiple journals
+- Full-text search
+- Journal, tag and mood filters
+- Favorites
+- Entry duplication and deletion
+- Activity history metadata
+- Journaling streaks
+- 21-day writing heatmap
+- Mood distribution and tag-frequency insights
+- Writing-pattern analysis
+- Writing-day and word-count statistics
+
+### Reflection and personal analytics
+- Journal Studio workspace
+- Daily reflection check-ins for mood, energy, sleep and stress
+- Weekly reflections
+- Weekly writing goals
+- Optional annual entry target
+- Gentle progress guidance rather than aggressive streak pressure
+- Prompt library with custom prompts
+
+### Data ownership and recovery
+- Local browser storage
+- JSON backup/import
+- Full JSON backup including Studio data
+- Enriched CSV export
+- Markdown export from the core journal
+- Standalone HTML archive export
+- Local restore points
+- Draft recovery
+- Optional AES-GCM encrypted backup using a password-derived key
+- No account, server, analytics or remote AI required
+
+### UX and platform
 - Light/dark/system appearance
 - Responsive mobile layout
+- Keyboard-friendly controls
 - PWA and offline caching
-- No account, server, analytics or remote AI required
+- GitHub Pages deployment
 
 ## Privacy boundary
 
-The app stores journal data in the browser's localStorage. It does not upload entries anywhere. The optional app lock helps prevent casual access on the same browser profile, but it is **not equivalent to end-to-end encryption** and should not be described as cryptographic journal protection. Exported backup files are unencrypted and should be handled carefully.
+The journal stays in browser storage and is not uploaded by this application. The optional app PIN is intended to prevent casual access in the same browser profile; it is **not** presented as end-to-end encryption. The encrypted-backup feature uses browser Web Crypto AES-GCM with a password-derived key and is separate from the normal localStorage lock.
+
+Do not lose the password used for an encrypted backup: the application does not maintain a recovery key or server-side copy.
 
 ## Research basis
 
-The feature set was compared against current journaling patterns from Day One, Diarium and Journey: templates, prompts, streaks, calendar/timeline views, favorites, tags, search/filtering, mood/context metadata, On This Day memories, backups/exports, local-first privacy, and restore/review workflows.
+The feature set was reviewed against current 2026 journaling patterns from Day One, Diarium and Journey, including rich text, multiple journals, prompts, templates, reminders/streak concepts, On This Day, search/filtering, mood/context metadata, calendar/timeline views, media-oriented capture, exports, recovery, privacy and reflective analytics. citeturn1search0turn1search1turn1search2turn1search3turn1search7
 
-References:
-- https://dayoneapp.com/features/
-- https://dayoneapp.com/guides/tips-and-tutorials/templates/
-- https://dayoneapp.com/guides/tips-and-tutorials/prompt-packs/
-- https://dayoneapp.com/guides/tips-and-tutorials/exporting-entries/
-- https://diariumapp.com/en
-- https://journey.cloud/
-- https://support.journey.cloud/en/categories/app-interface-functionalities/articles/timeline-interface-in-journey
+The implementation intentionally keeps the product local-first and deterministic. Current commercial products offer cloud sync, native biometric security, large media libraries, integrations and optional AI services; those depend on native/platform infrastructure and are outside the scope of a standalone GitHub Pages application. citeturn1search0turn1search2turn1search8
 
 ## Platform boundary
 
-This is intentionally a static GitHub Pages application. Cloud sync, cross-device accounts, server-side encryption, guaranteed background reminders, biometric unlock and remote AI are not included because they require platform services or native capabilities beyond a standalone local-first Pages app.
+Not included: cloud synchronization, user accounts, server-side key management, guaranteed background notifications, native biometrics, third-party integrations, or hosted AI. These are infrastructure capabilities rather than missing local UI features.
 
 ## Deployment
 
