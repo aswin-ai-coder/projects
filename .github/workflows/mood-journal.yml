@@ -1,0 +1,60 @@
+name: Mood Journal
+on:
+  push:
+    branches: [main]
+    paths: ['Mood-Journal/**','.github/workflows/mood-journal.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages-mood-journal
+  cancel-in-progress: true
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Check JavaScript
+        run: |
+          node --check Mood-Journal/app.js
+          node --check Mood-Journal/advanced.js
+          node --check Mood-Journal/sw.js
+      - name: Validate required files
+        run: |
+          test -f Mood-Journal/index.html
+          test -f Mood-Journal/styles.css
+          test -f Mood-Journal/app.js
+          test -f Mood-Journal/advanced.js
+          test -f Mood-Journal/sw.js
+          test -f Mood-Journal/manifest.webmanifest
+          test -f Mood-Journal/icon.svg
+          node -e "JSON.parse(require('fs').readFileSync('Mood-Journal/manifest.webmanifest','utf8')); console.log('manifest ok')"
+      - name: Product checks
+        run: |
+          grep -q 'Mood Journal' Mood-Journal/index.html
+          grep -q 'Quick mood' Mood-Journal/index.html
+          grep -q 'Timeline' Mood-Journal/index.html
+          grep -q 'Calendar' Mood-Journal/index.html
+          grep -q 'Insights' Mood-Journal/index.html
+          grep -q 'MOOD JOURNAL STUDIO' Mood-Journal/index.html
+          grep -q 'association, not causation' Mood-Journal/advanced.js
+          grep -q 'AES-256-GCM' Mood-Journal/advanced.js
+          grep -q 'Year in pixels' Mood-Journal/advanced.js
+          grep -q 'local-first' Mood-Journal/README.md
+          ! grep -RniE 'TODO|FIXME|lorem ipsum|coming soon|placeholder text' Mood-Journal --exclude=README.md
+  deploy:
+    needs: validate
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: Mood-Journal
+      - id: deployment
+        uses: actions/deploy-pages@v4
