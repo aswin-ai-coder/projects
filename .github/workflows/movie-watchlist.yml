@@ -21,6 +21,7 @@ jobs:
           node --check Movie-Watchlist/app.js
           node --check Movie-Watchlist/advanced.js
           node --check Movie-Watchlist/enhancements.js
+          node --check Movie-Watchlist/power.js
           node --check Movie-Watchlist/sw.js
       - name: Validate files and product
         run: |
@@ -29,6 +30,7 @@ jobs:
           test -f Movie-Watchlist/app.js
           test -f Movie-Watchlist/advanced.js
           test -f Movie-Watchlist/enhancements.js
+          test -f Movie-Watchlist/power.js
           test -f Movie-Watchlist/sw.js
           test -f Movie-Watchlist/manifest.webmanifest
           test -f Movie-Watchlist/icon.svg
@@ -39,8 +41,9 @@ jobs:
           grep -q 'Movie diary' Movie-Watchlist/app.js
           grep -q 'MovieWatchlistAdvanced' Movie-Watchlist/advanced.js
           grep -q 'MovieWatchlistEnhancements' Movie-Watchlist/enhancements.js
+          grep -q 'MoviePower' Movie-Watchlist/power.js
           grep -q 'local-first' Movie-Watchlist/README.md
-          ! grep -RniE 'TODO|FIXME|lorem ipsum|coming soon' Movie-Watchlist --exclude='*.md'
+          ! grep -RniE 'TODO|FIXME|lorem ipsum|coming soon|placeholder text' Movie-Watchlist --exclude='*.md'
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4
         with:
