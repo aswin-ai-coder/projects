@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#111827">
 <meta name="description" content="A private, local-first movie library, watchlist and diary.">
+<meta name="color-scheme" content="light dark">
 <title>Movie Watchlist — Your cinema library</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="styles.css">
@@ -12,7 +13,7 @@
 <body>
 <header class="topbar">
   <div class="brand"><span class="eyebrow">PRIVATE · LOCAL-FIRST</span><h1>Movie Watchlist</h1><p>Your personal cinema library, diary and decision engine.</p></div>
-  <div class="actions"><button id="add" class="primary">+ Add movie</button><button id="theme">Theme</button><button id="studio">Tools</button></div>
+  <div class="actions"><button id="add" class="primary">+ Add movie</button><button id="theme">Theme</button><button id="studio">Power tools</button></div>
 </header>
 <nav class="tabs" aria-label="Primary navigation">
   <button data-view="home" class="active">Home</button><button data-view="watchlist">Watchlist</button><button data-view="watched">Watched</button><button data-view="diary">Diary</button><button data-view="lists">Lists</button><button data-view="stats">Stats</button>
@@ -27,6 +28,6 @@
   <section id="view" aria-live="polite"></section>
 </main>
 <dialog id="modal"><div id="modalBody"></div></dialog>
-<script src="app.js"></script><script src="advanced.js"></script><script src="enhancements.js"></script>
+<script src="app.js"></script><script src="advanced.js"></script><script src="enhancements.js"></script><script src="power.js"></script>
 </body>
 </html>
