@@ -1,0 +1,63 @@
+name: Reading Tracker
+on:
+  push:
+    branches: [main]
+    paths: ['Reading-Tracker/**','.github/workflows/reading-tracker.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages-reading-tracker
+  cancel-in-progress: true
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Check JavaScript
+        run: |
+          node --check Reading-Tracker/app.js
+          node --check Reading-Tracker/advanced.js
+          node --check Reading-Tracker/enhancements.js
+          node --check Reading-Tracker/sw.js
+      - name: Required files
+        run: |
+          test -f Reading-Tracker/index.html
+          test -f Reading-Tracker/styles.css
+          test -f Reading-Tracker/app.js
+          test -f Reading-Tracker/advanced.js
+          test -f Reading-Tracker/enhancements.js
+          test -f Reading-Tracker/sw.js
+          test -f Reading-Tracker/manifest.webmanifest
+          test -f Reading-Tracker/icon.svg
+          test -f Reading-Tracker/README.md
+          node -e "JSON.parse(require('fs').readFileSync('Reading-Tracker/manifest.webmanifest','utf8')); console.log('manifest ok')"
+      - name: Product checks
+        run: |
+          grep -q 'Reading Tracker' Reading-Tracker/index.html
+          grep -q 'Library' Reading-Tracker/index.html
+          grep -q 'Reading Studio' Reading-Tracker/index.html
+          grep -q 'Currently Reading' Reading-Tracker/app.js
+          grep -q 'DNF' Reading-Tracker/app.js
+          grep -q 'reading session' Reading-Tracker/app.js
+          grep -q 'Power Studio' Reading-Tracker/enhancements.js
+          grep -q 'encrypted backup' Reading-Tracker/enhancements.js
+          grep -q 'Reading plan' Reading-Tracker/enhancements.js
+          grep -q 'Year comparison' Reading-Tracker/enhancements.js
+          grep -q 'local-first' Reading-Tracker/README.md
+          ! grep -RniE 'TODO|FIXME|lorem ipsum|coming soon|placeholder text' Reading-Tracker --exclude='*.md'
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: Reading-Tracker
+  deploy:
+    needs: validate
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/configure-pages@v5
+      - id: deployment
+        uses: actions/deploy-pages@v4
