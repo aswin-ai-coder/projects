@@ -1,0 +1,55 @@
+name: Movie Watchlist
+on:
+  push:
+    branches: [main]
+    paths: ['Movie-Watchlist/**','.github/workflows/movie-watchlist.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages-movie-watchlist
+  cancel-in-progress: true
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Validate JavaScript
+        run: |
+          node --check Movie-Watchlist/app.js
+          node --check Movie-Watchlist/advanced.js
+          node --check Movie-Watchlist/enhancements.js
+          node --check Movie-Watchlist/sw.js
+      - name: Validate files and product
+        run: |
+          test -f Movie-Watchlist/index.html
+          test -f Movie-Watchlist/styles.css
+          test -f Movie-Watchlist/app.js
+          test -f Movie-Watchlist/advanced.js
+          test -f Movie-Watchlist/enhancements.js
+          test -f Movie-Watchlist/sw.js
+          test -f Movie-Watchlist/manifest.webmanifest
+          test -f Movie-Watchlist/icon.svg
+          test -f Movie-Watchlist/README.md
+          node -e "JSON.parse(require('fs').readFileSync('Movie-Watchlist/manifest.webmanifest','utf8'))"
+          grep -q 'Watchlist' Movie-Watchlist/index.html
+          grep -q 'Watched' Movie-Watchlist/app.js
+          grep -q 'Movie diary' Movie-Watchlist/app.js
+          grep -q 'Movie Studio' Movie-Watchlist/advanced.js
+          grep -q 'local-first' Movie-Watchlist/README.md
+          ! grep -RniE 'TODO|FIXME|lorem ipsum|coming soon' Movie-Watchlist --exclude='*.md'
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: Movie-Watchlist
+  deploy:
+    needs: validate
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/deploy-pages@v4
+        id: deployment
