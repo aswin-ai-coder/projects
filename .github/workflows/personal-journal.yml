@@ -39,6 +39,9 @@ jobs:
           grep -q 'On this day' Personal-Journal/index.html
           grep -q 'templates' Personal-Journal/app.js
           grep -q 'Journal Studio' Personal-Journal/advanced.js
+          grep -q 'Daily reflection' Personal-Journal/advanced.js
+          grep -q 'Encrypted backup' Personal-Journal/advanced.js
+          grep -q 'HTML archive' Personal-Journal/advanced.js
           grep -q 'restore' Personal-Journal/advanced.js
           grep -q 'local-first' Personal-Journal/README.md
           grep -q 'offline' Personal-Journal/README.md
