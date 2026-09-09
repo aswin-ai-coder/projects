@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#6d5dfc"><meta name="description" content="Private, local-first mood journal with patterns, reflections and insights.">
+<link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon.svg"><link rel="stylesheet" href="styles.css">
+<title>Mood Journal</title>
+</head>
+<body>
+<header class="topbar"><div class="brand"><div class="logo">M</div><div><strong>Mood Journal</strong><small>private reflection space</small></div></div><div class="top-actions"><button id="themeBtn" class="icon-btn" title="Change theme">◐</button><button id="studioBtn" class="secondary">Studio</button><button id="newBtn" class="primary">+ Check in</button></div></header>
+<main class="shell">
+<section class="hero"><div><p class="eyebrow" id="dateLabel"></p><h1 id="heroTitle">How are you feeling today?</h1><p class="hero-copy">A quick check-in now creates a clearer picture of your days over time.</p></div><div class="hero-score"><div class="score-ring"><span id="todayMood">—</span></div><small>today's mood</small></div></section>
+<section class="quick-grid"><button class="quick" data-quick="mood"><b>◎</b><span>Quick mood</span><small>10-second check-in</small></button><button class="quick" data-quick="reflection"><b>✦</b><span>Reflect</span><small>guided questions</small></button><button class="quick" data-quick="gratitude"><b>♡</b><span>Gratitude</span><small>capture a good thing</small></button><button class="quick" data-quick="trigger"><b>↗</b><span>Moment</span><small>log context & factors</small></button></section>
+<section class="toolbar"><div class="tabs" id="tabs"><button class="active" data-view="today">Today</button><button data-view="timeline">Timeline</button><button data-view="calendar">Calendar</button><button data-view="insights">Insights</button></div><div class="controls"><input id="search" placeholder="Search moods, notes, factors…"><select id="period"><option value="30">30 days</option><option value="90">90 days</option><option value="365">1 year</option><option value="all">All time</option></select></div></section>
+<section id="view"></section>
+<section class="stats-strip" id="stats"></section>
+</main>
+<dialog id="entryDialog"><form method="dialog" id="entryForm" class="modal"><div class="modal-head"><div><p class="eyebrow">MOOD CHECK-IN</p><h2 id="modalTitle">New check-in</h2></div><button type="button" data-close class="icon-btn">×</button></div>
+<input type="hidden" id="entryId"><label>Date & time<input id="entryDate" type="datetime-local" required></label>
+<label>How do you feel?<div class="mood-picker" id="moodPicker"></div></label>
+<div class="two"><label>Intensity<input id="intensity" type="range" min="1" max="10" value="5"><output id="intensityValue">5/10</output></label><label>Energy<input id="energy" type="range" min="1" max="10" value="5"><output id="energyValue">5/10</output></label></div>
+<label>Emotions <input id="emotions" placeholder="calm, excited, tired…"></label>
+<label>What was happening?<textarea id="note" rows="5" placeholder="Write as much or as little as you want."></textarea></label>
+<label>Factors / activities <input id="factors" placeholder="sleep, study, exercise, friends…"></label>
+<div class="two"><label>Stress<input id="stress" type="range" min="0" max="10" value="5"><output id="stressValue">5/10</output></label><label>Sleep quality<input id="sleep" type="range" min="0" max="10" value="5"><output id="sleepValue">5/10</output></label></div>
+<label>Tags <input id="tags" placeholder="school, weekend, social"></label>
+<label class="check"><input id="favorite" type="checkbox"> Mark as important</label>
+<div class="modal-actions"><button type="button" class="danger" id="deleteEntry">Delete</button><span></span><button type="button" data-close class="secondary">Cancel</button><button class="primary">Save check-in</button></div></form></dialog>
+<dialog id="studioDialog"><div class="studio modal"><div class="modal-head"><div><p class="eyebrow">MOOD JOURNAL STUDIO</p><h2>Your patterns, gently explained</h2></div><button data-close class="icon-btn">×</button></div><div class="studio-tabs"><button class="active" data-studio="overview">Overview</button><button data-studio="patterns">Patterns</button><button data-studio="reflections">Reflections</button><button data-studio="goals">Goals</button><button data-studio="data">Data</button></div><div id="studioContent"></div></div></dialog>
+<div id="toast" class="toast"></div>
+<script src="app.js"></script><script src="advanced.js"></script>
+</body></html>
