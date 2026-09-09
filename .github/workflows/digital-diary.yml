@@ -22,6 +22,7 @@ jobs:
           node --check Digital-Diary/advanced.js
           node --check Digital-Diary/media.js
           node --check Digital-Diary/polish.js
+          node --check Digital-Diary/behavior.js
           node --check Digital-Diary/sw.js
       - name: Validate required files
         run: |
@@ -31,6 +32,7 @@ jobs:
           test -f Digital-Diary/advanced.js
           test -f Digital-Diary/media.js
           test -f Digital-Diary/polish.js
+          test -f Digital-Diary/behavior.js
           test -f Digital-Diary/sw.js
           test -f Digital-Diary/manifest.webmanifest
           test -f Digital-Diary/icon.svg
@@ -46,6 +48,7 @@ jobs:
           grep -q 'AES-256-GCM' Digital-Diary/advanced.js
           grep -q 'RECOVERY BIN' Digital-Diary/advanced.js
           grep -q 'MEDIA LIBRARY' Digital-Diary/polish.js
+          grep -q 'entryPrivate' Digital-Diary/behavior.js
           grep -q 'IndexedDB' Digital-Diary/README.md
           grep -q 'local-first' Digital-Diary/README.md
           ! grep -RniE 'TODO|FIXME|lorem ipsum|coming soon|placeholder text' Digital-Diary --exclude=README.md
