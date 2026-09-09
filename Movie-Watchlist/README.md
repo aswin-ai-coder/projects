@@ -63,7 +63,7 @@ A modern, private, local-first personal cinema tracker for deciding what to watc
 
 ## Research basis
 
-The feature set was reviewed against current movie-tracking patterns from Letterboxd, Trakt, JustWatch and current 2026 movie-tracker comparisons. Common high-value patterns include watchlists, dated diaries/history, ratings, reviews, tags, rewatches, custom lists, sorting/filtering, imports/exports, statistics, yearly summaries, challenges, streaming-service context, reordering and discovery helpers. The project combines the strongest personal-library patterns while keeping the implementation static, private, local-first and dependency-free. citeturn0search0turn0search2turn0search3turn0search4turn0search9
+The feature set was reviewed against current movie-tracking patterns from Letterboxd, Trakt, JustWatch and current 2026 movie-tracker comparisons. Common high-value patterns include watchlists, dated diaries/history, ratings, reviews, tags, rewatches, custom lists, sorting/filtering, imports/exports, statistics, yearly summaries, challenges, streaming-service context, reordering and discovery helpers. The project combines the strongest personal-library patterns while keeping the implementation static, private, local-first and dependency-free.
 
 ## Platform boundary
 
