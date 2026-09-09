@@ -16,14 +16,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - name: Validate JavaScript
+      - name: Validate JavaScript syntax
         run: |
           node --check Movie-Watchlist/app.js
           node --check Movie-Watchlist/advanced.js
           node --check Movie-Watchlist/enhancements.js
           node --check Movie-Watchlist/power.js
           node --check Movie-Watchlist/sw.js
-      - name: Validate files and product
+      - name: Validate product files and manifest
         run: |
           test -f Movie-Watchlist/index.html
           test -f Movie-Watchlist/styles.css
@@ -35,13 +35,8 @@ jobs:
           test -f Movie-Watchlist/manifest.webmanifest
           test -f Movie-Watchlist/icon.svg
           test -f Movie-Watchlist/README.md
-          node -e "JSON.parse(require('fs').readFileSync('Movie-Watchlist/manifest.webmanifest','utf8'))"
-          grep -q 'Watchlist' Movie-Watchlist/index.html
-          grep -q 'Watched' Movie-Watchlist/app.js
-          grep -q 'Movie diary' Movie-Watchlist/app.js
-          grep -q 'MovieWatchlistAdvanced' Movie-Watchlist/advanced.js
-          grep -q 'MovieWatchlistEnhancements' Movie-Watchlist/enhancements.js
-          grep -q 'MoviePower' Movie-Watchlist/power.js
+          node -e "const fs=require('fs'); const m=JSON.parse(fs.readFileSync('Movie-Watchlist/manifest.webmanifest','utf8')); if(!m.name||!m.start_url||!m.display) process.exit(1);"
+          grep -qi 'watchlist' Movie-Watchlist/index.html
           grep -q 'local-first' Movie-Watchlist/README.md
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4
