@@ -1,0 +1,56 @@
+name: Digital Diary
+on:
+  push:
+    branches: [main]
+    paths: ['Digital-Diary/**','.github/workflows/digital-diary.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages-digital-diary
+  cancel-in-progress: true
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Check JavaScript
+        run: |
+          node --check Digital-Diary/app.js
+          node --check Digital-Diary/advanced.js
+          node --check Digital-Diary/sw.js
+      - name: Validate required files
+        run: |
+          test -f Digital-Diary/index.html
+          test -f Digital-Diary/styles.css
+          test -f Digital-Diary/app.js
+          test -f Digital-Diary/advanced.js
+          test -f Digital-Diary/sw.js
+          test -f Digital-Diary/manifest.webmanifest
+          test -f Digital-Diary/icon.svg
+          node -e "JSON.parse(require('fs').readFileSync('Digital-Diary/manifest.webmanifest','utf8')); console.log('manifest ok')"
+      - name: Product checks
+        run: |
+          grep -q 'Digital Diary' Digital-Diary/index.html
+          grep -q 'Calendar' Digital-Diary/index.html
+          grep -q 'Memories' Digital-Diary/index.html
+          grep -q 'Attachments' Digital-Diary/index.html
+          grep -q 'DIGITAL DIARY STUDIO' Digital-Diary/advanced.js
+          grep -q 'local-first' Digital-Diary/README.md
+          ! grep -RniE 'TODO|FIXME|lorem ipsum|coming soon|placeholder text' Digital-Diary --exclude=README.md
+  deploy:
+    needs: validate
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: Digital-Diary
+      - id: deployment
+        uses: actions/deploy-pages@v4
