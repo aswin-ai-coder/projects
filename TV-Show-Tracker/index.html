@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#111827"><meta name="description" content="A private, local-first TV show tracker, episode diary and viewing dashboard.">
+<link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon.svg">
+<link rel="stylesheet" href="styles.css"><title>TV Show Tracker</title>
+</head>
+<body>
+<header class="topbar"><div class="brand"><span class="eyebrow">PRIVATE · LOCAL-FIRST</span><h1>TV Show Tracker</h1><p>Track shows, seasons, episodes, progress and your personal TV diary.</p></div><div class="topActions"><button onclick="openAddShow()" class="primary">+ Add show</button><button onclick="toggleTheme()">Theme</button><button onclick="openPower()">Power tools</button></div></header>
+<nav class="tabs" aria-label="Primary"><button data-view="home" onclick="setView('home')">Home</button><button data-view="shows" onclick="setView('shows')">My Shows</button><button data-view="watchlist" onclick="setView('watchlist')">Watchlist</button><button data-view="episodes" onclick="setView('episodes')">Episodes</button><button data-view="diary" onclick="setView('diary')">Diary</button><button data-view="lists" onclick="setView('lists')">Lists</button><button data-view="stats" onclick="setView('stats')">Stats</button></nav>
+<main>
+<section class="toolbar"><label class="search"><span>⌕</span><input id="search" placeholder="Search shows, genres, actors, notes…" oninput="render()"></label><select id="filter" onchange="render()"><option value="all">All</option><option value="Watching">Watching</option><option value="Watchlist">Watchlist</option><option value="Completed">Completed</option><option value="Paused">Paused</option><option value="Dropped">Dropped</option><option value="Favorite">Favorites</option><option value="Unrated">Unrated</option></select><select id="sort" onchange="render()"><option value="added">Recently added</option><option value="title">Title</option><option value="progress">Progress</option><option value="rating">Rating</option><option value="priority">Priority</option><option value="year">Year</option><option value="runtime">Watch time</option></select><button onclick="clearFilters()">Clear</button></section>
+<section id="view"></section>
+</main>
+<dialog id="modal"><form method="dialog"><button class="modalClose" aria-label="Close">×</button></form><div id="modalBody"></div></dialog>
+<script src="app.js"></script><script src="power.js"></script><script src="sw-register.js"></script>
+</body></html>
