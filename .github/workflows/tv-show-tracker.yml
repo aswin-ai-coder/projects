@@ -1,0 +1,56 @@
+name: TV Show Tracker
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'TV-Show-Tracker/**'
+      - '.github/workflows/tv-show-tracker.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages-tv-show-tracker
+  cancel-in-progress: true
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Validate JavaScript
+        run: |
+          node --check TV-Show-Tracker/app.js
+          node --check TV-Show-Tracker/power.js
+          node --check TV-Show-Tracker/sw.js
+          node --check TV-Show-Tracker/sw-register.js
+      - name: Validate product files
+        run: |
+          test -f TV-Show-Tracker/index.html
+          test -f TV-Show-Tracker/styles.css
+          test -f TV-Show-Tracker/app.js
+          test -f TV-Show-Tracker/power.js
+          test -f TV-Show-Tracker/sw.js
+          test -f TV-Show-Tracker/sw-register.js
+          test -f TV-Show-Tracker/manifest.webmanifest
+          test -f TV-Show-Tracker/icon.svg
+          test -f TV-Show-Tracker/README.md
+          node -e "const fs=require('fs');const m=JSON.parse(fs.readFileSync('TV-Show-Tracker/manifest.webmanifest'));if(!m.name||!m.start_url||m.display!=='standalone')process.exit(1)"
+          grep -qi 'TV Show Tracker' TV-Show-Tracker/index.html
+          grep -qi 'local-first' TV-Show-Tracker/README.md
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: TV-Show-Tracker
+  deploy:
+    needs: validate
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
