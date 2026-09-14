@@ -13,7 +13,7 @@
 <body>
   <header class="topbar">
     <div class="brand"><div class="brandmark">B</div><div><strong>Book Library</strong><span>Manager</span></div></div>
-    <div class="top-actions"><button class="ghost" id="themeBtn">Theme</button><button class="primary" id="addBtn">+ Add book</button></div>
+    <div class="top-actions"><button class="ghost" id="themeBtn">Theme</button><button class="ghost" onclick="openAdvanced()">Power</button><button class="primary" id="addBtn">+ Add book</button></div>
   </header>
   <main class="app-shell">
     <section class="hero"><div><p class="eyebrow">YOUR PRIVATE READING SPACE</p><h1>Every book. One calm library.</h1><p>Catalog what you own, track what you read, remember what you loved, and keep loans from disappearing.</p></div><div class="hero-stats" id="heroStats"></div></section>
@@ -22,6 +22,6 @@
   </main>
   <dialog id="modal"><div id="modalBody"></div></dialog>
   <div id="toast" class="toast" role="status"></div>
-  <script src="app.js"></script><script src="power.js"></script><script src="sw-register.js"></script>
+  <script src="app.js"></script><script src="power.js"></script><script src="advanced.js"></script><script src="sw-register.js"></script>
 </body>
 </html>
