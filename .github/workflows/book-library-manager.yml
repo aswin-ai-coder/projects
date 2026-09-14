@@ -1,0 +1,44 @@
+name: Book Library Manager
+on:
+  push:
+    paths:
+      - 'Book-Library-Manager/**'
+      - '.github/workflows/book-library-manager.yml'
+  workflow_dispatch:
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: Book-Library-Manager
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate files
+        run: |
+          test -f index.html
+          test -f styles.css
+          test -f app.js
+          test -f power.js
+          test -f manifest.webmanifest
+          test -f sw.js
+          grep -q 'Book Library Manager' index.html
+          node --check app.js
+          node --check power.js
+  deploy:
+    needs: validate
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: Book-Library-Manager
+      - id: deployment
+        uses: actions/deploy-pages@v4
