@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#171717">
+  <meta name="description" content="A private, local-first book library, reading tracker, journal and lending manager.">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg">
+  <link rel="stylesheet" href="styles.css">
+  <title>Book Library Manager</title>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><div class="brandmark">B</div><div><strong>Book Library</strong><span>Manager</span></div></div>
+    <div class="top-actions"><button class="ghost" id="themeBtn">Theme</button><button class="primary" id="addBtn">+ Add book</button></div>
+  </header>
+  <main class="app-shell">
+    <section class="hero"><div><p class="eyebrow">YOUR PRIVATE READING SPACE</p><h1>Every book. One calm library.</h1><p>Catalog what you own, track what you read, remember what you loved, and keep loans from disappearing.</p></div><div class="hero-stats" id="heroStats"></div></section>
+    <nav class="tabs" aria-label="Main navigation"><button class="tab active" data-view="home">Home</button><button class="tab" data-view="library">Library</button><button class="tab" data-view="reading">Reading</button><button class="tab" data-view="loans">Loans</button><button class="tab" data-view="journal">Journal</button><button class="tab" data-view="lists">Lists</button><button class="tab" data-view="stats">Stats</button></nav>
+    <section id="app"></section>
+  </main>
+  <dialog id="modal"><div id="modalBody"></div></dialog>
+  <div id="toast" class="toast" role="status"></div>
+  <script src="app.js"></script><script src="power.js"></script><script src="sw-register.js"></script>
+</body>
+</html>
