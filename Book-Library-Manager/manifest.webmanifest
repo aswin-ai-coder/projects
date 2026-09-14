@@ -1,0 +1,1 @@
+{"name":"Book Library Manager","short_name":"Book Library","start_url":"./","display":"standalone","background_color":"#f6f5f1","theme_color":"#171717","description":"Private local-first book library and reading tracker","icons":[{"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]}
