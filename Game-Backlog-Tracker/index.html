@@ -9,12 +9,12 @@
 <link rel="stylesheet" href="styles.css"><title>Game Backlog Tracker</title>
 </head>
 <body>
-<header class="topbar"><div class="brand"><span class="eyebrow">PRIVATE · LOCAL-FIRST</span><h1>Game Backlog Tracker</h1><p>Turn a pile of games into a clear, playable plan.</p></div><div class="topActions"><button class="primary" onclick="openGame()">+ Add game</button><button onclick="toggleTheme()">Theme</button><button onclick="openTools()">Power tools</button></div></header>
+<header class="topbar"><div class="brand"><span class="eyebrow">PRIVATE · LOCAL-FIRST</span><h1>Game Backlog Tracker</h1><p>Turn a pile of games into a clear, playable plan.</p></div><div class="topActions"><button class="primary" onclick="openGame()">+ Add game</button><button onclick="toggleTheme()">Theme</button><button onclick="openTools()">Power tools</button><button onclick="openAdvanced()">Advanced</button></div></header>
 <nav class="tabs" aria-label="Primary"><button data-view="home" onclick="setView('home')">Home</button><button data-view="library" onclick="setView('library')">Library</button><button data-view="backlog" onclick="setView('backlog')">Backlog</button><button data-view="playing" onclick="setView('playing')">Playing</button><button data-view="journal" onclick="setView('journal')">Journal</button><button data-view="lists" onclick="setView('lists')">Lists</button><button data-view="stats" onclick="setView('stats')">Stats</button></nav>
 <main>
 <section class="toolbar"><label class="search"><span>⌕</span><input id="search" placeholder="Search games, genres, platforms, notes…" oninput="render()"></label><select id="filter" onchange="render()"><option value="all">All games</option><option value="Backlog">Backlog</option><option value="Playing">Playing</option><option value="Completed">Completed</option><option value="Abandoned">Abandoned</option><option value="Wishlist">Wishlist</option><option value="Owned">Owned</option><option value="Favorite">Favorites</option><option value="Unrated">Unrated</option></select><select id="sort" onchange="render()"><option value="updated">Recently updated</option><option value="priority">Priority</option><option value="title">Title</option><option value="rating">Rating</option><option value="progress">Progress</option><option value="hours">Hours played</option><option value="year">Release year</option><option value="backlogAge">Backlog age</option></select><button onclick="clearFilters()">Clear</button></section>
 <section id="view"></section>
 </main>
 <dialog id="modal"><form method="dialog"><button class="modalClose" aria-label="Close">×</button></form><div id="modalBody"></div></dialog>
-<script src="app.js"></script><script src="power.js"></script><script src="sw-register.js"></script>
+<script src="app.js"></script><script src="power.js"></script><script src="enhancements.js"></script><script src="sw-register.js"></script>
 </body></html>
