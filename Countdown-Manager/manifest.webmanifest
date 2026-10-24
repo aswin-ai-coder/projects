@@ -1,0 +1,1 @@
+{"name":"Moment — Countdown Manager","short_name":"Moment","description":"A private countdown planner for the moments that matter.","start_url":"./","scope":"./","display":"standalone","background_color":"#0d111b","theme_color":"#111827","icons":[{"src":"./icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]}
