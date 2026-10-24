@@ -1,0 +1,28 @@
+name: Personal Contact Manager
+on:
+  push:
+    paths: ['Personal-Contact-Manager/**', '.github/workflows/personal-contact-manager.yml']
+  pull_request:
+    paths: ['Personal-Contact-Manager/**', '.github/workflows/personal-contact-manager.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node --check Personal-Contact-Manager/app.js
+      - run: |
+          test -s Personal-Contact-Manager/index.html
+          test -s Personal-Contact-Manager/styles.css
+          test -s Personal-Contact-Manager/app.js
+          test -s Personal-Contact-Manager/README.md
+          test -s Personal-Contact-Manager/manifest.webmanifest
+          test -s Personal-Contact-Manager/sw.js
+          test -s Personal-Contact-Manager/icon.svg
+          grep -q 'src="app.js"' Personal-Contact-Manager/index.html
+          grep -q "'./app.js'" Personal-Contact-Manager/sw.js
