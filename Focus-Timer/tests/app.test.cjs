@@ -69,3 +69,49 @@ test('escapes task markup and persists custom timer settings', () => {
   assert.equal(doc.querySelector('#timeDisplay').textContent, '30:00');
   dom.window.close();
 });
+
+test('shows backup import controls and accurately describes automatic session starts', () => {
+  const dom = boot();
+  const doc = dom.window.document;
+  assert.ok(doc.querySelector('#importDataButton'));
+  assert.ok(doc.querySelector('#importFile'));
+  assert.match(doc.querySelector('label[for="autoBreaks"]')?.textContent || doc.querySelector('#autoBreaks').parentElement.textContent, /5 seconds/);
+  assert.match(doc.querySelector('#autoFocus').parentElement.textContent, /5 seconds/);
+  dom.window.close();
+});
+
+test('imports a validated backup after confirmation and restores settings and tasks', async () => {
+  const dom = boot();
+  const { window } = dom;
+  const doc = window.document;
+  const backup = {
+    format: 'still-focus-backup-v1',
+    settings: { focus: 30, short: 5, long: 15, longEvery: 4, dailyGoal: 90, autoBreaks: false, autoFocus: false, soundAlerts: true, pauseHidden: false },
+    tasks: [{ id: 'backup-task', title: 'Restored task', estimate: 2, sessionsDone: 1, completed: false, created: new Date().toISOString() }],
+    history: [{ id: 'backup-session', type: 'focus', minutes: 25, taskTitle: 'Past work', at: new Date().toISOString() }],
+    timer: { mode: 'focus', remaining: 1800, running: false, endAt: null, focusCycle: 0, session: 1, todayKey: new Date().toISOString().slice(0,10), todayMinutes: 0, todaySessions: 0 }
+  };
+  const file = { text: () => Promise.resolve(JSON.stringify(backup)) };
+  Object.defineProperty(doc.querySelector('#importFile'), 'files', { configurable: true, value: [file] });
+  doc.querySelector('#importFile').dispatchEvent(new window.Event('change', { bubbles: true }));
+  await new Promise(resolve => window.setTimeout(resolve, 0));
+  assert.equal(JSON.parse(window.localStorage.getItem('still-settings-v1')).focus, 30);
+  assert.equal(JSON.parse(window.localStorage.getItem('still-tasks-v1'))[0].title, 'Restored task');
+  assert.equal(doc.querySelector('#timeDisplay').textContent, '30:00');
+  dom.window.close();
+});
+
+test('rejects malformed backup data without replacing existing tasks', async () => {
+  const dom = boot();
+  const { window } = dom;
+  const doc = window.document;
+  doc.querySelector('#taskInput').value = 'Keep this task';
+  doc.querySelector('#taskForm').dispatchEvent(new window.Event('submit', { bubbles: true, cancelable: true }));
+  const file = { text: () => Promise.resolve(JSON.stringify({ format: 'wrong-format', tasks: [], history: [] })) };
+  Object.defineProperty(doc.querySelector('#importFile'), 'files', { configurable: true, value: [file] });
+  doc.querySelector('#importFile').dispatchEvent(new window.Event('change', { bubbles: true }));
+  await new Promise(resolve => window.setTimeout(resolve, 0));
+  assert.equal(JSON.parse(window.localStorage.getItem('still-tasks-v1'))[0].title, 'Keep this task');
+  assert.match(doc.querySelector('#toast').textContent, /valid Still Focus backup/i);
+  dom.window.close();
+});
