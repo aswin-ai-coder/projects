@@ -1,0 +1,18 @@
+{
+  "name": "Kindred — Personal Contact Manager",
+  "short_name": "Kindred",
+  "description": "A private local-first address book.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f6f7f4",
+  "theme_color": "#3d6b51",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
