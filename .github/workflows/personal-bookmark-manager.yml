@@ -1,0 +1,30 @@
+name: Personal Bookmark Manager
+on:
+  push:
+    paths:
+      - 'projects/Personal-Bookmark-Manager/**'
+      - '.github/workflows/personal-bookmark-manager.yml'
+  pull_request:
+    paths:
+      - 'projects/Personal-Bookmark-Manager/**'
+      - '.github/workflows/personal-bookmark-manager.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Check JavaScript syntax
+        run: node --check projects/Personal-Bookmark-Manager/app.js
+      - name: Validate required app files
+        run: |
+          test -s projects/Personal-Bookmark-Manager/index.html
+          test -s projects/Personal-Bookmark-Manager/styles.css
+          test -s projects/Personal-Bookmark-Manager/app.js
+          test -s projects/Personal-Bookmark-Manager/manifest.webmanifest
+          grep -q 'Personal Bookmark Manager' projects/Personal-Bookmark-Manager/README.md
