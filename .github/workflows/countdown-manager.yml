@@ -29,6 +29,11 @@ jobs:
           test -s Countdown-Manager/README.md
           test -s Countdown-Manager/manifest.webmanifest
           test -s Countdown-Manager/sw.js
+          test -s Countdown-Manager/tests/app.test.cjs
+      - name: Install test dependency
+        run: npm install --no-save --no-package-lock jsdom@26.1.0
+      - name: Run app regression tests
+        run: node --test Countdown-Manager/tests/app.test.cjs
       - name: Check core UI hooks
         run: |
           grep -q 'id="countdownList"' Countdown-Manager/index.html
