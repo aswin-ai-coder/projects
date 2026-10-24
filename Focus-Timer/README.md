@@ -10,8 +10,8 @@ Still is a calm, responsive focus timer for study, creative work, reading, and p
 - Tasks with estimated focus sessions, progress, completion, deletion and one-click focus selection.
 - Session intentions, daily focus goal, today's summary, seven-day chart, all-time session totals and a simple active-day streak.
 - Optional browser-generated ambient sound: quiet, rain-like noise, soft noise and a synthetic café hum, with volume control.
-- Optional gentle end-of-session chime, automatic session-transition settings, and light/dark themes.
-- Exportable JSON backup containing settings, tasks, history and timer state.
+- Optional gentle end-of-session chime; configurable automatic next-session start after a five-second grace period; and light/dark themes.
+- Export and validated import of JSON backups containing settings, tasks, history and timer state; imports are confirmed before replacing local data.
 - Responsive layout, keyboard-visible focus, screen-reader labels, reduced-motion support, installable PWA and offline shell.
 - Local-first storage: no account, analytics, server, or third-party audio downloads.
 
@@ -25,6 +25,10 @@ Open `index.html` in a browser or serve this folder over localhost. PWA/offline 
 - `R`: reset the current session.
 - `N`: skip to the next session.
 - Buttons and navigation remain keyboard-accessible without shortcuts.
+
+## Backups and recovery
+
+Use **Export my data** to download a JSON backup and **Import backup** to restore one on this device. Import checks the backup format, record shapes and supported setting ranges before replacing current data, and asks for confirmation first. Keep backup files private because they may contain task names and session history.
 
 ## Timer behavior and privacy
 
@@ -40,5 +44,5 @@ GitHub Actions checks JavaScript syntax and required files, then runs automated 
 
 - [The Pomodoro Technique](https://www.pomodorotechnique.com/) — planning, focus, breaks and reflection.
 - [MDN: Page Visibility API](https://developer.mozilla.org/en-US/docs/Web/API/Page_Visibility_API) — handling hidden tabs and background timer behavior.
-- [MDN: Notifications API](https://developer.mozilla.org/en-US/docs/Web/API/Notifications_API) — browser notification capabilities and limitations.
+- [MDN: Offline and background operation](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/Guides/Offline_and_background_operation) — PWA offline behavior and background execution limits.
 - [W3C: WCAG 2.2](https://www.w3.org/TR/WCAG22/) — keyboard access, visible focus and accessible interactions.
