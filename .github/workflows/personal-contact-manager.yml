@@ -15,7 +15,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - run: node --check Personal-Contact-Manager/app.js
+      - run: |
+          node --check Personal-Contact-Manager/app.js
           node --check Personal-Contact-Manager/advanced.js
       - run: |
           test -s Personal-Contact-Manager/index.html
