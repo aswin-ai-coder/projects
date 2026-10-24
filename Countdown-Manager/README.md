@@ -30,8 +30,8 @@ The minimum required header columns are Title and Date (YYYY-MM-DD). Optional co
 - Exported files and backups may contain personal information; store them privately. Encrypted backup uses a passphrase you choose. If you lose that passphrase, the encrypted backup cannot be recovered.
 - Notifications are checked while the app is open and visible; browser and operating-system behavior varies. A static GitHub Pages site cannot guarantee exact-time background delivery when the browser is closed.
 - iCalendar import/export supports common event titles, dates/times, descriptions, URLs and simple daily/weekly/monthly/yearly recurrence. Complex time zones, exception dates and advanced recurrence rules may not round-trip exactly.
-- Monthly recurrence follows JavaScript date arithmetic; dates near the end of a month can roll into the next month. The app is a personal countdown planner, not a synced calendar service.
+- Monthly recurrence clamps dates to the last valid day of shorter months; yearly recurrence handles leap-day transitions. The app is a personal countdown planner, not a synced calendar service.
 
 ## Validation
 
-GitHub Actions checks JavaScript syntax and required project files on pushes and pull requests.
+GitHub Actions checks JavaScript syntax, required project files, and runs automated DOM-level regression tests for creation, local persistence, search filtering, markup escaping, and JSON backup restore. These tests improve confidence but do not replace full manual testing across real browsers and mobile devices.
