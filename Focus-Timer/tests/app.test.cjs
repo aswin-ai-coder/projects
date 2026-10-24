@@ -94,7 +94,7 @@ test('imports a validated backup after confirmation and restores settings and ta
   const file = { text: () => Promise.resolve(JSON.stringify(backup)) };
   Object.defineProperty(doc.querySelector('#importFile'), 'files', { configurable: true, value: [file] });
   doc.querySelector('#importFile').dispatchEvent(new window.Event('change', { bubbles: true }));
-  await new Promise(resolve => setImmediate(resolve));
+  await Promise.resolve(); await Promise.resolve(); await Promise.resolve();
   assert.equal(JSON.parse(window.localStorage.getItem('still-settings-v1')).focus, 30);
   assert.equal(JSON.parse(window.localStorage.getItem('still-tasks-v1'))[0].title, 'Restored task');
   assert.equal(doc.querySelector('#timeDisplay').textContent, '30:00');
@@ -110,7 +110,7 @@ test('rejects malformed backup data without replacing existing tasks', async () 
   const file = { text: () => Promise.resolve(JSON.stringify({ format: 'wrong-format', tasks: [], history: [] })) };
   Object.defineProperty(doc.querySelector('#importFile'), 'files', { configurable: true, value: [file] });
   doc.querySelector('#importFile').dispatchEvent(new window.Event('change', { bubbles: true }));
-  await new Promise(resolve => setImmediate(resolve));
+  await Promise.resolve(); await Promise.resolve(); await Promise.resolve();
   assert.equal(JSON.parse(window.localStorage.getItem('still-tasks-v1'))[0].title, 'Keep this task');
   assert.match(doc.querySelector('#toast').textContent, /valid Still Focus backup/i);
   dom.window.close();
