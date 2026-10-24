@@ -1,25 +1,39 @@
 # Pinboard — Personal Bookmark Manager
 
-A responsive, local-first bookmark manager built with vanilla HTML, CSS and JavaScript. Static-site friendly; no server, account, API key, or build step.
+A modern, responsive, local-first bookmark library built with vanilla HTML, CSS, and JavaScript. It runs as a static site with no required account, backend, build step, or API key.
 
-## Features
-- Save, edit, open, and organize links with title, URL, type, tags, notes, preview image URL, priority, favorite, and reading state.
-- Collections, fast search across bookmark metadata, filters, and sorting.
-- Grid and compact list layouts; bulk selection, favorite, mark read, and move to trash.
-- Read-later queue, recently added, archive, and recoverable trash.
-- Duplicate URL detection, with common tracking parameters removed for comparison.
-- Library insights and most-saved domains.\n- Advanced command center with local reminders, passage highlights and annotations, saved searches, tag merging, CSV export, random rediscovery, and best-effort link diagnostics.\n- Browser bookmarklet helper and optional Chromium extension for context-menu/current-tab capture via an exportable queue.\n- Password-protected AES-GCM backups using PBKDF2; includes bookmarks, collections, highlights, and saved searches. The password is not stored.
-- JSON backup/restore, CSV import, Netscape HTML bookmark import, and best-effort generic JSON import. Duplicate URLs are skipped.
-- Light/dark theme, responsive mobile layout, keyboard shortcuts (/ and Ctrl/⌘+K), and installable offline PWA shell.
-- Private by default: data stays in this browser's local storage. Export backups regularly; clearing browser site data removes local data.
+## Included features
 
-## Run
-Open index.html or serve this folder using any static web server. Service-worker caching requires HTTPS or localhost.
+### Capture and organize
+- Save, edit, open, and categorize links with title, URL, content type, tags, notes, optional preview image, priority, favorite, reading state, and collection.
+- Collections with rename, merge, and safe delete-to-Unsorted management.
+- Optional Chromium Manifest V3 extension for current-tab and right-click capture, with a separate queue that can be exported as standard browser bookmarks HTML and imported.
+- Browser bookmarklet helper that pre-fills the app's save form with the current page URL and title.
 
-## GitHub Pages
-Enable Pages for the repository's main branch and root. Suggested URL: https://aswin-ai-coder.github.io/projects/Personal-Bookmark-Manager/
+### Find and review
+- Search bookmark metadata, filter by type/state/tag, and sort by date/title/domain.
+- Advanced search operators: `tag:`, `domain:`, `type:`, `state:`, `collection:`, `before:`, `after:`, `favorite:true`, `priority:high`, and negation such as `!tag:later`.
+- Command palette (Ctrl/⌘+K) for common actions.
+- Grid/list layouts, bulk selection, bulk favorite/read/trash, and keyboard search shortcuts.
+- Favorites, read-later, recently added, archive, and recoverable trash.
+- Duplicate URL detection, library audit, missing-note/untagged/stale unread insights, most-saved domains, and random rediscovery.
+- Saved searches, tag merge manager, passage highlights and annotations, and local reminders.
 
-## Privacy and limitations
-This app stores bookmark metadata in this browser's local storage. It does not automatically crawl URLs, extract metadata, check link health, archive pages, or sync across devices. Preview images load only when supplied. Keep backup files private if they contain personal links.
+### Portability and privacy
+- JSON backup/restore, CSV import/export, Netscape HTML bookmark import, best-effort generic JSON import, and Markdown library export.
+- Password-protected AES-GCM encrypted backup and restore using PBKDF2-SHA-256 in the browser. Includes bookmarks, collections, highlights, and saved searches. The password is not stored.
+- Light/dark theme, responsive layout, keyboard navigation, and installable offline PWA shell.
+- Local-first storage: bookmark metadata is kept in this browser. Export backups regularly; clearing browser site data removes local data.
 
-Feature research reviewed Raindrop.io for collections, tags, search, highlights, reminders, import/export, duplicate/broken-link hygiene, and backups; Linkwarden for preservation, reading, annotation, and import/export; and current Linkwarden releases for keyboard search, themes, and mobile/offline priorities. The implementation is an independent local-first subset.\n\n## Advanced feature boundaries\n- Reminder schedules are local records displayed when you open the app; there are no push notifications while it is closed.\n- Browser link checks are best-effort because cross-origin restrictions often prevent reading remote status codes.\n- Full webpage/PDF archiving, reliable page extraction/full-text search, cloud sync, collaboration, public sharing, hosted APIs, and AI-based tagging require a backend or external services and are not represented as working local-only features.\n- The optional browser extension has a separate extension-storage queue. Export it as HTML and import it into the app to transfer links.
+## Run and deploy
+Open `index.html` or serve this folder with a static web server. Service-worker caching and Web Crypto require HTTPS or localhost. GitHub Pages URL, if Pages is enabled for this repository: https://aswin-ai-coder.github.io/projects/Personal-Bookmark-Manager/
+
+## Deliberate limitations
+- Local reminders are shown inside the app when opened; there are no push notifications while it is closed.
+- Link health checks are best-effort because browser cross-origin rules often hide HTTP status. “Unverifiable” does not mean broken.
+- The app does not claim automatic webpage/PDF preservation, full-page content extraction, reliable full-text indexing, cloud sync, cross-device synchronization, collaboration, public sharing, hosted APIs, or hosted AI tagging. Those require a backend or external services and should not be faked in a static local-only app.
+- The optional browser extension stores its queue separately from the web app. Export it as HTML and import that file into Pinboard to transfer saved links.
+- Encrypted backups protect data only while stored in the encrypted file; choose a strong unique password and keep it safe.
+
+## Feature research
+The feature set was benchmarked against official Raindrop.io and Linkwarden product/docs, including collections, tagging, search operators, highlights, annotations, reminders, duplicate hygiene, import/export, backups, browser capture, page preservation, reader experience, and keyboard-first workflows. This project independently implements the features feasible in a static local-first app and explicitly documents backend-dependent capabilities.
