@@ -8,7 +8,7 @@ A responsive, local-first bookmark manager built with vanilla HTML, CSS and Java
 - Grid and compact list layouts; bulk selection, favorite, mark read, and move to trash.
 - Read-later queue, recently added, archive, and recoverable trash.
 - Duplicate URL detection, with common tracking parameters removed for comparison.
-- Library insights and most-saved domains.
+- Library insights and most-saved domains.\n- Advanced command center with local reminders, passage highlights and annotations, saved searches, tag merging, CSV export, random rediscovery, and best-effort link diagnostics.\n- Browser bookmarklet helper for quick capture; reminder notices are shown when you open the app, not pushed while it is closed.
 - JSON backup/restore, CSV import, Netscape HTML bookmark import, and best-effort generic JSON import. Duplicate URLs are skipped.
 - Light/dark theme, responsive mobile layout, keyboard shortcuts (/ and Ctrl/⌘+K), and installable offline PWA shell.
 - Private by default: data stays in this browser's local storage. Export backups regularly; clearing browser site data removes local data.
