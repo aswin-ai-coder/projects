@@ -36,7 +36,14 @@ jobs:
           test -s Link-Collection-Manager/tools.js
           test -s Link-Collection-Manager/power.js
           test -s Link-Collection-Manager/reading.js
+          test -s Link-Collection-Manager/sw.js
+          test -s Link-Collection-Manager/tools.js
+          test -s Link-Collection-Manager/power.js
           test -s Link-Collection-Manager/manifest.webmanifest
           test -s Link-Collection-Manager/browser-extension/manifest.json
           test -s Link-Collection-Manager/browser-extension/popup.html
           test -s Link-Collection-Manager/README.md
+          grep -q 'src="power.js"' Link-Collection-Manager/index.html
+          grep -q 'src="reading.js"' Link-Collection-Manager/index.html
+          grep -q "'./power.js'" Link-Collection-Manager/sw.js
+          grep -q "'./reading.js'" Link-Collection-Manager/sw.js
