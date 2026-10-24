@@ -115,3 +115,32 @@ test('rejects malformed backup data without replacing existing tasks', async () 
   assert.match(doc.querySelector('#toast').textContent, /valid Still Focus backup/i);
   dom.window.close();
 });
+
+test('task search filters the task list without deleting stored tasks', () => {
+  const dom = boot();
+  const { window } = dom;
+  const doc = window.document;
+  for (const title of ['Read science', 'Write notes']) {
+    doc.querySelector('#taskInput').value = title;
+    doc.querySelector('#taskForm').dispatchEvent(new window.Event('submit', { bubbles: true, cancelable: true }));
+  }
+  doc.querySelector('#taskSearch').value = 'science';
+  doc.querySelector('#taskSearch').dispatchEvent(new window.Event('input', { bubbles: true }));
+  assert.match(doc.querySelector('#taskList').textContent, /Read science/);
+  assert.doesNotMatch(doc.querySelector('#taskList').textContent, /Write notes/);
+  assert.equal(JSON.parse(window.localStorage.getItem('still-tasks-v1')).length, 2);
+  dom.window.close();
+});
+
+test('notification and shortcut preferences are available and keyboard shortcuts can be disabled', () => {
+  const dom = boot();
+  const doc = dom.window.document;
+  assert.ok(doc.querySelector('#enableNotifications'));
+  assert.ok(doc.querySelector('#shortcutsEnabled'));
+  doc.querySelector('#shortcutsEnabled').checked = false;
+  doc.querySelector('#settingsOpen').click();
+  doc.querySelector('#shortcutsEnabled').checked = false;
+  doc.querySelector('#settingsForm').dispatchEvent(new dom.window.Event('submit', { bubbles: true, cancelable: true }));
+  assert.equal(JSON.parse(dom.window.localStorage.getItem('still-settings-v1')).shortcuts, false);
+  dom.window.close();
+});
