@@ -20,11 +20,11 @@ jobs:
         with:
           node-version: 22
       - name: Check JavaScript syntax
-        run: node --check projects/Personal-Bookmark-Manager/app.js\n          node --check projects/Personal-Bookmark-Manager/advanced.js
+        run: node --check projects/Personal-Bookmark-Manager/app.js\n          node --check projects/Personal-Bookmark-Manager/advanced.js\n          node --check projects/Personal-Bookmark-Manager/browser-extension/background.js\n          node --check projects/Personal-Bookmark-Manager/browser-extension/popup.js
       - name: Validate required app files
         run: |
           test -s projects/Personal-Bookmark-Manager/index.html
           test -s projects/Personal-Bookmark-Manager/styles.css
-          test -s projects/Personal-Bookmark-Manager/app.js\n          test -s projects/Personal-Bookmark-Manager/advanced.js
+          test -s projects/Personal-Bookmark-Manager/app.js\n          test -s projects/Personal-Bookmark-Manager/advanced.js\n          test -s projects/Personal-Bookmark-Manager/browser-extension/manifest.json\n          test -s projects/Personal-Bookmark-Manager/browser-extension/popup.html
           test -s projects/Personal-Bookmark-Manager/manifest.webmanifest
           grep -q 'Personal Bookmark Manager' projects/Personal-Bookmark-Manager/README.md
