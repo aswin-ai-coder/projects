@@ -15,14 +15,14 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - run: node --check Personal-Contact-Manager/app.js
+      - run: node --check Personal-Contact-Manager/app.js\n          node --check Personal-Contact-Manager/advanced.js
       - run: |
           test -s Personal-Contact-Manager/index.html
           test -s Personal-Contact-Manager/styles.css
-          test -s Personal-Contact-Manager/app.js
+          test -s Personal-Contact-Manager/app.js\n          test -s Personal-Contact-Manager/advanced.js
           test -s Personal-Contact-Manager/README.md
           test -s Personal-Contact-Manager/manifest.webmanifest
           test -s Personal-Contact-Manager/sw.js
           test -s Personal-Contact-Manager/icon.svg
-          grep -q 'src="app.js"' Personal-Contact-Manager/index.html
+          grep -q 'src="app.js"' Personal-Contact-Manager/index.html\n          grep -q 'src="advanced.js"' Personal-Contact-Manager/index.html
           grep -q "'./app.js'" Personal-Contact-Manager/sw.js
