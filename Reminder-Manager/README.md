@@ -30,3 +30,4 @@ GitHub Actions checks JavaScript syntax and required app files. This is not a su
 - MDN Notifications API: https://developer.mozilla.org/en-US/docs/Web/API/Notifications_API
 - MDN notification usage and permission best practices: https://developer.mozilla.org/en-US/docs/Web/API/Notifications_API/Using_the_Notifications_API
 - RFC 5545 iCalendar and VALARM format: https://www.rfc-editor.org/rfc/rfc5545.html
+\n\n## Additional productivity tools\n- Per-reminder subtasks/checklists with independent completion states.\n- Reusable templates for follow-ups, daily habits, meeting preparation and errands.\n- Fortnightly recurring reminders (every two weeks) and matching iCalendar recurrence export.\n
