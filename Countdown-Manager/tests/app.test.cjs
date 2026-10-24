@@ -80,10 +80,10 @@ test('imports a valid JSON backup by merging records and restores custom collect
   };
   window.confirm = () => true;
   const file = new window.File([JSON.stringify(backup)], 'backup.json', { type: 'application/json' });
+  Object.defineProperty(file, 'text', { value: async () => JSON.stringify(backup) });
 
   return (async () => {
-    await window.handleImport?.(file);
-    // The import handler is intentionally private; exercise the same public file-input path.
+    // Exercise the same file-input path a person uses in the app.
     const input = doc.querySelector('#fileInput');
     Object.defineProperty(input, 'files', { configurable: true, value: [file] });
     input.dispatchEvent(new window.Event('change', { bubbles: true }));
