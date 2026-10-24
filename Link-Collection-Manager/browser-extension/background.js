@@ -4,7 +4,7 @@ chrome.runtime.onInstalled.addListener(() => {
 });
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   const url = info.linkUrl || info.pageUrl || tab?.url;
-  if (!url || !/^https?:\\/\\//i.test(url)) return;
+  if (!url) return; try { if (!["http:", "https:"].includes(new URL(url).protocol)) return; } catch { return; }
   const title = info.linkUrl ? info.linkUrl : (tab?.title || url);
   const data = await chrome.storage.local.get({ queue: [] });
   data.queue.unshift({ url, title, created: new Date().toISOString() });
