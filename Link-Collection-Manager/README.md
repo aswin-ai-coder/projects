@@ -11,6 +11,7 @@ Gather is a modern, responsive, local-first bookmark and link knowledge manager.
 - Smart collections that dynamically filter saved links, and user-triggered rules for tagging, priority, unread status, and favorites.
 - Duplicate resolver that combines tags, notes, favorite/priority/reminder data and moves redundant records to trash.
 - Insights for top domains, statuses, types, and tags.
+- Reading studio with manual reading-session logs, notes, weekly minute goals, daily/weekly totals, streaks, session history, deletion, and CSV export. Session data remains local to the browser.
 - JSON backup, portable JSON export, CSV export, CSV import, Netscape browser-bookmark HTML import, best-effort generic JSON import, Markdown index export.
 - Password-protected AES-GCM backup/restore using PBKDF2-SHA-256 (250,000 iterations). Passwords are never stored.
 - Quick-save bookmarklet plus optional Chromium Manifest V3 extension for saving current tabs or context-menu links to a local queue and exporting standard bookmarks HTML.
