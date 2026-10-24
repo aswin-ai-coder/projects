@@ -6,11 +6,11 @@ Still is a calm, responsive focus timer for study, creative work, reading, and p
 
 - Focus, short-break and long-break modes with editable durations and a configurable long-break cycle.
 - Accurate end-time-based timer recovery so background timer throttling does not accumulate drift; optional pause-on-hidden behavior.
-- Pause, resume, reset, skip, live progress ring, keyboard controls and a completion dialog.
-- Tasks with estimated focus sessions, progress, completion, deletion and one-click focus selection.
+- Pause, resume, reset, skip, live progress ring, configurable keyboard shortcuts and a completion dialog.
+- Tasks with estimated focus sessions, progress, completion, editing, search, deletion and one-click focus selection.
 - Session intentions, daily focus goal, today's summary, seven-day chart, all-time session totals and a simple active-day streak.
 - Optional browser-generated ambient sound: quiet, rain-like noise, soft noise and a synthetic café hum, with volume control.
-- Optional gentle end-of-session chime; configurable automatic next-session start after a five-second grace period; and light/dark themes.
+- Optional gentle end-of-session chime and permission-based system notifications; configurable automatic next-session start after a five-second grace period; and light/dark themes.
 - Export and validated import of JSON backups containing settings, tasks, history and timer state; imports are confirmed before replacing local data.
 - Responsive layout, keyboard-visible focus, screen-reader labels, reduced-motion support, installable PWA and offline shell.
 - Local-first storage: no account, analytics, server, or third-party audio downloads.
@@ -30,6 +30,10 @@ Open `index.html` in a browser or serve this folder over localhost. PWA/offline 
 
 Use **Export my data** to download a JSON backup and **Import backup** to restore one on this device. Import checks the backup format, record shapes and supported setting ranges before replacing current data, and asks for confirmation first. Keep backup files private because they may contain task names and session history.
 
+## Notifications and browser support
+
+System notifications are opt-in from Timer settings and require permission. Where supported, Still asks the service worker to show persistent notifications; browsers may not support the same APIs, and notification permission can be blocked by the browser or operating system. This static app does not run a background server or guarantee notifications when the app is closed.
+
 ## Timer behavior and privacy
 
 Timer state is saved locally in this browser. A running timer stores its target end timestamp and recalculates remaining time after returning to a background tab. Browser and operating-system scheduling can still delay visual updates, and a static web app cannot guarantee an alert when completely closed. Optional pause-on-hidden stops the timer when the page becomes hidden. Data does not sync between devices. Exported backups may contain personal task titles and session history; keep them private.
@@ -38,7 +42,7 @@ Ambient audio is generated using Web Audio and can use CPU/battery while playing
 
 ## Validation
 
-GitHub Actions checks JavaScript syntax and required files, then runs automated DOM regression tests for the timer UI, task creation/completion, saved settings, and escaping user-provided task text. Automated tests are not a substitute for hands-on testing across real browsers and mobile devices.
+GitHub Actions checks JavaScript syntax and required files, then runs automated DOM regression tests for timer controls, task creation/completion/search, saved settings, backup import, and escaping user-provided task text. Automated tests are not a substitute for hands-on testing across real browsers and mobile devices.
 
 ## References
 
