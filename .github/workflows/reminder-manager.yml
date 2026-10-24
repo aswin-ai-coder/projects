@@ -1,0 +1,30 @@
+name: Reminder Manager
+on:
+  push:
+    paths: ['Reminder-Manager/**', '.github/workflows/reminder-manager.yml']
+  pull_request:
+    paths: ['Reminder-Manager/**', '.github/workflows/reminder-manager.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: |
+          node --check Reminder-Manager/app.js
+          node --check Reminder-Manager/sw.js
+      - run: |
+          test -s Reminder-Manager/index.html
+          test -s Reminder-Manager/styles.css
+          test -s Reminder-Manager/app.js
+          test -s Reminder-Manager/README.md
+          test -s Reminder-Manager/manifest.webmanifest
+          test -s Reminder-Manager/sw.js
+          test -s Reminder-Manager/icon.svg
+          grep -q 'src="./app.js"' Reminder-Manager/index.html
+          grep -q "'./app.js'" Reminder-Manager/sw.js
