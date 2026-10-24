@@ -1,0 +1,9 @@
+{
+  "manifest_version": 3,
+  "name": "Pinboard Quick Save",
+  "version": "1.0.0",
+  "description": "Save browser tabs to a portable local bookmark queue for Pinboard.",
+  "permissions": ["activeTab", "storage", "contextMenus"],
+  "action": { "default_title": "Save to Pinboard", "default_popup": "popup.html" },
+  "background": { "service_worker": "background.js" }
+}
