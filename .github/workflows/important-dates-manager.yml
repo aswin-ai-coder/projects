@@ -1,0 +1,30 @@
+name: Important Dates Manager
+on:
+  push:
+    paths: ['Important-Dates-Manager/**', '.github/workflows/important-dates-manager.yml']
+  pull_request:
+    paths: ['Important-Dates-Manager/**', '.github/workflows/important-dates-manager.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: |
+          node --check Important-Dates-Manager/app.js
+          node --check Important-Dates-Manager/sw.js
+      - run: |
+          test -s Important-Dates-Manager/index.html
+          test -s Important-Dates-Manager/styles.css
+          test -s Important-Dates-Manager/app.js
+          test -s Important-Dates-Manager/README.md
+          test -s Important-Dates-Manager/manifest.webmanifest
+          test -s Important-Dates-Manager/sw.js
+          test -s Important-Dates-Manager/icon.svg
+          grep -q 'src="app.js"' Important-Dates-Manager/index.html
+          grep -q "'./app.js'" Important-Dates-Manager/sw.js
