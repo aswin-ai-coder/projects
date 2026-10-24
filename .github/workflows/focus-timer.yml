@@ -1,0 +1,42 @@
+name: Focus Timer
+on:
+  push:
+    paths:
+      - 'Focus-Timer/**'
+      - '.github/workflows/focus-timer.yml'
+  pull_request:
+    paths:
+      - 'Focus-Timer/**'
+      - '.github/workflows/focus-timer.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Check JavaScript syntax
+        run: node --check Focus-Timer/app.js
+      - name: Check required files
+        run: |
+          test -s Focus-Timer/index.html
+          test -s Focus-Timer/styles.css
+          test -s Focus-Timer/app.js
+          test -s Focus-Timer/README.md
+          test -s Focus-Timer/manifest.webmanifest
+          test -s Focus-Timer/sw.js
+          test -s Focus-Timer/tests/app.test.cjs
+      - name: Install test dependency
+        run: npm install --no-save --no-package-lock jsdom@26.1.0
+      - name: Run app regression tests
+        run: node --test Focus-Timer/tests/app.test.cjs
+      - name: Check core UI hooks
+        run: |
+          grep -q 'id="timeDisplay"' Focus-Timer/index.html
+          grep -q 'function completeSession' Focus-Timer/app.js
+          grep -q 'function renderStats' Focus-Timer/app.js
+          grep -q 'function exportData' Focus-Timer/app.js
