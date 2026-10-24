@@ -2,11 +2,11 @@ name: Personal Bookmark Manager
 on:
   push:
     paths:
-      - 'projects/Personal-Bookmark-Manager/**'
+      - 'Personal-Bookmark-Manager/**'
       - '.github/workflows/personal-bookmark-manager.yml'
   pull_request:
     paths:
-      - 'projects/Personal-Bookmark-Manager/**'
+      - 'Personal-Bookmark-Manager/**'
       - '.github/workflows/personal-bookmark-manager.yml'
   workflow_dispatch:
 permissions:
@@ -20,11 +20,22 @@ jobs:
         with:
           node-version: 22
       - name: Check JavaScript syntax
-        run: node --check projects/Personal-Bookmark-Manager/app.js\n          node --check projects/Personal-Bookmark-Manager/advanced.js\n          node --check projects/Personal-Bookmark-Manager/browser-extension/background.js\n          node --check projects/Personal-Bookmark-Manager/browser-extension/popup.js
+        run: |
+          node --check Personal-Bookmark-Manager/app.js
+          node --check Personal-Bookmark-Manager/advanced.js
+          node --check Personal-Bookmark-Manager/power-tools.js
+          node --check Personal-Bookmark-Manager/sw.js
+          node --check Personal-Bookmark-Manager/browser-extension/background.js
+          node --check Personal-Bookmark-Manager/browser-extension/popup.js
       - name: Validate required app files
         run: |
-          test -s projects/Personal-Bookmark-Manager/index.html
-          test -s projects/Personal-Bookmark-Manager/styles.css
-          test -s projects/Personal-Bookmark-Manager/app.js\n          test -s projects/Personal-Bookmark-Manager/advanced.js\n          test -s projects/Personal-Bookmark-Manager/browser-extension/manifest.json\n          test -s projects/Personal-Bookmark-Manager/browser-extension/popup.html
-          test -s projects/Personal-Bookmark-Manager/manifest.webmanifest
-          grep -q 'Personal Bookmark Manager' projects/Personal-Bookmark-Manager/README.md
+          test -s Personal-Bookmark-Manager/index.html
+          test -s Personal-Bookmark-Manager/styles.css
+          test -s Personal-Bookmark-Manager/app.js
+          test -s Personal-Bookmark-Manager/advanced.js
+          test -s Personal-Bookmark-Manager/power-tools.js
+          test -s Personal-Bookmark-Manager/browser-extension/manifest.json
+          test -s Personal-Bookmark-Manager/browser-extension/popup.html
+          test -s Personal-Bookmark-Manager/manifest.webmanifest
+          grep -q 'Personal Bookmark Manager' Personal-Bookmark-Manager/README.md
+          grep -q 'power-tools.js' Personal-Bookmark-Manager/index.html
