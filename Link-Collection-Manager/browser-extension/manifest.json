@@ -1,0 +1,9 @@
+{
+  "manifest_version": 3,
+  "name": "Gather Quick Save",
+  "version": "1.0.0",
+  "description": "Save the current tab or a clicked link into a local queue for Gather.",
+  "permissions": ["storage", "activeTab", "contextMenus"],
+  "action": { "default_title": "Save to Gather", "default_popup": "popup.html" },
+  "background": { "service_worker": "background.js" }
+}
