@@ -12,10 +12,10 @@ Gather is a modern, responsive, local-first bookmark and link knowledge manager.
 - Duplicate resolver that combines tags, notes, favorite/priority/reminder data and moves redundant records to trash.
 - Insights for top domains, statuses, types, and tags.
 - Reading studio with manual reading-session logs, notes, weekly minute goals, daily/weekly totals, streaks, session history, deletion, and CSV export. Session data remains local to the browser.
-- JSON backup, portable JSON export, CSV export, CSV import, Netscape browser-bookmark HTML import, best-effort generic JSON import, Markdown index export.
-- Password-protected AES-GCM backup/restore using PBKDF2-SHA-256 (250,000 iterations). Passwords are never stored.
+- JSON backup, portable JSON export (including reading data), CSV export, CSV import, Netscape browser-bookmark HTML import, best-effort generic JSON import, Markdown index export.
+- Password-protected AES-GCM backup/restore using PBKDF2-SHA-256 (250,000 iterations), including links, nested collections, highlights, saved searches, smart collections, automation rules, reading sessions, reading goal, and theme. Passwords are never stored.
 - Quick-save bookmarklet plus optional Chromium Manifest V3 extension for saving current tabs or context-menu links to a local queue and exporting standard bookmarks HTML.
-- Installable PWA shell, offline app shell, responsive layout, keyboard shortcuts, and GitHub Actions syntax/file validation.
+- Installable PWA shell, offline app shell caching all core feature scripts, responsive layout, keyboard shortcuts, and GitHub Actions syntax/file validation.
 
 ## Use
 Open `index.html` or serve this folder from a static host. Intended GitHub Pages URL: `https://aswin-ai-coder.github.io/projects/Link-Collection-Manager/`.
