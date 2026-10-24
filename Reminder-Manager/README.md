@@ -6,7 +6,7 @@ A modern, responsive, local-first reminder app for tasks, routines, follow-ups a
 - Quick capture parses common natural-language dates (`today`, `tomorrow`, `in 3 days`, `next Monday`), 12-hour times (`at 3pm`), urgency words and `#tags`; full editor supports notes, date/time, priorities, tags and custom lists.
 - Daily, weekday, weekly, monthly and yearly recurring reminders.
 - Complete/reopen, edit, duplicate, delete, snooze and undo the latest deletion with Ctrl/Cmd+Z for 15 seconds.
-- Today, upcoming 30 days, all, completed, overdue and list-specific views.
+- Interactive monthly calendar with previous/next month navigation, selected-day reminder list and per-day reminder counts; today, upcoming 30 days, all, completed, overdue and list-specific views.
 - Search notes/tags/titles, filters, sorting, stats and weekly overview.
 - JSON backup/restore, password-encrypted AES-256-GCM backup/restore (PBKDF2-SHA-256 key derivation), CSV import/export, iCalendar import/export with recurring rules and supported VALARM alarms.
 - Local activity history and export.
