@@ -11,7 +11,7 @@ Modern, responsive, local-first address book using vanilla HTML/CSS/JavaScript. 
 - Click-to-call/email, map lookup, individual vCard export, grid/list layout, bulk group/delete.
 - Duplicate review by shared phone/email. Merge combines phone/email values, tags, groups, custom fields, notes, favorites and follow-ups; extras go to trash.
 - CSV import/export, vCard (.vcf) import/export, Kindred JSON backup/restore.
-- Soft delete/restore, permanent-delete confirmation and local activity log.
+- Soft delete/restore, permanent-delete confirmation and local activity log.\n- Per-contact interaction timeline for calls, messages, emails, meetings, video calls and notes.\n- Contact-linked events with date/time, optional reminder timestamp, notes and completion tracking; upcoming agenda view.\n- Timeline and event records are included in Kindred JSON backups.
 - Light/dark theme, mobile navigation, keyboard shortcuts, accessible labels, installable PWA and offline shell after first successful load.
 
 ## Run
@@ -26,5 +26,5 @@ Expected Pages URL if enabled: https://aswin-ai-coder.github.io/projects/Persona
 - Loading a remote profile image makes a network request to that host. Use only URLs you trust.
 - This is a personal address book, not a shared CRM or secure vault.
 
-Local keys: kindred-contacts:v1, kindred-groups:v1, kindred-profile:v1, kindred-audit:v1.
+Local keys: kindred-contacts:v1, kindred-groups:v1, kindred-profile:v1, kindred-audit:v1, kindred-interactions:v1, kindred-events:v1.\n\nReminder note: reminders are displayed inside the app; no background or operating-system notifications are sent.
 GitHub Actions checks JavaScript syntax and required assets.
