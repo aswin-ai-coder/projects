@@ -24,6 +24,7 @@ jobs:
           node --check Link-Collection-Manager/app.js
           node --check Link-Collection-Manager/tools.js
           node --check Link-Collection-Manager/power.js
+          node --check Link-Collection-Manager/reading.js
           node --check Link-Collection-Manager/sw.js
           node --check Link-Collection-Manager/browser-extension/background.js
           node --check Link-Collection-Manager/browser-extension/popup.js
@@ -34,6 +35,7 @@ jobs:
           test -s Link-Collection-Manager/app.js
           test -s Link-Collection-Manager/tools.js
           test -s Link-Collection-Manager/power.js
+          test -s Link-Collection-Manager/reading.js
           test -s Link-Collection-Manager/manifest.webmanifest
           test -s Link-Collection-Manager/browser-extension/manifest.json
           test -s Link-Collection-Manager/browser-extension/popup.html
