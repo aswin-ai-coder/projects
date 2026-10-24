@@ -1,0 +1,35 @@
+name: Link Collection Manager
+on:
+  push:
+    paths:
+      - 'Link-Collection-Manager/**'
+      - '.github/workflows/link-collection-manager.yml'
+  pull_request:
+    paths:
+      - 'Link-Collection-Manager/**'
+      - '.github/workflows/link-collection-manager.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Check JavaScript syntax
+        run: |
+          node --check Link-Collection-Manager/app.js
+          node --check Link-Collection-Manager/tools.js
+          node --check Link-Collection-Manager/sw.js
+      - name: Validate required files
+        run: |
+          test -s Link-Collection-Manager/index.html
+          test -s Link-Collection-Manager/styles.css
+          test -s Link-Collection-Manager/app.js
+          test -s Link-Collection-Manager/tools.js
+          test -s Link-Collection-Manager/manifest.webmanifest
+          grep -q 'Link Collection Manager' Link-Collection-Manager/README.md
+          grep -q 'tools.js' Link-Collection-Manager/index.html
