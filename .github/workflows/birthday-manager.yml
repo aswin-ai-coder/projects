@@ -1,0 +1,30 @@
+name: Birthday Manager
+on:
+  push:
+    paths: ['Birthday-Manager/**', '.github/workflows/birthday-manager.yml']
+  pull_request:
+    paths: ['Birthday-Manager/**', '.github/workflows/birthday-manager.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: |
+          node --check Birthday-Manager/app.js
+          node --check Birthday-Manager/sw.js
+      - run: |
+          test -s Birthday-Manager/index.html
+          test -s Birthday-Manager/styles.css
+          test -s Birthday-Manager/app.js
+          test -s Birthday-Manager/README.md
+          test -s Birthday-Manager/manifest.webmanifest
+          test -s Birthday-Manager/sw.js
+          test -s Birthday-Manager/icon.svg
+          grep -q 'src="app.js"' Birthday-Manager/index.html
+          grep -q "'./app.js'" Birthday-Manager/sw.js
