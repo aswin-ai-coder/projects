@@ -1,0 +1,37 @@
+name: Countdown Manager
+on:
+  push:
+    paths:
+      - 'Countdown-Manager/**'
+      - '.github/workflows/countdown-manager.yml'
+  pull_request:
+    paths:
+      - 'Countdown-Manager/**'
+      - '.github/workflows/countdown-manager.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Check JavaScript syntax
+        run: node --check Countdown-Manager/app.js
+      - name: Check required files
+        run: |
+          test -s Countdown-Manager/index.html
+          test -s Countdown-Manager/styles.css
+          test -s Countdown-Manager/app.js
+          test -s Countdown-Manager/README.md
+          test -s Countdown-Manager/manifest.webmanifest
+          test -s Countdown-Manager/sw.js
+      - name: Check core UI hooks
+        run: |
+          grep -q 'id="countdownList"' Countdown-Manager/index.html
+          grep -q 'function renderCalendar' Countdown-Manager/app.js
+          grep -q 'function exportICS' Countdown-Manager/app.js
+          grep -q 'async function encryptedBackup' Countdown-Manager/app.js
